@@ -1,0 +1,13 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.form-control:focus,
+.form-select:focus {
+
+    border-color: #3B82F6 !important;
+
+    box-shadow: 0 0 0 4px rgba(59,130,246,.15) !important;
+
+}
