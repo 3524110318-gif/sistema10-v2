@@ -11,3 +11,27 @@
     box-shadow: 0 0 0 4px rgba(59,130,246,.15) !important;
 
 }
+
+/*REPSE - DOCUMENTACIÓN*/
+
+.document-option {
+    cursor: pointer;
+    transition: 0.2s ease;
+    background-color: #ffffff;
+}
+
+.document-option:hover {
+    background-color: #f8f9fa;
+    border-color: #198754 !important;
+}
+
+.document-option.document-selected {
+    background-color: #eaf7ef;
+    border-color: #198754 !important;
+}
+
+.document-checkbox {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+}

@@ -2,133 +2,464 @@
 
 @section('contenido')
 
-<div class="container">
+<div class="container mt-4">
 
-    <h1>Nueva Asignación</h1>
+    {{-- CARD PRINCIPAL --}}
+    <x-rh.card-rh titulo="Nueva asignación">
 
-    @if ($errors->has('repse'))
+        {{-- ERRORES GENERALES --}}
+        @if ($errors->any())
 
-        <div
-            class="alert alert-danger"
+            <div class="alert alert-danger">
+
+                <strong>
+                    Se encontraron algunos errores:
+                </strong>
+
+                <ul class="mb-0 mt-2">
+
+                    @foreach ($errors->all() as $error)
+
+                        <li>
+                            {{ $error }}
+                        </li>
+
+                    @endforeach
+
+                </ul>
+
+            </div>
+
+        @endif
+
+
+        <form
+            method="POST"
+            action="{{ route('operaciones.asignaciones.store') }}"
         >
 
-            {{ $errors->first('repse') }}
+            @csrf
 
-        </div>
 
-    @endif
+            {{-- ========================================= --}}
+            {{-- INFORMACIÓN DEL EMPLEADO --}}
+            {{-- ========================================= --}}
 
-    <form
-        method="POST"
-        action="{{ route('operaciones.asignaciones.store') }}"
-    >
+            <div class="mb-4">
 
-        @csrf
+                <h5 class="fw-bold">
 
-        <div class="mb-3">
+                    <i class="bi bi-person-badge me-2"></i>
 
-            <label>Empleado</label>
+                    Empleado
 
-            <select
-                name="empleado_id"
-                class="form-control"
-                required
-            >
+                </h5>
 
-                <option value="">
-                    Seleccione un empleado
-                </option>
+                <p class="text-muted mb-2">
 
-                @foreach($empleados as $empleado)
+                    Seleccione al empleado que será asignado a una plaza operativa.
 
-                    <option
-                        value="{{ $empleado->id }}"
-                        @if(
-                            !$empleado->repse_apto
-                        )
-                            disabled
-                        @endif
-                    >
+                </p>
 
-                        {{ $empleado->numero_control }}
-                        -
-                        {{ $empleado->nombre }}
-                        {{ $empleado->apellido_paterno }}
+                <hr>
 
-                        @if(
-                            $empleado->repse_apto
-                        )
+            </div>
 
-                            ✅ APTO
 
-                        @else
+            <div class="mb-4">
 
-                            ⛔ BLOQUEADO REPSE
+                <label
+                    for="empleado_id"
+                    class="form-label fw-semibold"
+                >
 
-                        @endif
+                    Empleado disponible
+
+                    <span class="text-danger">
+                        *
+                    </span>
+
+                </label>
+
+                <select
+                    name="empleado_id"
+                    id="empleado_id"
+                    class="form-select"
+                    required
+                >
+
+                    <option value="">
+
+                        Seleccione un empleado
 
                     </option>
 
-                @endforeach
+                    @foreach($empleados as $empleado)
 
-            </select>
+                        <option
+                            value="{{ $empleado->id }}"
+                            {{ old('empleado_id') == $empleado->id ? 'selected' : '' }}
+                            @disabled(!$empleado->repse_apto)
+                        >
 
-        </div>
+                            {{ $empleado->numero_control }}
 
-        <div class="mb-3">
+                            -
 
-            <label>Plaza Operativa</label>
+                            {{ $empleado->nombre }}
 
-            <select
-                name="plaza_operativa_id"
-                class="form-control"
-                required
-            >
+                            {{ $empleado->apellido_paterno }}
 
-                <option value="">
-                    Seleccione una plaza
-                </option>
+                            @if($empleado->repse_apto)
 
-                @foreach($plazas as $plaza)
+                                - APTO REPSE
 
-                    <option
-                        value="{{ $plaza->id }}"
+                            @else
+
+                                - BLOQUEADO REPSE
+
+                            @endif
+
+                        </option>
+
+                    @endforeach
+
+                </select>
+
+                <div class="form-text">
+
+                    Los empleados bloqueados por REPSE no pueden ser seleccionados.
+
+                </div>
+
+            </div>
+
+
+            {{-- ========================================= --}}
+            {{-- ESTADO REPSE --}}
+            {{-- ========================================= --}}
+
+            <div class="mb-4">
+
+                <h5 class="fw-bold">
+
+                    <i class="bi bi-shield-check me-2"></i>
+
+                    Estado de cumplimiento REPSE
+
+                </h5>
+
+                <hr>
+
+            </div>
+
+
+            <div class="row g-3 mb-4">
+
+                @forelse($empleados as $empleado)
+
+                    <div class="col-md-6">
+
+                        <div
+                            class="border rounded p-3 h-100
+                            {{ $empleado->repse_apto ? 'border-success' : 'border-danger' }}"
+                        >
+
+                            <div class="d-flex justify-content-between align-items-start gap-3">
+
+                                <div>
+
+                                    <div class="fw-bold">
+
+                                        {{ $empleado->numero_control }}
+
+                                        -
+
+                                        {{ $empleado->nombre }}
+
+                                        {{ $empleado->apellido_paterno }}
+
+                                    </div>
+
+                                    @if($empleado->repse_apto)
+
+                                        <small class="text-success">
+
+                                            Cumple con los requisitos REPSE.
+
+                                        </small>
+
+                                    @else
+
+                                        <small class="text-danger">
+
+                                            No cumple con los requisitos REPSE.
+
+                                        </small>
+
+                                    @endif
+
+                                </div>
+
+
+                                <div>
+
+                                    @if($empleado->repse_apto)
+
+                                        <span class="badge bg-success">
+
+                                            <i class="bi bi-check-circle me-1"></i>
+
+                                            Apto
+
+                                        </span>
+
+                                    @else
+
+                                        <span class="badge bg-danger">
+
+                                            <i class="bi bi-lock me-1"></i>
+
+                                            Bloqueado
+
+                                        </span>
+
+                                    @endif
+
+                                </div>
+
+                            </div>
+
+
+                            @if(!$empleado->repse_apto)
+
+                                <div class="mt-3">
+
+                                    <small class="fw-semibold">
+
+                                        Motivo:
+
+                                    </small>
+
+                                    <ul class="mb-0 mt-1 ps-3">
+
+                                        @foreach($empleado->repse_faltantes as $faltante)
+
+                                            <li class="text-muted">
+
+                                                {{ $faltante }}
+
+                                            </li>
+
+                                        @endforeach
+
+                                    </ul>
+
+                                </div>
+
+                            @endif
+
+                        </div>
+
+                    </div>
+
+                @empty
+
+                    <div class="col-12">
+
+                        <div class="alert alert-info mb-0">
+
+                            <i class="bi bi-info-circle me-1"></i>
+
+                            No hay empleados disponibles para asignación.
+
+                        </div>
+
+                    </div>
+
+                @endforelse
+
+            </div>
+
+
+            {{-- ========================================= --}}
+            {{-- INFORMACIÓN DE LA PLAZA --}}
+            {{-- ========================================= --}}
+
+            <div class="mb-4">
+
+                <h5 class="fw-bold">
+
+                    <i class="bi bi-geo-alt me-2"></i>
+
+                    Plaza operativa
+
+                </h5>
+
+                <p class="text-muted mb-2">
+
+                    Seleccione la plaza vacante que será cubierta.
+
+                </p>
+
+                <hr>
+
+            </div>
+
+
+            <div class="row">
+
+                <div class="col-md-8 mb-4">
+
+                    <label
+                        for="plaza_operativa_id"
+                        class="form-label fw-semibold"
                     >
 
-                        {{ $plaza->nombre_plaza }}
-                        -
-                        {{ $plaza->turno }}
+                        Plaza operativa
 
-                    </option>
+                        <span class="text-danger">
+                            *
+                        </span>
 
-                @endforeach
+                    </label>
 
-            </select>
+                    <select
+                        name="plaza_operativa_id"
+                        id="plaza_operativa_id"
+                        class="form-select"
+                        required
+                    >
 
-        </div>
+                        <option value="">
 
-        <div class="mb-3">
+                            Seleccione una plaza
 
-            <label>Fecha Inicio</label>
+                        </option>
 
-            <input
-                type="date"
-                name="fecha_inicio"
-                class="form-control"
-                required
-            >
+                        @foreach($plazas as $plaza)
 
-        </div>
+                            <option
+                                value="{{ $plaza->id }}"
+                                {{ old('plaza_operativa_id') == $plaza->id ? 'selected' : '' }}
+                            >
 
-        <button
-            class="btn btn-success"
-        >
+                                {{ $plaza->nombre_plaza }}
 
-            Guardar
+                                -
 
-        </button>
+                                {{ $plaza->turno }}
 
-    </form>
+                            </option>
+
+                        @endforeach
+
+                    </select>
+
+                </div>
+
+
+                <div class="col-md-4 mb-4">
+
+                    <label
+                        for="fecha_inicio"
+                        class="form-label fw-semibold"
+                    >
+
+                        Fecha de inicio
+
+                        <span class="text-danger">
+                            *
+                        </span>
+
+                    </label>
+
+                    <input
+                        type="date"
+                        name="fecha_inicio"
+                        id="fecha_inicio"
+                        value="{{ old('fecha_inicio') }}"
+                        class="form-control"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            {{-- ========================================= --}}
+            {{-- AVISO DE BLOQUEO --}}
+            {{-- ========================================= --}}
+
+            <div class="alert alert-light border mb-4">
+
+                <div class="d-flex align-items-start gap-3">
+
+                    <div class="text-primary fs-4">
+
+                        <i class="bi bi-shield-lock"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+
+                            Validación automática REPSE
+
+                        </strong>
+
+                        <div class="text-muted mt-1">
+
+                            El sistema verificará nuevamente el cumplimiento REPSE
+                            antes de guardar la asignación.
+
+                            Si el empleado no cumple con los requisitos obligatorios,
+                            la operación será bloqueada automáticamente.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- ========================================= --}}
+            {{-- BOTONES --}}
+            {{-- ========================================= --}}
+
+            <div class="d-flex justify-content-end gap-2">
+
+                <a
+                    href="{{ route('operaciones.asignaciones.index') }}"
+                    class="btn btn-secondary"
+                >
+
+                    <i class="bi bi-x-circle"></i>
+
+                    Cancelar
+
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn btn-success"
+                >
+
+                    <i class="bi bi-check-circle"></i>
+
+                    Guardar asignación
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </x-rh.card-rh>
 
 </div>
 

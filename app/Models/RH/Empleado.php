@@ -11,6 +11,8 @@ use App\Models\RH\EntregaUniforme;
 use App\Models\RH\Vigencia;
 use App\Models\RH\Capacitacion;
 use App\Models\RH\BajaEmpleado;
+use App\Models\Repse;
+
 
 class Empleado extends Model
 {
@@ -177,5 +179,10 @@ class Empleado extends Model
             \App\Models\Administracion\PrenominaDetalle::class,
             'empleado_id'
         );
+    }
+
+    public function repse()
+    {
+        return $this->hasOne(Repse::class, 'empleado_id');
     }
 }

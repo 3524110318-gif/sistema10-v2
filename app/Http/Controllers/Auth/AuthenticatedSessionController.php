@@ -39,6 +39,8 @@ class AuthenticatedSessionController extends Controller
 
             'operaciones' => redirect()->route('operaciones.dashboard'),
 
+            'repse' => redirect()->route('repse.dashboard'),
+
             'gerencia' => redirect()->route('gerencia.dashboard'),
 
             default => redirect('/'),

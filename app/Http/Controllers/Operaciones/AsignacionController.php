@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Operaciones\Asignacion;
 use App\Models\Operaciones\PlazaOperativa;
 use App\Models\RH\Empleado;
-use App\Models\RH\Documento;
 use Illuminate\Http\Request;
 
 class AsignacionController extends Controller
@@ -16,13 +15,16 @@ class AsignacionController extends Controller
         $asignaciones = Asignacion::with([
             'empleado',
             'plaza'
-        ])->latest()->get();
+        ])
+        ->latest()
+        ->get();
 
         return view(
             'operaciones.asignaciones.index',
             compact('asignaciones')
         );
     }
+
 
     public function create()
     {
@@ -40,60 +42,57 @@ class AsignacionController extends Controller
                 );
             }
         )
+        ->with('repse')
         ->get();
 
-        foreach (
-            $empleados as $empleado
-        )
+
+        foreach ($empleados as $empleado)
         {
-            $documentosObligatorios = [
-
-                'CURP',
-
-                'RFC',
-
-                'NSS',
-
-                'Contrato laboral',
-
-            ];
-
-            $apto = true;
-
-            foreach (
-                $documentosObligatorios
-                as $documento
-            )
-            {
-                $existe = Documento::where(
-                    'empleado_id',
-                    $empleado->id
-                )
-                ->where(
-                    'nombre',
-                    $documento
-                )
-                ->where(
-                    'entregado',
-                    1
-                )
-                ->exists();
-
-                if (!$existe)
-                {
-                    $apto = false;
-                    break;
-                }
-            }
+            /*
+            
+            | VALIDACIÓN REPSE
+            |--------------------------------------------------------------------------
+            |
+            | El empleado solo es apto si:
+            |
+            | 1. Tiene expediente REPSE
+            | 2. Cumple los 4 requisitos
+            |
+            */
 
             $empleado->repse_apto =
-                $apto;
+                $empleado->repse &&
+                $empleado->repse->cumpleRequisitos();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | DOCUMENTOS FALTANTES
+            |--------------------------------------------------------------------------
+            */
+
+            if (!$empleado->repse)
+            {
+                $empleado->repse_faltantes = [
+                    'Expediente REPSE no registrado'
+                ];
+            }
+            else
+            {
+                $empleado->repse_faltantes =
+                    $empleado
+                        ->repse
+                        ->documentosFaltantes();
+            }
         }
+
 
         $plazas = PlazaOperativa::where(
             'estado',
             'vacante'
-        )->get();
+        )
+        ->get();
+
 
         return view(
             'operaciones.asignaciones.create',
@@ -104,58 +103,86 @@ class AsignacionController extends Controller
         );
     }
 
+
     public function store(Request $request)
     {
-        $documentosObligatorios = [
+        /*
+        
+        | VALIDACIÓN DE DATOS
+        
+        */
 
-            'CURP',
+        $request->validate([
 
-            'RFC',
+            'empleado_id' =>
+                'required|exists:empleados,id',
 
-            'NSS',
+            'plaza_operativa_id' =>
+                'required|exists:plaza_operativas,id',
 
-            'Contrato laboral',
+            'fecha_inicio' =>
+                'required|date',
 
-        ];
+        ]);
 
-        $faltantes = [];
 
-        foreach (
-            $documentosObligatorios
-            as $documento
-        ) {
+        /*
+        
+        | BUSCAR EMPLEADO CON REPSE
+        
+        */
 
-            $existe = Documento::where(
-                'empleado_id',
+        $empleado = Empleado::with('repse')
+            ->findOrFail(
                 $request->empleado_id
-            )
-            ->where(
-                'nombre',
-                $documento
-            )
-            ->where(
-                'entregado',
-                1
-            )
-            ->exists();
+            );
 
-            if (!$existe) {
 
-                $faltantes[] =
-                    $documento;
+        /*
+        
+        | BLOQUEO SI NO TIENE EXPEDIENTE REPSE
+        
+        */
 
-            }
-        }
-
-        if (
-            count($faltantes) > 0
-        ) {
-
+        if (!$empleado->repse)
+        {
             return back()
+                ->withInput()
                 ->withErrors([
 
                     'repse' =>
-                        'Empleado bloqueado por REPSE. Faltan: '
+                        'Empleado bloqueado por REPSE. '
+                        . 'No tiene un expediente REPSE registrado.'
+
+                ]);
+        }
+
+
+        /*
+        
+        | BLOQUEO POR INCUMPLIMIENTO REPSE
+        
+        */
+
+        if (
+            !$empleado
+                ->repse
+                ->cumpleRequisitos()
+        )
+        {
+            $faltantes =
+                $empleado
+                    ->repse
+                    ->documentosFaltantes();
+
+
+            return back()
+                ->withInput()
+                ->withErrors([
+
+                    'repse' =>
+                        'Empleado bloqueado por REPSE. '
+                        . 'Faltan los siguientes requisitos: '
                         . implode(
                             ', ',
                             $faltantes
@@ -164,24 +191,69 @@ class AsignacionController extends Controller
                 ]);
         }
 
-        $asignacionActiva = Asignacion::where(
-            'empleado_id',
-            $request->empleado_id
-        )
-        ->where(
-            'estado',
-            'activa'
-        )
-        ->exists();
+
+        /*
+        
+        | VALIDAR ASIGNACIÓN ACTIVA
+        
+        */
+
+        $asignacionActiva =
+            Asignacion::where(
+                'empleado_id',
+                $request->empleado_id
+            )
+            ->where(
+                'estado',
+                'activa'
+            )
+            ->exists();
+
 
         if ($asignacionActiva)
         {
             return back()
+                ->withInput()
                 ->with(
                     'error',
                     'El empleado ya tiene una asignación activa.'
                 );
         }
+
+
+        /*
+        
+        | VALIDAR QUE LA PLAZA SIGA VACANTE
+        
+        */
+
+        $plaza = PlazaOperativa::where(
+            'id',
+            $request->plaza_operativa_id
+        )
+        ->where(
+            'estado',
+            'vacante'
+        )
+        ->first();
+
+
+        if (!$plaza)
+        {
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'La plaza seleccionada ya no está disponible.'
+                );
+        }
+
+
+        /*
+        
+        | CREAR ASIGNACIÓN
+        
+        */
 
         Asignacion::create([
 
@@ -199,18 +271,27 @@ class AsignacionController extends Controller
 
         ]);
 
-        PlazaOperativa::where(
-            'id',
-            $request->plaza_operativa_id
-        )->update([
+
+        /*
+        
+        | MARCAR PLAZA COMO CUBIERTA
+        
+        */
+
+        $plaza->update([
 
             'estado' => 'cubierta'
 
         ]);
 
+
         return redirect()
             ->route(
                 'operaciones.asignaciones.index'
+            )
+            ->with(
+                'success',
+                'Empleado asignado correctamente.'
             );
     }
 }
