@@ -2,25 +2,38 @@
 
 @section('contenido')
 
-<div class="container">
+<div class="container-fluid">
 
-    <div
-        class="d-flex justify-content-between align-items-center mb-4"
-    >
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-        <h1>
+        <div>
 
-            Editar Servicio
+            <h2 class="gtri-page-title">
 
-        </h1>
+                <i class="bi bi-pencil-square me-2"></i>
+
+                Editar servicio
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Actualiza la información general y el estado del servicio.
+
+            </p>
+
+        </div>
 
         <a
             href="{{ route(
                 'operaciones.servicios.show',
                 $servicio
             ) }}"
-            class="btn btn-secondary"
+            class="btn gtri-btn-secondary"
         >
+
+            <i class="bi bi-arrow-left me-1"></i>
 
             Regresar
 
@@ -28,17 +41,21 @@
 
     </div>
 
+
+    {{-- ERRORES --}}
     @if($errors->any())
 
         <div class="alert alert-danger">
 
-            <strong>
+            <div class="fw-bold mb-2">
 
-                Se encontraron errores.
+                <i class="bi bi-exclamation-triangle me-1"></i>
 
-            </strong>
+                Se encontraron los siguientes errores:
 
-            <ul class="mb-0 mt-2">
+            </div>
+
+            <ul class="mb-0">
 
                 @foreach($errors->all() as $error)
 
@@ -56,177 +73,331 @@
 
     @endif
 
-    <div class="card shadow-sm">
 
-        <div class="card-body">
+    <form
+        method="POST"
+        action="{{ route(
+            'operaciones.servicios.update',
+            $servicio
+        ) }}"
+    >
 
-            <form
-                method="POST"
-                action="{{ route(
-                    'operaciones.servicios.update',
-                    $servicio
-                ) }}"
-            >
+        @csrf
+        @method('PUT')
 
-                @csrf
 
-                @method('PUT')
+        {{-- INFORMACIÓN DEL SERVICIO --}}
+        <div class="gtri-section">
 
-                <div class="row">
+            <div class="gtri-section-title">
 
-                    <div class="col-md-6 mb-3">
+                <span>01</span>
 
-                        <label>
+                Información del servicio
 
-                            Contrato
+            </div>
 
-                        </label>
 
-                        <select
-                            name="contrato_id"
-                            class="form-control"
-                            required
-                        >
+            <div class="row g-3">
 
-                            @foreach($contratos as $contrato)
+                {{-- CONTRATO --}}
+                <div class="col-md-6">
 
-                                <option
-                                    value="{{ $contrato->id }}"
-                                    {{
-                                        old(
-                                            'contrato_id',
-                                            $servicio->contrato_id
-                                        ) == $contrato->id
-                                        ? 'selected'
-                                        : ''
-                                    }}
-                                >
+                    <label
+                        for="contrato_id"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
 
-                                    {{ $contrato->numero_contrato }}
+                        Contrato
 
-                                    -
+                    </label>
 
-                                    {{ $contrato->cliente->razon_social }}
+                    <select
+                        name="contrato_id"
+                        id="contrato_id"
+                        class="form-select gtri-input"
+                        required
+                    >
 
-                                </option>
-
-                            @endforeach
-
-                        </select>
-
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-
-                        <label>
-
-                            Nombre
-
-                        </label>
-
-                        <input
-                            type="text"
-                            name="nombre"
-                            class="form-control"
-                            value="{{ old('nombre',$servicio->nombre) }}"
-                            required
-                        >
-
-                    </div>
-
-                    <div class="col-12 mb-3">
-
-                        <label>
-
-                            Dirección
-
-                        </label>
-
-                        <textarea
-                            name="direccion"
-                            rows="3"
-                            class="form-control"
-                            required
-                        >{{ old('direccion',$servicio->direccion) }}</textarea>
-
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-
-                        <label>
-
-                            Municipio
-
-                        </label>
-
-                        <input
-                            type="text"
-                            name="municipio"
-                            class="form-control"
-                            value="{{ old('municipio',$servicio->municipio) }}"
-                        >
-
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-
-                        <label>
-
-                            Estado
-
-                        </label>
-
-                        <select
-                            name="estado"
-                            class="form-control"
-                        >
+                        @foreach($contratos as $contrato)
 
                             <option
-                                value="activo"
-                                {{ $servicio->estado=='activo' ? 'selected' : '' }}
+                                value="{{ $contrato->id }}"
+                                @selected(
+                                    old(
+                                        'contrato_id',
+                                        $servicio->contrato_id
+                                    )
+                                    ==
+                                    $contrato->id
+                                )
                             >
 
-                                Activo
+                                {{ $contrato->numero_contrato }}
+
+                                -
+
+                                {{ $contrato->cliente->razon_social }}
 
                             </option>
 
-                            <option
-                                value="suspendido"
-                                {{ $servicio->estado=='suspendido' ? 'selected' : '' }}
-                            >
+                        @endforeach
 
-                                Suspendido
+                    </select>
 
-                            </option>
+                    @error('contrato_id')
 
-                            <option
-                                value="finalizado"
-                                {{ $servicio->estado=='finalizado' ? 'selected' : '' }}
-                            >
+                        <div class="text-danger small mt-1">
 
-                                Finalizado
+                            {{ $message }}
 
-                            </option>
+                        </div>
 
-                        </select>
-
-                    </div>
+                    @enderror
 
                 </div>
 
-                <button
-                    class="btn btn-success"
-                >
 
-                    Actualizar Servicio
+                {{-- NOMBRE --}}
+                <div class="col-md-6">
 
-                </button>
+                    <label
+                        for="nombre"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
 
-            </form>
+                        Nombre del servicio
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="nombre"
+                        id="nombre"
+                        class="form-control gtri-input"
+                        value="{{ old(
+                            'nombre',
+                            $servicio->nombre
+                        ) }}"
+                        placeholder="Ejemplo: Vigilancia Planta Norte"
+                        required
+                    >
+
+                    @error('nombre')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
+
+
+                {{-- MUNICIPIO --}}
+                <div class="col-md-6">
+
+                    <label
+                        for="municipio"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Municipio
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="municipio"
+                        id="municipio"
+                        class="form-control gtri-input"
+                        value="{{ old(
+                            'municipio',
+                            $servicio->municipio
+                        ) }}"
+                        placeholder="Ejemplo: Huejotzingo"
+                    >
+
+                    @error('municipio')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
+
+
+                {{-- ESTADO --}}
+                <div class="col-md-6">
+
+                    <label
+                        for="estado"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Estado
+
+                    </label>
+
+                    <select
+                        name="estado"
+                        id="estado"
+                        class="form-select gtri-input"
+                        required
+                    >
+
+                        <option
+                            value="activo"
+                            @selected(
+                                old(
+                                    'estado',
+                                    $servicio->estado
+                                ) === 'activo'
+                            )
+                        >
+
+                            Activo
+
+                        </option>
+
+                        <option
+                            value="suspendido"
+                            @selected(
+                                old(
+                                    'estado',
+                                    $servicio->estado
+                                ) === 'suspendido'
+                            )
+                        >
+
+                            Suspendido
+
+                        </option>
+
+                        <option
+                            value="finalizado"
+                            @selected(
+                                old(
+                                    'estado',
+                                    $servicio->estado
+                                ) === 'finalizado'
+                            )
+                        >
+
+                            Finalizado
+
+                        </option>
+
+                    </select>
+
+                    @error('estado')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
+
+            </div>
 
         </div>
 
-    </div>
+
+        {{-- UBICACIÓN --}}
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>02</span>
+
+                Ubicación del servicio
+
+            </div>
+
+            <label
+                for="direccion"
+                class="form-label fw-semibold"
+                style="color:#CBD5E1;"
+            >
+
+                Dirección
+
+            </label>
+
+            <textarea
+                name="direccion"
+                id="direccion"
+                class="form-control gtri-textarea"
+                rows="4"
+                placeholder="Escribe calle, número, colonia, municipio, estado y referencias..."
+                required
+            >{{ old(
+                'direccion',
+                $servicio->direccion
+            ) }}</textarea>
+
+            @error('direccion')
+
+                <div class="text-danger small mt-1">
+
+                    {{ $message }}
+
+                </div>
+
+            @enderror
+
+        </div>
+
+
+        {{-- ACCIONES --}}
+        <div class="gtri-section mb-0">
+
+            <div class="d-flex flex-wrap justify-content-end gap-2">
+
+                <a
+                    href="{{ route(
+                        'operaciones.servicios.show',
+                        $servicio
+                    ) }}"
+                    class="btn gtri-btn-secondary"
+                >
+
+                    <i class="bi bi-x-circle me-1"></i>
+
+                    Cancelar
+
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn gtri-btn-primary"
+                >
+
+                    <i class="bi bi-floppy me-1"></i>
+
+                    Actualizar servicio
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
 
 </div>
 

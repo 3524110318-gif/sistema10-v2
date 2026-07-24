@@ -2,164 +2,456 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <h1 class="mb-4">
+    <div class="gtri-page-header">
 
-        Entrega de Uniforme
+        <div>
 
-    </h1>
+            <h2 class="gtri-page-title">
 
-    <x-rh.card-rh titulo="Registrar entrega">
+                <i class="bi bi-box-seam me-2"></i>
 
-        <div class="mb-4">
+                Entrega de uniforme
 
-            <strong>Empleado:</strong>
+            </h2>
 
-            {{ $empleado->numero_control }}
+            <p class="gtri-page-subtitle">
 
-            -
+                Registra la entrega de uniformes, equipo o accesorios al empleado.
 
-            {{ $empleado->nombre }}
-
-            {{ $empleado->apellido_paterno }}
+            </p>
 
         </div>
 
-        <form
 
-            method="POST"
-
-            action="{{ route(
-                'rh.uniformes.store',
-                $empleado->id
-            ) }}"
-
+        <a
+            href="{{ route('rh.empleados.show', $empleado->id) }}"
+            class="btn gtri-btn-secondary"
         >
 
-            @csrf
+            <i class="bi bi-arrow-left me-1"></i>
 
-            <div class="mb-3">
+            Volver
 
-                <label class="form-label">
+        </a>
 
-                    Artículo
+    </div>
 
-                </label>
 
-                <select
-                    name="articulo"
-                    class="form-select"
-                >
+    <form
+        method="POST"
+        action="{{ route(
+            'rh.uniformes.store',
+            $empleado->id
+        ) }}"
+    >
 
-                    <option value="Botas">
-                        Botas
-                    </option>
+        @csrf
 
-                    <option value="Camisa">
-                        Camisa
-                    </option>
 
-                    <option value="Pantalón">
-                        Pantalón
-                    </option>
+        {{-- INFORMACIÓN DEL EMPLEADO --}}
+        <div class="gtri-section">
 
-                    <option value="Chaleco">
-                        Chaleco
-                    </option>
+            <div class="gtri-section-title">
 
-                    <option value="Radio">
-                        Radio
-                    </option>
+                <span>01</span>
 
-                </select>
+                Información del empleado
 
             </div>
 
-            <div class="mb-3">
 
-                <label class="form-label">
-
-                    Tipo
-
-                </label>
-
-                <select
-                    name="tipo"
-                    class="form-select"
-                >
-
-                    <option value="nuevo">
-
-                        Nuevo
-
-                    </option>
-
-                    <option value="segunda_mano">
-
-                        Segunda Mano
-
-                    </option>
-
-                </select>
-
-            </div>
-
-            <div class="mb-3">
-
-                <label class="form-label">
-
-                    Fecha entrega
-
-                </label>
-
-                <input
-
-                    type="date"
-
-                    name="fecha_entrega"
-
-                    class="form-control"
-
-                    required
-
-                >
-
-            </div>
-
-            <div class="mb-4">
-
-                <label class="form-label">
-
-                    Observaciones
-
-                </label>
-
-                <textarea
-
-                    name="observaciones"
-
-                    class="form-control"
-
-                    rows="3"
-
-                ></textarea>
-
-            </div>
-
-            <button
-
-                class="btn btn-primary"
-
+            <div
+                class="
+                    d-flex
+                    flex-wrap
+                    align-items-center
+                    gap-3
+                    p-4
+                    rounded-3
+                "
+                style="
+                    background:#111827;
+                    border:1px solid rgba(255,255,255,.08);
+                "
             >
 
-                Registrar entrega
+                @if ($empleado->foto)
 
-            </button>
+                    <img
+                        src="{{ asset(
+                            'fotos_empleados/' .
+                            $empleado->foto
+                        ) }}"
+                        alt="Foto del empleado"
+                        class="rounded-circle"
+                        style="
+                            width:70px;
+                            height:70px;
+                            object-fit:cover;
+                            border:3px solid #D4AF37;
+                        "
+                    >
 
-        </form>
+                @else
 
-    </x-rh.card-rh>
+                    <div
+                        class="
+                            rounded-circle
+                            d-flex
+                            align-items-center
+                            justify-content-center
+                        "
+                        style="
+                            width:70px;
+                            height:70px;
+                            background:#1F2937;
+                            border:3px solid #D4AF37;
+                        "
+                    >
+
+                        <i class="bi bi-person fs-3 text-secondary"></i>
+
+                    </div>
+
+                @endif
+
+
+                <div>
+
+                    <h5 class="text-light mb-1">
+
+                        {{ $empleado->nombre }}
+
+                        {{ $empleado->apellido_paterno }}
+
+                        {{ $empleado->apellido_materno }}
+
+                    </h5>
+
+
+                    <div class="text-secondary">
+
+                        No. de control:
+
+                        <span class="text-warning fw-bold">
+
+                            {{ $empleado->numero_control }}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="text-secondary">
+
+                        Puesto:
+
+                        <span class="text-light">
+
+                            {{ $empleado->puesto }}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {{-- DATOS DE LA ENTREGA --}}
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>02</span>
+
+                Datos de la entrega
+
+            </div>
+
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+
+                    <label
+                        for="articulo"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Artículo
+
+                    </label>
+
+
+                    <select
+                        name="articulo"
+                        id="articulo"
+                        class="form-select gtri-input"
+                        required
+                    >
+
+                        <option value="">
+
+                            Selecciona un artículo
+
+                        </option>
+
+
+                        <option
+                            value="Botas"
+                            @selected(old('articulo') === 'Botas')
+                        >
+
+                            Botas
+
+                        </option>
+
+
+                        <option
+                            value="Camisa"
+                            @selected(old('articulo') === 'Camisa')
+                        >
+
+                            Camisa
+
+                        </option>
+
+
+                        <option
+                            value="Pantalón"
+                            @selected(old('articulo') === 'Pantalón')
+                        >
+
+                            Pantalón
+
+                        </option>
+
+
+                        <option
+                            value="Chaleco"
+                            @selected(old('articulo') === 'Chaleco')
+                        >
+
+                            Chaleco
+
+                        </option>
+
+
+                        <option
+                            value="Radio"
+                            @selected(old('articulo') === 'Radio')
+                        >
+
+                            Radio
+
+                        </option>
+
+                    </select>
+
+
+                    @error('articulo')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label
+                        for="tipo"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Tipo
+
+                    </label>
+
+
+                    <select
+                        name="tipo"
+                        id="tipo"
+                        class="form-select gtri-input"
+                        required
+                    >
+
+                        <option value="">
+
+                            Selecciona el tipo
+
+                        </option>
+
+
+                        <option
+                            value="nuevo"
+                            @selected(old('tipo') === 'nuevo')
+                        >
+
+                            Nuevo
+
+                        </option>
+
+
+                        <option
+                            value="segunda_mano"
+                            @selected(old('tipo') === 'segunda_mano')
+                        >
+
+                            Segunda mano
+
+                        </option>
+
+                    </select>
+
+
+                    @error('tipo')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label
+                        for="fecha_entrega"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Fecha de entrega
+
+                    </label>
+
+
+                    <input
+                        type="date"
+                        name="fecha_entrega"
+                        id="fecha_entrega"
+                        class="form-control gtri-input"
+                        value="{{ old('fecha_entrega') }}"
+                        required
+                    >
+
+
+                    @error('fecha_entrega')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {{-- OBSERVACIONES --}}
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>03</span>
+
+                Observaciones
+
+            </div>
+
+
+            <label
+                for="observaciones"
+                class="form-label fw-semibold"
+                style="color:#CBD5E1;"
+            >
+
+                Observaciones de la entrega
+
+            </label>
+
+
+            <textarea
+                name="observaciones"
+                id="observaciones"
+                class="form-control gtri-textarea"
+                rows="4"
+                placeholder="Escribe aquí cualquier detalle sobre el artículo entregado..."
+            >{{ old('observaciones') }}</textarea>
+
+
+            @error('observaciones')
+
+                <div class="text-danger small mt-1">
+
+                    {{ $message }}
+
+                </div>
+
+            @enderror
+
+        </div>
+
+
+        {{-- ACCIONES --}}
+        <div class="gtri-section mb-0">
+
+            <div class="d-flex flex-wrap justify-content-end gap-2">
+
+                <a
+                    href="{{ route(
+                        'rh.empleados.show',
+                        $empleado->id
+                    ) }}"
+                    class="btn gtri-btn-secondary"
+                >
+
+                    <i class="bi bi-x-circle me-1"></i>
+
+                    Cancelar
+
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="btn gtri-btn-primary"
+                >
+
+                    <i class="bi bi-box-arrow-in-down me-1"></i>
+
+                    Registrar entrega
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
 
 </div>
 

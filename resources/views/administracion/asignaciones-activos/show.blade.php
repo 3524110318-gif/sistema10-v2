@@ -2,30 +2,62 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <div class="mb-3">
+    <div class="gtri-page-header">
 
-        <a
-            href="{{ route('administracion.asignaciones-activos.index') }}"
-            class="btn btn-secondary"
-        >
+        <div class="d-flex justify-content-between align-items-center">
 
-            <i class="bi bi-arrow-left"></i>
+            <div>
 
-            Volver
+                <h2 class="gtri-page-title">
 
-        </a>
+                    <i class="bi bi-person-check me-2"></i>
+
+                    Detalle de la asignación
+
+                </h2>
+
+                <p class="gtri-page-subtitle">
+
+                    Información del activo asignado y responsable actual.
+
+                </p>
+
+            </div>
+
+            <a
+                href="{{ route('administracion.asignaciones-activos.index') }}"
+                class="btn gtri-btn-secondary"
+            >
+
+                <i class="bi bi-arrow-left me-1"></i>
+
+                Volver
+
+            </a>
+
+        </div>
 
     </div>
 
-    <x-rh.card-rh titulo="Detalle de la asignación">
 
-        <div class="row">
+    {{-- ASIGNACIÓN --}}
+    <div class="gtri-section">
 
-            <div class="col-md-6 mb-3">
+        <div class="gtri-section-title">
 
-                <label class="form-label fw-bold">
+            <span>01</span>
+
+            Información de asignación
+
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-6">
+
+                <label class="gtri-label mb-2">
 
                     Activo
 
@@ -33,16 +65,17 @@
 
                 <input
                     type="text"
-                    class="form-control"
+                    class="form-control gtri-input"
                     value="{{ $asignacion->activo->codigo_activo }} - {{ $asignacion->activo->producto->nombre }}"
                     readonly
                 >
 
             </div>
 
-            <div class="col-md-6 mb-3">
 
-                <label class="form-label fw-bold">
+            <div class="col-md-6">
+
+                <label class="gtri-label mb-2">
 
                     Empleado
 
@@ -50,20 +83,17 @@
 
                 <input
                     type="text"
-                    class="form-control"
+                    class="form-control gtri-input"
                     value="{{ $asignacion->empleado->numero_control }} - {{ $asignacion->empleado->nombre }} {{ $asignacion->empleado->apellido_paterno }} {{ $asignacion->empleado->apellido_materno }}"
                     readonly
                 >
 
             </div>
 
-        </div>
 
-        <div class="row">
+            <div class="col-md-6">
 
-            <div class="col-md-6 mb-3">
-
-                <label class="form-label fw-bold">
+                <label class="gtri-label mb-2">
 
                     Servicio
 
@@ -71,16 +101,17 @@
 
                 <input
                     type="text"
-                    class="form-control"
+                    class="form-control gtri-input"
                     value="{{ $asignacion->servicio->nombre ?? 'Sin servicio' }}"
                     readonly
                 >
 
             </div>
 
-            <div class="col-md-3 mb-3">
 
-                <label class="form-label fw-bold">
+            <div class="col-md-3">
+
+                <label class="gtri-label mb-2">
 
                     Fecha de entrega
 
@@ -88,16 +119,17 @@
 
                 <input
                     type="text"
-                    class="form-control"
+                    class="form-control gtri-input"
                     value="{{ $asignacion->fecha_entrega->format('d/m/Y') }}"
                     readonly
                 >
 
             </div>
 
-            <div class="col-md-3 mb-3">
 
-                <label class="form-label fw-bold">
+            <div class="col-md-3">
+
+                <label class="gtri-label mb-2">
 
                     Fecha de devolución
 
@@ -105,8 +137,11 @@
 
                 <input
                     type="text"
-                    class="form-control"
-                    value="{{ $asignacion->fecha_devolucion ? $asignacion->fecha_devolucion->format('d/m/Y') : 'Pendiente' }}"
+                    class="form-control gtri-input"
+                    value="{{ $asignacion->fecha_devolucion
+                        ? $asignacion->fecha_devolucion->format('d/m/Y')
+                        : 'Pendiente'
+                    }}"
                     readonly
                 >
 
@@ -114,57 +149,79 @@
 
         </div>
 
-        <div class="row">
+    </div>
 
-            <div class="col-md-4 mb-3">
 
-                <label class="form-label fw-bold">
+    {{-- ESTADO --}}
+    <div class="gtri-section">
 
-                    Estado
+        <div class="gtri-section-title">
 
-                </label>
+            <span>02</span>
 
-                <input
-                    type="text"
-                    class="form-control"
-                    value="{{ ucfirst($asignacion->estado) }}"
-                    readonly
-                >
-
-            </div>
+            Estado actual
 
         </div>
 
-        <div class="mb-3">
+        @if($asignacion->estado == 'activa')
 
-            <label class="form-label fw-bold">
+            <span class="badge gtri-badge-success">
 
-                Observaciones
+                <i class="bi bi-check-circle me-1"></i>
 
-            </label>
+                Asignación activa
 
-            <textarea
-                class="form-control"
-                rows="4"
-                readonly
-            >{{ $asignacion->observaciones }}</textarea>
+            </span>
+
+        @else
+
+            <span class="badge gtri-badge-warning">
+
+                <i class="bi bi-arrow-return-left me-1"></i>
+
+                Activo devuelto
+
+            </span>
+
+        @endif
+
+    </div>
+
+
+    {{-- OBSERVACIONES --}}
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>03</span>
+
+            Observaciones
 
         </div>
 
-        <div class="text-end">
+        <textarea
+            class="form-control gtri-textarea"
+            rows="4"
+            readonly
+        >{{ $asignacion->observaciones ?: 'Sin observaciones registradas.' }}</textarea>
 
-            <a
-                href="{{ route('administracion.asignaciones-activos.index') }}"
-                class="btn btn-secondary"
-            >
+    </div>
 
-                Regresar
 
-            </a>
+    <div class="d-flex justify-content-end">
 
-        </div>
+        <a
+            href="{{ route('administracion.asignaciones-activos.index') }}"
+            class="btn gtri-btn-secondary"
+        >
 
-    </x-rh.card-rh>
+            <i class="bi bi-arrow-left me-1"></i>
+
+            Regresar
+
+        </a>
+
+    </div>
 
 </div>
 

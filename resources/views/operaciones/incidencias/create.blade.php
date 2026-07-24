@@ -2,13 +2,73 @@
 
 @section('contenido')
 
-<div class="container">
+<div class="container-fluid">
 
-    <h1>
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-        Nueva Incidencia
+        <div>
 
-    </h1>
+            <h2 class="gtri-page-title">
+
+                <i class="bi bi-exclamation-triangle me-2"></i>
+
+                Nueva incidencia
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Registra una incidencia operativa de forma manual
+                o a partir de una supervisión.
+
+            </p>
+
+        </div>
+
+        <a
+            href="{{ route(
+                'operaciones.incidencias.index'
+            ) }}"
+            class="btn gtri-btn-secondary"
+        >
+
+            <i class="bi bi-arrow-left me-1"></i>
+
+            Regresar
+
+        </a>
+
+    </div>
+
+
+    {{-- ERRORES --}}
+    @if($errors->any())
+
+        <div class="alert alert-danger">
+
+            <div class="fw-bold mb-2">
+
+                <i class="bi bi-exclamation-circle me-1"></i>
+
+                Se encontraron los siguientes errores:
+
+            </div>
+
+            <ul class="mb-0">
+
+                @foreach($errors->all() as $error)
+
+                    <li>{{ $error }}</li>
+
+                @endforeach
+
+            </ul>
+
+        </div>
+
+    @endif
+
 
     <form
         method="POST"
@@ -19,267 +79,535 @@
 
         @csrf
 
-        @if(isset($supervision))
 
-            <input
-                type="hidden"
-                name="servicio_id"
-                value="{{ $supervision->asignacion->plaza->servicio->id }}"
-            >
+        {{-- ORIGEN DE LA INCIDENCIA --}}
+        <div class="gtri-section">
 
-            <div class="card mb-3">
+            <div class="gtri-section-title">
 
-                <div class="card-body">
+                <span>01</span>
 
-                    <h5>
+                Origen de la incidencia
 
-                        Información de la Supervisión
+            </div>
 
-                    </h5>
 
-                    <hr>
+            @if(isset($supervision))
 
-                    <p>
+                <input
+                    type="hidden"
+                    name="servicio_id"
+                    value="{{
+                        $supervision
+                            ->asignacion
+                            ->plaza
+                            ->servicio
+                            ->id
+                    }}"
+                >
 
-                        <strong>Guardia:</strong>
+                <input
+                    type="hidden"
+                    name="supervision_id"
+                    value="{{ $supervision->id }}"
+                >
 
-                        {{ $supervision->asignacion->empleado->nombre }}
-                        {{ $supervision->asignacion->empleado->apellido_paterno }}
-                        {{ $supervision->asignacion->empleado->apellido_materno }}
 
-                    </p>
+                <div class="row g-3">
 
-                    <p>
+                    <div class="col-md-6">
 
-                        <strong>Servicio:</strong>
+                        <div class="gtri-info-card h-100">
 
-                        {{ $supervision->asignacion->plaza->servicio->nombre }}
+                            <div class="gtri-info-label">
 
-                    </p>
+                                Guardia
 
-                    <p>
+                            </div>
 
-                        <strong>Plaza:</strong>
+                            <div class="gtri-info-value">
 
-                        {{ $supervision->asignacion->plaza->nombre_plaza }}
+                                {{
+                                    $supervision
+                                        ->asignacion
+                                        ->empleado
+                                        ->nombre
+                                }}
 
-                    </p>
+                                {{
+                                    $supervision
+                                        ->asignacion
+                                        ->empleado
+                                        ->apellido_paterno
+                                }}
 
-                    <p class="mb-0">
+                                {{
+                                    $supervision
+                                        ->asignacion
+                                        ->empleado
+                                        ->apellido_materno
+                                }}
 
-                        <strong>Fecha:</strong>
+                            </div>
 
-                        {{ $supervision->fecha_supervision }}
+                        </div>
 
-                    </p>
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <div class="gtri-info-card h-100">
+
+                            <div class="gtri-info-label">
+
+                                Servicio
+
+                            </div>
+
+                            <div class="gtri-info-value">
+
+                                {{
+                                    $supervision
+                                        ->asignacion
+                                        ->plaza
+                                        ->servicio
+                                        ->nombre
+                                }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <div class="gtri-info-card h-100">
+
+                            <div class="gtri-info-label">
+
+                                Plaza
+
+                            </div>
+
+                            <div class="gtri-info-value">
+
+                                {{
+                                    $supervision
+                                        ->asignacion
+                                        ->plaza
+                                        ->nombre_plaza
+                                }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <div class="gtri-info-card h-100">
+
+                            <div class="gtri-info-label">
+
+                                Fecha de supervisión
+
+                            </div>
+
+                            <div class="gtri-info-value">
+
+                                {{ $supervision->fecha_supervision }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="rounded-3 p-3 mt-4"
+                    style="
+                        background:#111827;
+                        border:1px solid rgba(212,175,55,.30);
+                    "
+                >
+
+                    <i class="bi bi-link-45deg text-warning me-1"></i>
+
+                    <span class="text-secondary">
+
+                        Esta incidencia quedará relacionada automáticamente
+                        con la supervisión seleccionada.
+
+                    </span>
+
+                </div>
+
+            @else
+
+                <div class="row g-3">
+
+                    {{-- SERVICIO --}}
+                    <div class="col-md-6">
+
+                        <label
+                            for="servicio_id"
+                            class="form-label fw-semibold"
+                            style="color:#CBD5E1;"
+                        >
+
+                            Servicio
+
+                        </label>
+
+                        <select
+                            name="servicio_id"
+                            id="servicio_id"
+                            class="form-select gtri-input"
+                            required
+                        >
+
+                            <option value="">
+
+                                Seleccione un servicio
+
+                            </option>
+
+                            @foreach($servicios as $servicio)
+
+                                <option
+                                    value="{{ $servicio->id }}"
+                                    @selected(
+                                        old('servicio_id')
+                                        ==
+                                        $servicio->id
+                                    )
+                                >
+
+                                    {{ $servicio->nombre }}
+
+                                </option>
+
+                            @endforeach
+
+                        </select>
+
+                    </div>
+
+
+                    {{-- SUPERVISIÓN --}}
+                    <div class="col-md-6">
+
+                        <label
+                            for="supervision_id"
+                            class="form-label fw-semibold"
+                            style="color:#CBD5E1;"
+                        >
+
+                            Supervisión relacionada
+
+                        </label>
+
+                        <select
+                            name="supervision_id"
+                            id="supervision_id"
+                            class="form-select gtri-input"
+                        >
+
+                            <option value="">
+
+                                Sin supervisión
+
+                            </option>
+
+                            @foreach(
+                                $supervisiones
+                                as $supervisionItem
+                            )
+
+                                <option
+                                    value="{{ $supervisionItem->id }}"
+                                    @selected(
+                                        old('supervision_id')
+                                        ==
+                                        $supervisionItem->id
+                                    )
+                                >
+
+                                    {{
+                                        $supervisionItem
+                                            ->asignacion
+                                            ->empleado
+                                            ->nombre
+                                    }}
+
+                                    {{
+                                        $supervisionItem
+                                            ->asignacion
+                                            ->empleado
+                                            ->apellido_paterno
+                                    }}
+
+                                    -
+
+                                    {{
+                                        $supervisionItem
+                                            ->asignacion
+                                            ->plaza
+                                            ->nombre_plaza
+                                    }}
+
+                                    -
+
+                                    {{
+                                        $supervisionItem
+                                            ->fecha_supervision
+                                    }}
+
+                                </option>
+
+                            @endforeach
+
+                        </select>
+
+                        <small class="text-secondary d-block mt-2">
+
+                            Este campo es opcional.
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+            @endif
+
+        </div>
+
+
+        {{-- DATOS DE LA INCIDENCIA --}}
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>02</span>
+
+                Datos de la incidencia
+
+            </div>
+
+
+            <div class="row g-3">
+
+                {{-- TIPO --}}
+                <div class="col-md-6">
+
+                    <label
+                        for="tipo"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Tipo de incidencia
+
+                    </label>
+
+                    <select
+                        name="tipo"
+                        id="tipo"
+                        class="form-select gtri-input"
+                        required
+                    >
+
+                        <option
+                            value="ausencia"
+                            @selected(
+                                old(
+                                    'tipo',
+                                    isset($supervision)
+                                    &&
+                                    $supervision->resultado === 'ausente'
+                                    ? 'ausencia'
+                                    : null
+                                ) === 'ausencia'
+                            )
+                        >
+
+                            Ausencia
+
+                        </option>
+
+                        <option
+                            value="retardo"
+                            @selected(old('tipo') === 'retardo')
+                        >
+
+                            Retardo
+
+                        </option>
+
+                        <option
+                            value="cliente"
+                            @selected(old('tipo') === 'cliente')
+                        >
+
+                            Cliente
+
+                        </option>
+
+                        <option
+                            value="robo"
+                            @selected(old('tipo') === 'robo')
+                        >
+
+                            Robo
+
+                        </option>
+
+                        <option
+                            value="accidente"
+                            @selected(old('tipo') === 'accidente')
+                        >
+
+                            Accidente
+
+                        </option>
+
+                        <option
+                            value="novedad"
+                            @selected(
+                                old(
+                                    'tipo',
+                                    isset($supervision)
+                                    &&
+                                    $supervision->resultado === 'incidencia'
+                                    ? 'novedad'
+                                    : null
+                                ) === 'novedad'
+                            )
+                        >
+
+                            Novedad
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                {{-- FOLIO --}}
+                <div class="col-md-6">
+
+                    <label
+                        for="folio_fisico"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Folio físico
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="folio_fisico"
+                        id="folio_fisico"
+                        class="form-control gtri-input"
+                        value="{{ old('folio_fisico') }}"
+                        placeholder="Ejemplo: INC-2026-001"
+                    >
+
+                    <small class="text-secondary d-block mt-2">
+
+                        Opcional, si existe un reporte físico relacionado.
+
+                    </small>
 
                 </div>
 
             </div>
 
-        @else
+        </div>
 
-            <div class="mb-3">
 
-                <label>
+        {{-- DESCRIPCIÓN --}}
+        <div class="gtri-section">
 
-                    Servicio
+            <div class="gtri-section-title">
 
-                </label>
+                <span>03</span>
 
-                <select
-                    name="servicio_id"
-                    class="form-control"
-                    required
-                >
-
-                    @foreach($servicios as $servicio)
-
-                        <option
-                            value="{{ $servicio->id }}"
-                        >
-
-                            {{ $servicio->nombre }}
-
-                        </option>
-
-                    @endforeach
-
-                </select>
+                Descripción
 
             </div>
 
-        @endif
-
-        @if(isset($supervision))
-
-            <input
-                type="hidden"
-                name="supervision_id"
-                value="{{ $supervision->id }}"
+            <label
+                for="descripcion"
+                class="form-label fw-semibold"
+                style="color:#CBD5E1;"
             >
 
-        @else
-
-            <div class="mb-3">
-
-                <label>
-
-                    Supervisión
-
-                </label>
-
-                <select
-                    name="supervision_id"
-                    class="form-control"
-                >
-
-                    <option value="">
-
-                        Sin supervisión
-
-                    </option>
-
-                    @foreach($supervisiones as $supervisionItem)
-
-                        <option
-                            value="{{ $supervisionItem->id }}"
-                        >
-
-                            {{ $supervisionItem->asignacion->empleado->nombre }}
-                            {{ $supervisionItem->asignacion->empleado->apellido_paterno }}
-
-                            -
-
-                            {{ $supervisionItem->asignacion->plaza->nombre_plaza }}
-
-                            -
-
-                            {{ $supervisionItem->fecha_supervision }}
-
-                        </option>
-
-                    @endforeach
-
-                </select>
-
-            </div>
-
-        @endif
-
-        <div class="mb-3">
-
-            <label>Tipo</label>
-
-            <select
-                name="tipo"
-                class="form-control"
-                required
-            >
-
-                <option
-                    value="ausencia"
-                    {{
-                        isset($supervision)
-                        && $supervision->resultado == 'ausente'
-                        ? 'selected'
-                        : ''
-                    }}
-                >
-
-                    Ausencia
-
-                </option>
-
-                <option
-                    value="retardo"
-                >
-
-                    Retardo
-
-                </option>
-
-                <option
-                    value="cliente"
-                >
-
-                    Cliente
-
-                </option>
-
-                <option
-                    value="robo"
-                >
-
-                    Robo
-
-                </option>
-
-                <option
-                    value="accidente"
-                >
-
-                    Accidente
-
-                </option>
-
-                <option
-                    value="novedad"
-                    {{
-                        isset($supervision)
-                        && $supervision->resultado == 'incidencia'
-                        ? 'selected'
-                        : ''
-                    }}
-                >
-
-                    Novedad
-
-                </option>
-
-            </select>
-
-        </div>
-
-        <div class="mb-3">
-
-            <label>Descripción</label>
-
-            <textarea
-                name="descripcion"
-                class="form-control"
-                rows="4"
-                required
-            >
-                {{ isset($supervision) ? $supervision->observaciones : old('descripcion') }}
-
-            </textarea>
-
-        </div>
-
-        <div class="mb-3">
-
-            <label>
-
-                Folio Físico
+                Descripción de la incidencia
 
             </label>
 
-            <input
-                type="text"
-                name="folio_fisico"
-                class="form-control"
-            >
+            <textarea
+                name="descripcion"
+                id="descripcion"
+                class="form-control gtri-textarea"
+                rows="5"
+                placeholder="Describe detalladamente lo ocurrido, las personas involucradas y cualquier información relevante..."
+                required
+            >{{ old(
+                'descripcion',
+                isset($supervision)
+                    ? $supervision->observaciones
+                    : ''
+            ) }}</textarea>
 
         </div>
 
-        <button
-            class="btn btn-success"
-        >
 
-            Guardar
+        {{-- ACCIONES --}}
+        <div class="gtri-section mb-0">
 
-        </button>
+            <div class="d-flex justify-content-end gap-2 flex-wrap">
+
+                <a
+                    href="{{ route(
+                        'operaciones.incidencias.index'
+                    ) }}"
+                    class="btn gtri-btn-secondary"
+                >
+
+                    <i class="bi bi-x-circle me-1"></i>
+
+                    Cancelar
+
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn gtri-btn-primary"
+                >
+
+                    <i class="bi bi-floppy me-1"></i>
+
+                    Guardar incidencia
+
+                </button>
+
+            </div>
+
+        </div>
 
     </form>
 

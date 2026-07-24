@@ -2,104 +2,346 @@
 
 @section('contenido')
 
-<div class="container">
+<div class="container-fluid">
 
-    <div
-        class="d-flex justify-content-between mb-4"
-    >
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-        <h1>
+        <div>
 
-            Plazas Operativas
+            <h2 class="gtri-page-title">
 
-        </h1>
+                <i class="bi bi-geo-alt me-2"></i>
+
+                Plazas operativas
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Consulta las plazas operativas registradas por servicio.
+
+            </p>
+
+        </div>
 
         <a
             href="{{ route(
                 'operaciones.plazas.create'
             ) }}"
-            class="btn btn-primary"
+            class="btn gtri-btn-primary"
         >
 
-            Nueva Plaza
+            <i class="bi bi-plus-circle me-1"></i>
+
+            Nueva plaza
 
         </a>
 
     </div>
 
-    <table class="table">
 
-        <thead>
+    {{-- LISTADO --}}
+    <div class="gtri-section mb-0">
 
-            <tr>
+        <div
+            class="
+                d-flex
+                flex-wrap
+                justify-content-between
+                align-items-center
+                gap-2
+                mb-4
+            "
+        >
 
-                <th>Servicio</th>
-                <th>Nombre Plaza</th>
-                <th>Turno</th>
-                <th>Horario</th>
-                <th>Estado</th>
+            <div class="gtri-section-title mb-0">
 
-            </tr>
+                <span>01</span>
 
-        </thead>
+                Lista de plazas operativas
 
-        <tbody>
+            </div>
 
-            @forelse($plazas as $plaza)
 
-                <tr>
+            <div>
 
-                    <td>
+                <span class="text-secondary">
 
-                        {{ $plaza->servicio->nombre }}
+                    Registros:
 
-                    </td>
+                </span>
 
-                    <td>
+                <span class="text-warning fw-bold">
 
-                        {{ $plaza->nombre_plaza }}
+                    {{ $plazas->count() }}
 
-                    </td>
+                </span>
 
-                    <td>
+            </div>
 
-                        {{ ucfirst($plaza->turno) }}
+        </div>
 
-                    </td>
 
-                    <td>
+        <div class="gtri-table-wrapper">
 
-                        {{ $plaza->hora_entrada }}
-                        -
-                        {{ $plaza->hora_salida }}
+            <div class="table-responsive">
 
-                    </td>
+                <table class="table gtri-table align-middle mb-0">
 
-                    <td>
+                    <colgroup>
 
-                        {{ ucfirst($plaza->estado) }}
+                        <col style="width:24%">
 
-                    </td>
+                        <col style="width:24%">
 
-                </tr>
+                        <col style="width:16%">
 
-            @empty
+                        <col style="width:22%">
 
-                <tr>
+                        <col style="width:14%">
 
-                    <td colspan="4">
+                    </colgroup>
 
-                        Sin plazas
+                    <thead>
 
-                    </td>
+                        <tr>
 
-                </tr>
+                            <th>Servicio</th>
 
-            @endforelse
+                            <th>Nombre de plaza</th>
 
-        </tbody>
+                            <th>Turno</th>
 
-    </table>
+                            <th>Horario</th>
+
+                            <th>Estado</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @forelse($plazas as $plaza)
+
+                            <tr>
+
+                                {{-- SERVICIO --}}
+                                <td>
+
+                                    <span class="text-light fw-semibold">
+
+                                        {{ $plaza->servicio->nombre }}
+
+                                    </span>
+
+                                </td>
+
+
+                                {{-- PLAZA --}}
+                                <td>
+
+                                    <div>
+
+                                        <span class="text-warning fw-semibold d-block">
+
+                                            {{ $plaza->nombre_plaza }}
+
+                                        </span>
+
+                                        <small class="text-secondary">
+
+                                            Plaza operativa
+
+                                        </small>
+
+                                    </div>
+
+                                </td>
+
+
+                                {{-- TURNO --}}
+                                <td>
+
+                                    @if($plaza->turno === 'diurno')
+
+                                        <span class="badge bg-warning text-dark">
+
+                                            <i class="bi bi-sun me-1"></i>
+
+                                            Diurno
+
+                                        </span>
+
+                                    @elseif($plaza->turno === 'nocturno')
+
+                                        <span class="badge bg-primary">
+
+                                            <i class="bi bi-moon-stars me-1"></i>
+
+                                            Nocturno
+
+                                        </span>
+
+                                    @elseif($plaza->turno === 'mixto')
+
+                                        <span class="badge bg-info text-dark">
+
+                                            <i class="bi bi-clock-history me-1"></i>
+
+                                            Mixto
+
+                                        </span>
+
+                                    @else
+
+                                        <span class="badge bg-secondary">
+
+                                            {{ ucfirst($plaza->turno) }}
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                {{-- HORARIO --}}
+                                <td>
+
+                                    <div class="text-light">
+
+                                        <i
+                                            class="
+                                                bi
+                                                bi-clock
+                                                text-warning
+                                                me-1
+                                            "
+                                        ></i>
+
+                                        {{ $plaza->hora_entrada }}
+
+                                        <span class="text-secondary mx-1">
+
+                                            -
+
+                                        </span>
+
+                                        {{ $plaza->hora_salida }}
+
+                                    </div>
+
+                                </td>
+
+
+                                {{-- ESTADO --}}
+                                <td>
+
+                                    @if($plaza->estado === 'cubierta')
+
+                                        <span class="badge bg-success">
+
+                                            <i class="bi bi-check-circle me-1"></i>
+
+                                            Cubierta
+
+                                        </span>
+
+                                    @elseif($plaza->estado === 'vacante')
+
+                                        <span class="badge bg-danger">
+
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+
+                                            Vacante
+
+                                        </span>
+
+                                    @else
+
+                                        <span class="badge bg-secondary">
+
+                                            {{ ucfirst($plaza->estado) }}
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    class="text-center py-5"
+                                >
+
+                                    <i
+                                        class="
+                                            bi
+                                            bi-geo-alt
+                                            d-block
+                                            fs-1
+                                            text-secondary
+                                            mb-3
+                                        "
+                                    ></i>
+
+                                    <h5 class="text-light">
+
+                                        No hay plazas operativas
+
+                                    </h5>
+
+                                    <p class="text-secondary mb-0">
+
+                                        Registra una nueva plaza para comenzar.
+
+                                    </p>
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        {{-- PAGINACIÓN --}}
+        @if(
+            method_exists($plazas, 'hasPages')
+            &&
+            $plazas->hasPages()
+        )
+
+            <div
+                class="
+                    d-flex
+                    justify-content-center
+                    mt-4
+                "
+            >
+
+                {{ $plazas->withQueryString()->links() }}
+
+            </div>
+
+        @endif
+
+    </div>
 
 </div>
 

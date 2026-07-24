@@ -427,75 +427,117 @@
 
         <div class="mb-4">
 
-            <div
-                class="alert
-                {{ $paqueteGeneralListo ? 'alert-success' : 'alert-warning' }}"
-            >
+            @if(!$hayGuardias)
 
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="alert alert-secondary">
 
-                    <div>
+                    <div class="d-flex justify-content-between align-items-center">
 
-                        <strong>
+                        <div>
 
-                            Estado del expediente mensual:
+                            <strong>
 
-                        </strong>
+                                Estado del expediente mensual:
 
-                        @if($paqueteGeneralListo)
+                            </strong>
 
-                            <span class="badge bg-success ms-2">
+                            <span class="badge bg-secondary ms-2">
 
-                                <i class="bi bi-check-circle me-1"></i>
+                                <i class="bi bi-dash-circle me-1"></i>
 
-                                Completo
+                                No aplica
 
                             </span>
 
-                        @else
+                        </div>
 
-                            <span class="badge bg-warning text-dark ms-2">
+                        <div>
 
-                                <i class="bi bi-exclamation-triangle me-1"></i>
+                            <span class="badge bg-secondary">
 
-                                Incompleto
-
-                            </span>
-
-                        @endif
-
-                    </div>
-
-
-                    <div>
-
-                        @if($tienePagoSua)
-
-                            <span class="badge bg-success">
-
-                                <i class="bi bi-check-circle me-1"></i>
-
-                                Pago SUA cargado
+                                Sin personal asignado en el periodo
 
                             </span>
 
-                        @else
-
-                            <span class="badge bg-danger">
-
-                                <i class="bi bi-x-circle me-1"></i>
-
-                                Falta Pago SUA
-
-                            </span>
-
-                        @endif
+                        </div>
 
                     </div>
 
                 </div>
 
-            </div>
+            @else
+
+                <div
+                    class="alert
+                    {{ $paqueteGeneralListo ? 'alert-success' : 'alert-warning' }}"
+                >
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <strong>
+
+                                Estado del expediente mensual:
+
+                            </strong>
+
+                            @if($paqueteGeneralListo)
+
+                                <span class="badge bg-success ms-2">
+
+                                    <i class="bi bi-check-circle me-1"></i>
+
+                                    Completo
+
+                                </span>
+
+                            @else
+
+                                <span class="badge bg-warning text-dark ms-2">
+
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+
+                                    Incompleto
+
+                                </span>
+
+                            @endif
+
+                        </div>
+
+
+                        <div>
+
+                            @if($tienePagoSua)
+
+                                <span class="badge bg-success">
+
+                                    <i class="bi bi-check-circle me-1"></i>
+
+                                    Pago SUA cargado
+
+                                </span>
+
+                            @else
+
+                                <span class="badge bg-danger">
+
+                                    <i class="bi bi-x-circle me-1"></i>
+
+                                    Falta Pago SUA
+
+                                </span>
+
+                            @endif
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            @endif
 
         </div>
 

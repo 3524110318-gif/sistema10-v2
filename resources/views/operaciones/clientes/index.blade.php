@@ -2,11 +2,14 @@
 
 @section('contenido')
 
-<div class="container">
+<div class="container-fluid">
 
+    {{-- MENSAJES --}}
     @if(session('success'))
 
         <div class="alert alert-success">
+
+            <i class="bi bi-check-circle me-1"></i>
 
             {{ session('success') }}
 
@@ -14,9 +17,12 @@
 
     @endif
 
+
     @if(session('error'))
 
         <div class="alert alert-danger">
+
+            <i class="bi bi-exclamation-circle me-1"></i>
 
             {{ session('error') }}
 
@@ -24,117 +30,206 @@
 
     @endif
 
-    <div
-        class="d-flex justify-content-between align-items-center mb-4"
-    >
 
-        <h1>
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-            Clientes
+        <div>
 
-        </h1>
+            <h2 class="gtri-page-title">
+
+                <i class="bi bi-buildings me-2"></i>
+
+                Clientes
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Consulta y administra los clientes registrados en Operaciones.
+
+            </p>
+
+        </div>
+
 
         <a
             href="{{ route(
                 'operaciones.clientes.create'
             ) }}"
-            class="btn btn-primary"
+            class="btn gtri-btn-primary"
         >
 
-            Nuevo Cliente
+            <i class="bi bi-plus-circle me-1"></i>
+
+            Nuevo cliente
 
         </a>
 
     </div>
 
-    <form
-        method="GET"
-        action="{{ route(
-            'operaciones.clientes.index'
-        ) }}"
-        class="row mb-4"
-    >
 
-        <div class="col-md-6">
+    {{-- BUSCADOR --}}
+    <div class="gtri-section">
 
-            <input
-                type="text"
-                name="buscar"
-                class="form-control"
-                placeholder="Buscar por razón social, RFC o representante..."
-                value="{{ $buscar }}"
-            >
+        <div class="gtri-section-title">
+
+            <span>01</span>
+
+            Buscar clientes
 
         </div>
 
-        <div class="col-md-2">
 
-            <button
-                class="btn btn-dark w-100"
-            >
+        <form
+            method="GET"
+            action="{{ route(
+                'operaciones.clientes.index'
+            ) }}"
+        >
 
-                Buscar
+            <div class="row g-3 align-items-end">
 
-            </button>
+                <div class="col-lg-7">
+
+                    <label
+                        for="buscar"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Buscar
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="buscar"
+                        id="buscar"
+                        class="form-control gtri-input"
+                        placeholder="Buscar por razón social, RFC o representante..."
+                        value="{{ $buscar }}"
+                    >
+
+                </div>
+
+
+                <div class="col-lg-2 col-md-6">
+
+                    <button
+                        type="submit"
+                        class="btn gtri-btn-primary w-100"
+                    >
+
+                        <i class="bi bi-search me-1"></i>
+
+                        Buscar
+
+                    </button>
+
+                </div>
+
+
+                <div class="col-lg-2 col-md-6">
+
+                    <a
+                        href="{{ route(
+                            'operaciones.clientes.index'
+                        ) }}"
+                        class="btn gtri-btn-secondary w-100"
+                    >
+
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>
+
+                        Limpiar
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    {{-- LISTADO --}}
+    <div class="gtri-section mb-0">
+
+        <div
+            class="
+                d-flex
+                flex-wrap
+                justify-content-between
+                align-items-center
+                gap-2
+                mb-4
+            "
+        >
+
+            <div class="gtri-section-title mb-0">
+
+                <span>02</span>
+
+                Lista de clientes
+
+            </div>
+
+
+            <div>
+
+                <span class="text-secondary">
+
+                    Registros en esta página:
+
+                </span>
+
+                <span class="text-warning fw-bold">
+
+                    {{ $clientes->count() }}
+
+                </span>
+
+            </div>
 
         </div>
 
-        <div class="col-md-2">
 
-            <a
-                href="{{ route(
-                    'operaciones.clientes.index'
-                ) }}"
-                class="btn btn-secondary w-100"
-            >
-
-                Limpiar
-
-            </a>
-
-        </div>
-
-    </form>
-
-    <div class="card shadow-sm">
-
-        <div class="card-body">
+        <div class="gtri-table-wrapper">
 
             <div class="table-responsive">
 
-                <table
-                    class="table table-hover align-middle"
-                >
+                <table class="table gtri-table align-middle mb-0">
+
+                    <colgroup>
+
+                        <col style="width:28%">
+
+                        <col style="width:18%">
+
+                        <col style="width:24%">
+
+                        <col style="width:12%">
+
+                        <col style="width:18%">
+
+                    </colgroup>
+
 
                     <thead>
 
                         <tr>
 
-                            <th>
+                            <th>Razón social</th>
 
-                                Razón Social
+                            <th>RFC</th>
 
-                            </th>
+                            <th>Representante</th>
 
-                            <th>
+                            <th>Estado</th>
 
-                                RFC
-
-                            </th>
-
-                            <th>
-
-                                Representante
-
-                            </th>
-
-                            <th>
-
-                                Estado
-
-                            </th>
-
-                            <th width="180">
+                            <th class="text-center">
 
                                 Acciones
 
@@ -143,6 +238,7 @@
                         </tr>
 
                     </thead>
+
 
                     <tbody>
 
@@ -153,35 +249,71 @@
 
                             <tr>
 
+                                {{-- RAZÓN SOCIAL --}}
                                 <td>
 
-                                    {{ $cliente->razon_social }}
+                                    <div>
+
+                                        <span class="text-light fw-semibold d-block">
+
+                                            {{ $cliente->razon_social }}
+
+                                        </span>
+
+                                        @if($cliente->correo)
+
+                                            <small class="text-secondary">
+
+                                                {{ $cliente->correo }}
+
+                                            </small>
+
+                                        @endif
+
+                                    </div>
 
                                 </td>
 
+
+                                {{-- RFC --}}
                                 <td>
 
-                                    {{ $cliente->rfc }}
+                                    <span class="text-warning fw-semibold">
+
+                                        {{ $cliente->rfc }}
+
+                                    </span>
 
                                 </td>
 
+
+                                {{-- REPRESENTANTE --}}
                                 <td>
 
-                                    {{ $cliente->representante }}
+                                    <span class="text-light">
+
+                                        {{
+                                            $cliente->representante
+                                            ?: 'No registrado'
+                                        }}
+
+                                    </span>
 
                                 </td>
 
+
+                                {{-- ESTADO --}}
                                 <td>
 
                                     @if(
                                         $cliente->estado
-                                        ==
+                                        ===
                                         'activo'
                                     )
 
-                                        <span
-                                            class="badge bg-success"
-                                        >
+                                        <span class="badge bg-success">
+
+                                            <i class="bi bi-check-circle me-1"></i>
 
                                             Activo
 
@@ -189,9 +321,9 @@
 
                                     @else
 
-                                        <span
-                                            class="badge bg-danger"
-                                        >
+                                        <span class="badge bg-danger">
+
+                                            <i class="bi bi-x-circle me-1"></i>
 
                                             Inactivo
 
@@ -201,57 +333,63 @@
 
                                 </td>
 
-                                <td>
 
-                                    <a
-                                        href="{{ route(
-                                            'operaciones.clientes.show',
-                                            $cliente
-                                        ) }}"
-                                        class="btn btn-primary btn-sm"
+                                {{-- ACCIONES --}}
+                                <td class="text-center">
+
+                                    <div
+                                        class="
+                                            d-flex
+                                            justify-content-center
+                                            align-items-center
+                                            gap-2
+                                            flex-nowrap
+                                        "
                                     >
 
-                                        Ver
-
-                                    </a>
-
-                                    <a
-                                        href="{{ route(
-                                            'operaciones.clientes.edit',
-                                            $cliente
-                                        ) }}"
-                                        class="btn btn-warning btn-sm"
-                                    >
-
-                                        Editar
-
-                                    </a>
-
-                                    <form
-                                        action="{{ route(
-                                            'operaciones.clientes.destroy',
-                                            $cliente
-                                        ) }}"
-                                        method="POST"
-                                        class="d-inline"
-                                        onsubmit="return confirm(
-                                            '¿Desea eliminar este cliente?'
-                                        )"
-                                    >
-
-                                        @csrf
-
-                                        @method('DELETE')
-
-                                        <button
-                                            class="btn btn-danger btn-sm"
+                                        <a
+                                            href="{{ route(
+                                                'operaciones.clientes.show',
+                                                $cliente
+                                            ) }}"
+                                            class="btn btn-primary btn-sm"
+                                            title="Ver cliente"
                                         >
 
-                                            Eliminar
+                                            <i class="bi bi-eye"></i>
 
-                                        </button>
+                                        </a>
 
-                                    </form>
+
+                                        <form
+                                            action="{{ route(
+                                                'operaciones.clientes.destroy',
+                                                $cliente
+                                            ) }}"
+                                            method="POST"
+                                            class="d-inline"
+                                            onsubmit="return confirm(
+                                                '¿Desea eliminar este cliente?'
+                                            )"
+                                        >
+
+                                            @csrf
+                                            @method('DELETE')
+
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-danger btn-sm"
+                                                title="Eliminar cliente"
+                                            >
+
+                                                <i class="bi bi-trash"></i>
+
+                                            </button>
+
+                                        </form>
+
+                                    </div>
 
                                 </td>
 
@@ -262,11 +400,32 @@
                             <tr>
 
                                 <td
-                                    colspan="6"
-                                    class="text-center"
+                                    colspan="5"
+                                    class="text-center py-5"
                                 >
 
-                                    No existen clientes registrados.
+                                    <i
+                                        class="
+                                            bi
+                                            bi-buildings
+                                            d-block
+                                            fs-1
+                                            text-secondary
+                                            mb-3
+                                        "
+                                    ></i>
+
+                                    <h5 class="text-light">
+
+                                        No existen clientes registrados
+
+                                    </h5>
+
+                                    <p class="text-secondary mb-0">
+
+                                        Registra un nuevo cliente para comenzar.
+
+                                    </p>
 
                                 </td>
 
@@ -280,15 +439,25 @@
 
             </div>
 
+        </div>
+
+
+        {{-- PAGINACIÓN --}}
+        @if($clientes->hasPages())
+
             <div
-                class="mt-3"
+                class="
+                    d-flex
+                    justify-content-center
+                    mt-4
+                "
             >
 
-                {{ $clientes->links() }}
+                {{ $clientes->withQueryString()->links() }}
 
             </div>
 
-        </div>
+        @endif
 
     </div>
 

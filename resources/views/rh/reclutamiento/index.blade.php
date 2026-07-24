@@ -2,193 +2,441 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <div class="d-flex justify-content-between mb-4">
+    <div class="gtri-page-header">
 
-        <h1>
+        <div>
 
-            Reclutamiento
+            <h2 class="gtri-page-title">
 
-        </h1>
+                <i class="bi bi-people me-2"></i>
+
+                Reclutamiento
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Consulta y gestiona el proceso de selección de candidatos.
+
+            </p>
+
+        </div>
+
 
         <a
             href="{{ route('rh.prospectos.create') }}"
-            class="btn btn-primary"
+            class="btn gtri-btn-primary"
         >
 
-            Nuevo Prospecto
+            <i class="bi bi-person-plus me-1"></i>
+
+            Nuevo prospecto
 
         </a>
 
     </div>
 
-    <x-rh.card-rh titulo="Prospectos">
 
-        <table class="table">
+    <div class="gtri-section mb-0">
 
-            <thead>
+        <div
+            class="
+                d-flex
+                flex-wrap
+                justify-content-between
+                align-items-center
+                gap-2
+                mb-4
+            "
+        >
 
-                <tr>
+            <div class="gtri-section-title mb-0">
 
-                    <th>Nombre</th>
-                    <th>Puesto</th>
-                    <th>Entrevista</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
+                <span>01</span>
 
-                </tr>
+                Lista de prospectos
 
-            </thead>
+            </div>
 
-            <tbody>
 
-                @forelse($prospectos as $prospecto)
+            <div>
 
-                    <tr>
+                <span class="text-secondary">
 
-                        <td>
+                    Registros:
 
-                            {{ $prospecto->nombre }}
-                            {{ $prospecto->apellido_paterno }}
+                </span>
 
-                        </td>
+                <span class="text-warning fw-bold">
 
-                        <td>
+                    {{ $prospectos->count() }}
 
-                            {{ $prospecto->puesto_solicitado }}
+                </span>
 
-                        </td>
+            </div>
 
-                        <td>
+        </div>
 
-                            {{ $prospecto->fecha_entrevista }}
 
-                        </td>
+        <div class="gtri-table-wrapper">
 
-                        <td>
+            <div class="table-responsive">
 
-                            {{ ucfirst($prospecto->estado) }}
+                <table class="table gtri-table align-middle mb-0">
 
-                        </td>
+                    <colgroup>
 
-                        <td>
+                        <col style="width:28%">
 
-                            @if($prospecto->estado == 'pendiente')
+                        <col style="width:20%">
 
-                                <form
-                                    method="POST"
-                                    action="{{ route(
-                                        'rh.prospectos.entrevistar',
-                                        $prospecto->id
-                                    ) }}"
+                        <col style="width:16%">
+
+                        <col style="width:14%">
+
+                        <col style="width:22%">
+
+                    </colgroup>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Prospecto</th>
+
+                            <th>Puesto solicitado</th>
+
+                            <th>Entrevista</th>
+
+                            <th>Estado</th>
+
+                            <th class="text-center">
+
+                                Acciones
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @forelse($prospectos as $prospecto)
+
+                            <tr>
+
+                                <td>
+
+                                    <div>
+
+                                        <span class="text-light fw-semibold d-block">
+
+                                            {{ $prospecto->nombre }}
+
+                                            {{ $prospecto->apellido_paterno }}
+
+                                            {{ $prospecto->apellido_materno }}
+
+                                        </span>
+
+                                        <small class="text-secondary">
+
+                                            {{ $prospecto->correo ?: 'Sin correo' }}
+
+                                        </small>
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="text-light">
+
+                                        {{ $prospecto->puesto_solicitado ?: 'Sin especificar' }}
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="text-secondary">
+
+                                        {{ $prospecto->fecha_entrevista ?: 'Sin fecha' }}
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    @if($prospecto->estado === 'pendiente')
+
+                                        <span class="badge bg-warning text-dark">
+
+                                            Pendiente
+
+                                        </span>
+
+                                    @elseif($prospecto->estado === 'entrevistado')
+
+                                        <span class="badge bg-info text-dark">
+
+                                            Entrevistado
+
+                                        </span>
+
+                                    @elseif($prospecto->estado === 'aprobado')
+
+                                        <span class="badge bg-success">
+
+                                            Aprobado
+
+                                        </span>
+
+                                    @elseif($prospecto->estado === 'rechazado')
+
+                                        <span class="badge bg-danger">
+
+                                            Rechazado
+
+                                        </span>
+
+                                    @elseif($prospecto->estado === 'contratado')
+
+                                        <span class="badge bg-primary">
+
+                                            Contratado
+
+                                        </span>
+
+                                    @else
+
+                                        <span class="badge bg-secondary">
+
+                                            {{ ucfirst($prospecto->estado) }}
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                <td class="text-center">
+
+                                    @if($prospecto->estado === 'pendiente')
+
+                                        <form
+                                            method="POST"
+                                            action="{{ route(
+                                                'rh.prospectos.entrevistar',
+                                                $prospecto->id
+                                            ) }}"
+                                            class="d-inline"
+                                        >
+
+                                            @csrf
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-warning btn-sm"
+                                                onclick="return confirm(
+                                                    '¿Deseas marcar este prospecto como entrevistado?'
+                                                )"
+                                            >
+
+                                                <i class="bi bi-chat-square-text me-1"></i>
+
+                                                Entrevistar
+
+                                            </button>
+
+                                        </form>
+
+
+                                    @elseif($prospecto->estado === 'entrevistado')
+
+                                        <div
+                                            class="
+                                                d-flex
+                                                justify-content-center
+                                                gap-2
+                                                flex-nowrap
+                                            "
+                                        >
+
+                                            <form
+                                                method="POST"
+                                                action="{{ route(
+                                                    'rh.prospectos.aprobar',
+                                                    $prospecto->id
+                                                ) }}"
+                                            >
+
+                                                @csrf
+
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-success btn-sm"
+                                                    onclick="return confirm(
+                                                        '¿Deseas aprobar este prospecto?'
+                                                    )"
+                                                >
+
+                                                    <i class="bi bi-check-circle me-1"></i>
+
+                                                    Aprobar
+
+                                                </button>
+
+                                            </form>
+
+
+                                            <form
+                                                method="POST"
+                                                action="{{ route(
+                                                    'rh.prospectos.rechazar',
+                                                    $prospecto->id
+                                                ) }}"
+                                            >
+
+                                                @csrf
+
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-danger btn-sm"
+                                                    onclick="return confirm(
+                                                        '¿Deseas rechazar este prospecto?'
+                                                    )"
+                                                >
+
+                                                    <i class="bi bi-x-circle me-1"></i>
+
+                                                    Rechazar
+
+                                                </button>
+
+                                            </form>
+
+                                        </div>
+
+
+                                    @elseif($prospecto->estado === 'aprobado')
+
+                                        <form
+                                            method="POST"
+                                            action="{{ route(
+                                                'rh.prospectos.contratar',
+                                                $prospecto->id
+                                            ) }}"
+                                            class="d-inline"
+                                        >
+
+                                            @csrf
+
+                                            <button
+                                                type="submit"
+                                                class="btn gtri-btn-primary btn-sm"
+                                                onclick="return confirm(
+                                                    '¿Deseas contratar este prospecto?'
+                                                )"
+                                            >
+
+                                                <i class="bi bi-person-check me-1"></i>
+
+                                                Contratar
+
+                                            </button>
+
+                                        </form>
+
+
+                                    @else
+
+                                        <span class="text-secondary">
+
+                                            <i class="bi bi-dash-circle me-1"></i>
+
+                                            Sin acciones
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    class="text-center py-5"
                                 >
 
-                                    @csrf
+                                    <i
+                                        class="
+                                            bi
+                                            bi-person-search
+                                            d-block
+                                            fs-1
+                                            text-secondary
+                                            mb-3
+                                        "
+                                    ></i>
 
-                                    <button
-                                        class="btn btn-warning btn-sm"
-                                    >
+                                    <h5 class="text-light">
 
-                                        Entrevistar
+                                        Sin prospectos registrados
 
-                                    </button>
+                                    </h5>
 
-                                </form>
+                                    <p class="text-secondary mb-0">
 
-                            @elseif($prospecto->estado == 'entrevistado')
+                                        Registra un prospecto para comenzar el proceso de reclutamiento.
 
-                                <div class="d-flex gap-2">
+                                    </p>
 
-                                    <form
-                                        method="POST"
-                                        action="{{ route(
-                                            'rh.prospectos.aprobar',
-                                            $prospecto->id
-                                        ) }}"
-                                    >
+                                </td>
 
-                                        @csrf
+                            </tr>
 
-                                        <button
-                                            class="btn btn-success btn-sm"
-                                        >
+                        @endforelse
 
-                                            Aprobar
+                    </tbody>
 
-                                        </button>
+                </table>
 
-                                    </form>
+            </div>
 
-                                    <form
-                                        method="POST"
-                                        action="{{ route(
-                                            'rh.prospectos.rechazar',
-                                            $prospecto->id
-                                        ) }}"
-                                    >
+        </div>
 
-                                        @csrf
 
-                                        <button
-                                            class="btn btn-danger btn-sm"
-                                        >
+        @if (
+            method_exists($prospectos, 'hasPages') &&
+            $prospectos->hasPages()
+        )
 
-                                            Rechazar
+            <div class="d-flex justify-content-center mt-4">
 
-                                        </button>
+                {{ $prospectos->links() }}
 
-                                    </form>
+            </div>
 
-                                </div>
+        @endif
 
-                                @elseif($prospecto->estado == 'aprobado')
-
-                                    <form
-                                        method="POST"
-                                        action="{{ route(
-                                            'rh.prospectos.contratar',
-                                            $prospecto->id
-                                        ) }}"
-                                    >
-
-                                        @csrf
-
-                                        <button
-                                            class="btn btn-primary btn-sm"
-                                        >
-
-                                            Contratar
-
-                                        </button>
-
-                                    </form>
-
-                            @endif
-
-                        </td>
-
-                    </tr>
-
-                @empty
-
-                    <tr>
-
-                        <td colspan="4">
-
-                            Sin prospectos
-
-                        </td>
-
-                    </tr>
-
-                @endforelse
-
-            </tbody>
-
-        </table>
-
-    </x-rh.card-rh>
+    </div>
 
 </div>
 

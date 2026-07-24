@@ -2,289 +2,278 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <div class="mb-3">
+    <div class="gtri-page-header">
 
-        <a
-            href="{{ route('administracion.facturas.index') }}"
-            class="btn btn-secondary"
-        >
+        <div class="d-flex justify-content-between align-items-center">
 
-            <i class="bi bi-arrow-left"></i>
+            <div>
 
-            Volver
+                <h2 class="gtri-page-title">
 
-        </a>
+                    <i class="bi bi-receipt me-2"></i>
+
+                    Detalle de la factura
+
+                </h2>
+
+                <p class="gtri-page-subtitle">
+
+                    Información general, servicios facturados y totales.
+
+                </p>
+
+            </div>
+
+            <a
+                href="{{ route('administracion.facturas.index') }}"
+                class="btn gtri-btn-secondary"
+            >
+
+                <i class="bi bi-arrow-left me-1"></i>
+
+                Volver
+
+            </a>
+
+        </div>
 
     </div>
 
-    <x-rh.card-rh titulo="Detalle de la factura">
 
-        <div class="row">
+    {{-- INFORMACIÓN --}}
+    <div class="gtri-section">
 
-            <div class="col-md-4 mb-3">
+        <div class="gtri-section-title">
 
-                <label class="form-label fw-bold">
+            <span>01</span>
 
+            Información de la factura
+
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-4">
+
+                <label class="gtri-label mb-2">
                     Folio
-
                 </label>
 
                 <input
                     type="text"
-                    class="form-control"
+                    class="form-control gtri-input"
                     value="{{ $factura->folio }}"
                     readonly
                 >
 
             </div>
 
-            <div class="col-md-4 mb-3">
+            <div class="col-md-4">
 
-                <label class="form-label fw-bold">
-
+                <label class="gtri-label mb-2">
                     Cliente
-
                 </label>
 
                 <input
                     type="text"
-                    class="form-control"
+                    class="form-control gtri-input"
                     value="{{ $factura->cliente->razon_social }}"
                     readonly
                 >
 
             </div>
 
-            <div class="col-md-4 mb-3">
+            <div class="col-md-4">
 
-                <label class="form-label fw-bold">
-
+                <label class="gtri-label mb-2">
                     Contrato
-
                 </label>
 
                 <input
                     type="text"
-                    class="form-control"
+                    class="form-control gtri-input"
                     value="{{ $factura->contrato->numero_contrato }}"
                     readonly
                 >
 
             </div>
 
-        </div>
+            <div class="col-md-3">
 
-        <div class="row">
-
-            <div class="col-md-3 mb-3">
-
-                <label class="form-label fw-bold">
-
+                <label class="gtri-label mb-2">
                     Fecha
-
                 </label>
 
                 <input
                     type="text"
-                    class="form-control"
+                    class="form-control gtri-input"
                     value="{{ $factura->fecha_factura->format('d/m/Y') }}"
                     readonly
                 >
 
             </div>
 
-            <div class="col-md-3 mb-3">
+            <div class="col-md-3">
 
-                <label class="form-label fw-bold">
-
+                <label class="gtri-label mb-2">
                     Periodo inicio
-
                 </label>
 
                 <input
                     type="text"
-                    class="form-control"
+                    class="form-control gtri-input"
                     value="{{ $factura->periodo_inicio->format('d/m/Y') }}"
                     readonly
                 >
 
             </div>
 
-            <div class="col-md-3 mb-3">
+            <div class="col-md-3">
 
-                <label class="form-label fw-bold">
-
+                <label class="gtri-label mb-2">
                     Periodo fin
-
                 </label>
 
                 <input
                     type="text"
-                    class="form-control"
+                    class="form-control gtri-input"
                     value="{{ $factura->periodo_fin->format('d/m/Y') }}"
                     readonly
                 >
 
             </div>
 
-            <div class="col-md-3 mb-3">
+            <div class="col-md-3">
 
-                <label class="form-label fw-bold">
-
+                <label class="gtri-label mb-2">
                     Estado
-
                 </label>
 
-                <input
-                    type="text"
-                    class="form-control"
-                    value="{{ ucfirst($factura->estado) }}"
-                    readonly
-                >
+                <div class="pt-2">
+
+                    @switch($factura->estado)
+
+                        @case('borrador')
+
+                            <span class="badge gtri-badge-warning">
+                                Borrador
+                            </span>
+
+                            @break
+
+                        @case('emitida')
+
+                            <span class="badge gtri-badge-success">
+                                Emitida
+                            </span>
+
+                            @break
+
+                        @default
+
+                            <span class="badge gtri-badge-danger">
+                                Cancelada
+                            </span>
+
+                    @endswitch
+
+                </div>
 
             </div>
 
         </div>
 
-        <hr>
+    </div>
 
-        <h5>
+
+    {{-- SERVICIOS --}}
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>02</span>
 
             Servicios facturados
 
-        </h5>
+        </div>
 
-        <div class="table-responsive">
+        <div class="gtri-table-wrapper">
 
-            <table class="table table-bordered table-hover">
+            <div class="table-responsive">
 
-                <thead class="table-dark">
+                <table class="table gtri-table align-middle">
 
-                    <tr>
-
-                        <th>Servicio</th>
-
-                        <th>Plazas contratadas</th>
-
-                        <th>Plazas cubiertas</th>
-
-                        <th>Vacantes</th>
-
-                        <th>Precio unitario</th>
-
-                        <th>Subtotal</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @foreach($factura->detalles as $detalle)
+                    <thead>
 
                         <tr>
 
-                            <td>
+                            <th>Servicio</th>
 
-                                {{ $detalle->servicio->nombre }}
+                            <th>Plazas contratadas</th>
 
-                            </td>
+                            <th>Plazas cubiertas</th>
 
-                            <td>
+                            <th>Vacantes</th>
 
-                                {{ $detalle->plazas_contratadas }}
+                            <th>Precio unitario</th>
 
-                            </td>
-
-                            <td>
-
-                                {{ $detalle->plazas_cubiertas }}
-
-                            </td>
-
-                            <td>
-
-                                {{ $detalle->plazas_contratadas - $detalle->plazas_cubiertas }}
-
-                            </td>
-
-                            <td>
-
-                                $ {{ number_format($detalle->precio_unitario,2) }}
-
-                            </td>
-
-                            <td>
-
-                                $ {{ number_format($detalle->subtotal,2) }}
-
-                            </td>
+                            <th>Subtotal</th>
 
                         </tr>
 
-                    @endforeach
+                    </thead>
 
-                </tbody>
+                    <tbody>
 
-            </table>
+                        @foreach($factura->detalles as $detalle)
 
-        </div>
+                            <tr>
 
-        <div class="row justify-content-end">
+                                <td class="text-light">
 
-            <div class="col-md-4">
+                                    {{ $detalle->servicio->nombre }}
 
-                <table class="table table-bordered">
+                                </td>
 
-                    <tr>
+                                <td>
+                                    {{ $detalle->plazas_contratadas }}
+                                </td>
 
-                        <th>
+                                <td>
+                                    {{ $detalle->plazas_cubiertas }}
+                                </td>
 
-                            Subtotal
+                                <td>
 
-                        </th>
+                                    {{ $detalle->plazas_contratadas - $detalle->plazas_cubiertas }}
 
-                        <td>
+                                </td>
 
-                            $ {{ number_format($factura->subtotal,2) }}
+                                <td>
 
-                        </td>
+                                    ${{ number_format(
+                                        $detalle->precio_unitario,
+                                        2
+                                    ) }}
 
-                    </tr>
+                                </td>
 
-                    <tr>
+                                <td class="fw-semibold text-warning">
 
-                        <th>
+                                    ${{ number_format(
+                                        $detalle->subtotal,
+                                        2
+                                    ) }}
 
-                            IVA
+                                </td>
 
-                        </th>
+                            </tr>
 
-                        <td>
+                        @endforeach
 
-                            $ {{ number_format($factura->iva,2) }}
-
-                        </td>
-
-                    </tr>
-
-                    <tr class="table-light">
-
-                        <th>
-
-                            Total
-
-                        </th>
-
-                        <th>
-
-                            $ {{ number_format($factura->total,2) }}
-
-                        </th>
-
-                    </tr>
+                    </tbody>
 
                 </table>
 
@@ -292,23 +281,81 @@
 
         </div>
 
-        <div class="mt-3">
 
-            <label class="form-label fw-bold">
+        {{-- TOTALES --}}
+        <div class="row justify-content-end mt-4">
 
-                Observaciones
+            <div class="col-md-4">
 
-            </label>
+                <div class="gtri-card">
 
-            <textarea
-                class="form-control"
-                rows="4"
-                readonly
-            >{{ $factura->observaciones }}</textarea>
+                    <div class="d-flex justify-content-between py-2">
+
+                        <span class="text-secondary">
+                            Subtotal
+                        </span>
+
+                        <strong>
+                            ${{ number_format($factura->subtotal, 2) }}
+                        </strong>
+
+                    </div>
+
+                    <div class="d-flex justify-content-between py-2">
+
+                        <span class="text-secondary">
+                            IVA
+                        </span>
+
+                        <strong>
+                            ${{ number_format($factura->iva, 2) }}
+                        </strong>
+
+                    </div>
+
+                    <hr class="border-secondary">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span class="text-warning fw-bold">
+                            Total
+                        </span>
+
+                        <strong class="text-warning fs-5">
+
+                            ${{ number_format($factura->total, 2) }}
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </div>
 
-    </x-rh.card-rh>
+    </div>
+
+
+    {{-- OBSERVACIONES --}}
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>03</span>
+
+            Observaciones
+
+        </div>
+
+        <textarea
+            class="form-control gtri-textarea"
+            rows="4"
+            readonly
+        >{{ $factura->observaciones ?: 'Sin observaciones registradas.' }}</textarea>
+
+    </div>
 
 </div>
 

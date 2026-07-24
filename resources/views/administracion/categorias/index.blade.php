@@ -2,57 +2,134 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
     <x-rh.alert-success />
 
-    <h1 class="mb-4">
 
-        ADMINISTRACIÓN DE CATEGORÍAS
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-    </h1>
+        <div class="d-flex justify-content-between align-items-center">
 
-    <p class="text-muted">
+            <div>
 
-        Total de categorías registradas:
+                <h2 class="gtri-page-title">
 
-        <strong>{{ $totalCategorias }}</strong>
+                    <i class="bi bi-tags me-2"></i>
 
-    </p>
+                    Categorías
 
-    <div class="d-flex gap-2 mb-4">
+                </h2>
 
-        <a
-            href="{{ route('administracion.categorias.create') }}"
-            class="btn btn-primary"
-        >
+                <p class="gtri-page-subtitle">
 
-            Nueva categoría
+                    Administración de categorías para la clasificación de productos.
 
-        </a>
+                </p>
+
+            </div>
+
+
+            <a
+                href="{{ route('administracion.categorias.create') }}"
+                class="btn gtri-btn-primary"
+            >
+
+                <i class="bi bi-plus-circle me-1"></i>
+
+                Nueva categoría
+
+            </a>
+
+        </div>
 
     </div>
 
-    <x-rh.card-rh titulo="Buscar categoría">
 
-        <form method="GET">
+    {{-- RESUMEN --}}
+    <div class="row g-3 mb-4">
 
-            <div class="row align-items-end">
+        <div class="col-md-4">
 
-                <div class="col-md-4">
+            <div class="gtri-card">
 
-                    <x-rh.input-rh
-                        label="Nombre"
-                        name="buscar"
-                        type="text"
-                        :value="request('buscar')"
-                    />
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <small class="text-secondary">
+
+                            Total de categorías
+
+                        </small>
+
+                        <h2 class="mt-2 mb-0 text-warning fw-bold">
+
+                            {{ $totalCategorias }}
+
+                        </h2>
+
+                    </div>
+
+                    <div class="fs-1 text-warning">
+
+                        <i class="bi bi-tags"></i>
+
+                    </div>
 
                 </div>
 
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {{-- BUSCADOR --}}
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>01</span>
+
+            Filtros de búsqueda
+
+        </div>
+
+
+        <form method="GET">
+
+            <div class="row g-3 align-items-end">
+
+                <div class="col-md-5">
+
+                    <label class="gtri-label mb-2">
+
+                        Nombre de la categoría
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="buscar"
+                        value="{{ request('buscar') }}"
+                        class="form-control gtri-input"
+                        placeholder="Buscar categoría..."
+                    >
+
+                </div>
+
+
                 <div class="col-auto">
 
-                    <button class="btn btn-primary">
+                    <button
+                        type="submit"
+                        class="btn gtri-btn-primary"
+                    >
+
+                        <i class="bi bi-search me-1"></i>
 
                         Buscar
 
@@ -60,131 +137,251 @@
 
                 </div>
 
+
+                @if(request('buscar'))
+
+                    <div class="col-auto">
+
+                        <a
+                            href="{{ route('administracion.categorias.index') }}"
+                            class="btn gtri-btn-secondary"
+                        >
+
+                            <i class="bi bi-arrow-clockwise me-1"></i>
+
+                            Limpiar
+
+                        </a>
+
+                    </div>
+
+                @endif
+
             </div>
 
         </form>
 
-    </x-rh.card-rh>
+    </div>
 
-    <x-rh.card-rh titulo="Listado de categorías">
 
-        <div class="table-responsive">
+    {{-- LISTADO --}}
+    <div class="gtri-section">
 
-            <table class="table table-bordered table-hover align-middle">
+        <div class="gtri-section-title">
 
-                <thead class="table-dark">
+            <span>02</span>
 
-                    <tr>
+            Listado de categorías
 
-                        <th>Nombre</th>
+        </div>
 
-                        <th>Descripción</th>
 
-                        <th class="text-center">Estado</th>
+        <div class="gtri-table-wrapper">
 
-                        <th class="text-center">Acciones</th>
+            <div class="table-responsive">
 
-                    </tr>
+                <table class="table gtri-table align-middle">
 
-                </thead>
-
-                <tbody>
-
-                    @forelse($categorias as $categoria)
+                    <thead>
 
                         <tr>
 
-                            <td>{{ $categoria->nombre }}</td>
+                            <th>
+                                Nombre
+                            </th>
 
-                            <td>{{ $categoria->descripcion }}</td>
+                            <th>
+                                Descripción
+                            </th>
 
-                            <td class="text-center">
+                            <th class="text-center">
+                                Estado
+                            </th>
 
-                                @if($categoria->estado == 'activo')
+                            <th class="text-center">
+                                Acciones
+                            </th>
 
-                                    <span class="badge bg-success">
+                        </tr>
 
-                                        Activo
+                    </thead>
+
+
+                    <tbody>
+
+                        @forelse($categorias as $categoria)
+
+                            <tr>
+
+                                {{-- NOMBRE --}}
+                                <td>
+
+                                    <div class="fw-semibold text-light">
+
+                                        {{ $categoria->nombre }}
+
+                                    </div>
+
+                                </td>
+
+
+                                {{-- DESCRIPCIÓN --}}
+                                <td>
+
+                                    <span class="text-secondary">
+
+                                        {{ $categoria->descripcion ?: 'Sin descripción' }}
 
                                     </span>
 
-                                @else
+                                </td>
 
-                                    <span class="badge bg-danger">
 
-                                        Inactivo
+                                {{-- ESTADO --}}
+                                <td class="text-center">
 
-                                    </span>
+                                    @if($categoria->estado == 'activo')
 
-                                @endif
+                                        <span class="badge gtri-badge-success">
 
-                            </td>
+                                            <i class="bi bi-check-circle me-1"></i>
 
-                            <td>
+                                            Activo
 
-                                <div class="d-flex justify-content-center gap-2">
+                                        </span>
 
-                                    <a
-                                        href="{{ route('administracion.categorias.edit', $categoria) }}"
-                                        class="btn btn-warning btn-sm"
-                                    >
+                                    @else
 
-                                        Editar
+                                        <span class="badge gtri-badge-danger">
 
-                                    </a>
+                                            <i class="bi bi-x-circle me-1"></i>
 
-                                    <form
-                                        action="{{ route('administracion.categorias.destroy', $categoria) }}"
-                                        method="POST"
-                                    >
+                                            Inactivo
 
-                                        @csrf
-                                        @method('DELETE')
+                                        </span>
 
-                                        <button
-                                            class="btn btn-sm {{ $categoria->estado == 'activo' ? 'btn-danger' : 'btn-success' }}"
-                                            onclick="return confirm('¿Desea {{ $categoria->estado == 'activo' ? 'desactivar' : 'activar' }} esta categoría?')"
+                                    @endif
+
+                                </td>
+
+
+                                {{-- ACCIONES --}}
+                                <td>
+
+                                    <div class="d-flex justify-content-center gap-2">
+
+                                        <a
+                                            href="{{ route(
+                                                'administracion.categorias.edit',
+                                                $categoria
+                                            ) }}"
+                                            class="btn btn-sm gtri-btn-secondary"
+                                            title="Editar categoría"
                                         >
 
-                                            {{ $categoria->estado == 'activo' ? 'Desactivar' : 'Activar' }}
+                                            <i class="bi bi-pencil"></i>
 
-                                        </button>
+                                        </a>
 
-                                    </form>
 
-                                </div>
+                                        <form
+                                            action="{{ route(
+                                                'administracion.categorias.destroy',
+                                                $categoria
+                                            ) }}"
+                                            method="POST"
+                                        >
 
-                            </td>
+                                            @csrf
+                                            @method('DELETE')
 
-                        </tr>
 
-                    @empty
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm
+                                                {{ $categoria->estado == 'activo'
+                                                    ? 'btn-outline-danger'
+                                                    : 'btn-outline-success'
+                                                }}"
+                                                onclick="return confirm(
+                                                    '¿Desea {{ $categoria->estado == 'activo'
+                                                        ? 'desactivar'
+                                                        : 'activar'
+                                                    }} esta categoría?'
+                                                )"
+                                                title="{{ $categoria->estado == 'activo'
+                                                    ? 'Desactivar'
+                                                    : 'Activar'
+                                                }}"
+                                            >
 
-                        <tr>
+                                                @if($categoria->estado == 'activo')
 
-                            <td colspan="4" class="text-center">
+                                                    <i class="bi bi-power"></i>
 
-                                No hay categorías registradas.
+                                                @else
 
-                            </td>
+                                                    <i class="bi bi-check-lg"></i>
 
-                        </tr>
+                                                @endif
 
-                    @endforelse
+                                            </button>
 
-                </tbody>
+                                        </form>
 
-            </table>
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="4"
+                                    class="text-center py-5"
+                                >
+
+                                    <div class="text-secondary">
+
+                                        <i
+                                            class="bi bi-tags fs-1 d-block mb-3"
+                                        ></i>
+
+                                        No hay categorías registradas.
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
-        <div class="d-flex justify-content-center mt-4">
 
-            {{ $categorias->links() }}
+        {{-- PAGINACIÓN --}}
+        @if($categorias->hasPages())
 
-        </div>
+            <div class="d-flex justify-content-center mt-4">
 
-    </x-rh.card-rh>
+                {{ $categorias->links() }}
+
+            </div>
+
+        @endif
+
+    </div>
 
 </div>
 

@@ -2,13 +2,71 @@
 
 @section('contenido')
 
-<div class="container">
+<div class="container-fluid">
 
-    <h1>
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-        Nueva Plaza Operativa
+        <div>
 
-    </h1>
+            <h2 class="gtri-page-title">
+
+                <i class="bi bi-geo-alt-fill me-2"></i>
+
+                Nueva plaza operativa
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Registra una nueva plaza operativa asociada a un servicio.
+
+            </p>
+
+        </div>
+
+
+        <a
+            href="{{ route('operaciones.plazas.index') }}"
+            class="btn gtri-btn-secondary"
+        >
+
+            <i class="bi bi-arrow-left me-1"></i>
+
+            Regresar
+
+        </a>
+
+    </div>
+
+
+    {{-- ERRORES --}}
+    @if($errors->any())
+
+        <div class="alert alert-danger">
+
+            <div class="fw-bold mb-2">
+
+                <i class="bi bi-exclamation-triangle me-1"></i>
+
+                Se encontraron los siguientes errores:
+
+            </div>
+
+            <ul class="mb-0">
+
+                @foreach($errors->all() as $error)
+
+                    <li>{{ $error }}</li>
+
+                @endforeach
+
+            </ul>
+
+        </div>
+
+    @endif
+
 
     <form
         method="POST"
@@ -19,138 +77,305 @@
 
         @csrf
 
-        <div class="mb-3">
 
-            <label>
+        {{-- INFORMACIÓN DE LA PLAZA --}}
+        <div class="gtri-section">
 
-                Servicio
+            <div class="gtri-section-title">
 
-            </label>
+                <span>01</span>
 
-            <select
-                name="servicio_id"
-                class="form-control"
-                required
-            >
+                Información de la plaza
 
-                <option value="">
+            </div>
 
-                    Seleccione un servicio
 
-                </option>
+            <div class="row g-3">
 
-                @foreach($servicios as $servicio)
+                {{-- SERVICIO --}}
+                <div class="col-md-6">
 
-                    <option
-                        value="{{ $servicio->id }}"
+                    <label
+                        for="servicio_id"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
                     >
 
-                        {{ $servicio->nombre }}
+                        Servicio
 
-                    </option>
+                    </label>
 
-                @endforeach
+                    <select
+                        name="servicio_id"
+                        id="servicio_id"
+                        class="form-select gtri-input"
+                        required
+                    >
 
-            </select>
+                        <option value="">
 
-        </div>
+                            Seleccione un servicio
 
-        <div class="mb-3">
+                        </option>
 
-            <label>
-                Nombre de la Plaza
-            </label>
+                        @foreach($servicios as $servicio)
 
-            <input
-                type="text"
-                name="nombre_plaza"
-                class="form-control"
-                required
-            >
+                            <option
+                                value="{{ $servicio->id }}"
+                                @selected(
+                                    old('servicio_id') ==
+                                    $servicio->id
+                                )
+                            >
 
-        </div>
+                                {{ $servicio->nombre }}
 
-        <div class="mb-3">
+                            </option>
 
-            <label>
+                        @endforeach
 
-                Turno
+                    </select>
 
-            </label>
+                    @error('servicio_id')
 
-            <select
-                name="turno"
-                class="form-control"
-                required
-            >
+                        <div class="text-danger small mt-1">
 
-                <option value="diurno">
+                            {{ $message }}
 
-                    Diurno
+                        </div>
 
-                </option>
+                    @enderror
 
-                <option value="nocturno">
+                </div>
 
-                    Nocturno
 
-                </option>
+                {{-- NOMBRE PLAZA --}}
+                <div class="col-md-6">
 
-                <option value="Mixto">
+                    <label
+                        for="nombre_plaza"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
 
-                    Mixto
+                        Nombre de la plaza
 
-                </option>
+                    </label>
 
-            </select>
+                    <input
+                        type="text"
+                        name="nombre_plaza"
+                        id="nombre_plaza"
+                        class="form-control gtri-input"
+                        value="{{ old('nombre_plaza') }}"
+                        placeholder="Ejemplo: Acceso principal"
+                        required
+                    >
 
-        </div>
+                    @error('nombre_plaza')
 
-        <div class="row">
+                        <div class="text-danger small mt-1">
 
-            <div class="col-md-6">
+                            {{ $message }}
 
-                <label>
+                        </div>
 
-                    Hora Entrada
+                    @enderror
 
-                </label>
+                </div>
 
-                <input
-                    type="time"
-                    name="hora_entrada"
-                    class="form-control"
-                    required
-                >
+
+                {{-- TURNO --}}
+                <div class="col-md-6">
+
+                    <label
+                        for="turno"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Turno
+
+                    </label>
+
+                    <select
+                        name="turno"
+                        id="turno"
+                        class="form-select gtri-input"
+                        required
+                    >
+
+                        <option value="">
+
+                            Seleccione un turno
+
+                        </option>
+
+                        <option
+                            value="diurno"
+                            @selected(old('turno') === 'diurno')
+                        >
+
+                            Diurno
+
+                        </option>
+
+                        <option
+                            value="nocturno"
+                            @selected(old('turno') === 'nocturno')
+                        >
+
+                            Nocturno
+
+                        </option>
+
+                        <option
+                            value="Mixto"
+                            @selected(old('turno') === 'Mixto')
+                        >
+
+                            Mixto
+
+                        </option>
+
+                    </select>
+
+                    @error('turno')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
 
             </div>
 
-            <div class="col-md-6">
+        </div>
 
-                <label>
 
-                    Hora Salida
+        {{-- HORARIO --}}
+        <div class="gtri-section">
 
-                </label>
+            <div class="gtri-section-title">
 
-                <input
-                    type="time"
-                    name="hora_salida"
-                    class="form-control"
-                    required
-                >
+                <span>02</span>
+
+                Horario de la plaza
+
+            </div>
+
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+
+                    <label
+                        for="hora_entrada"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Hora de entrada
+
+                    </label>
+
+                    <input
+                        type="time"
+                        name="hora_entrada"
+                        id="hora_entrada"
+                        class="form-control gtri-input"
+                        value="{{ old('hora_entrada') }}"
+                        required
+                    >
+
+                    @error('hora_entrada')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label
+                        for="hora_salida"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Hora de salida
+
+                    </label>
+
+                    <input
+                        type="time"
+                        name="hora_salida"
+                        id="hora_salida"
+                        class="form-control gtri-input"
+                        value="{{ old('hora_salida') }}"
+                        required
+                    >
+
+                    @error('hora_salida')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
 
             </div>
 
         </div>
 
-        <button
-            class="btn btn-success"
-        >
 
-            Guardar
+        {{-- ACCIONES --}}
+        <div class="gtri-section mb-0">
 
-        </button>
+            <div class="d-flex flex-wrap justify-content-end gap-2">
+
+                <a
+                    href="{{ route(
+                        'operaciones.plazas.index'
+                    ) }}"
+                    class="btn gtri-btn-secondary"
+                >
+
+                    <i class="bi bi-x-circle me-1"></i>
+
+                    Cancelar
+
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="btn gtri-btn-primary"
+                >
+
+                    <i class="bi bi-floppy me-1"></i>
+
+                    Guardar plaza
+
+                </button>
+
+            </div>
+
+        </div>
 
     </form>
 

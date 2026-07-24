@@ -2,24 +2,48 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <div class="mb-3">
+    <div class="gtri-page-header">
 
-        <a
-            href="{{ route('administracion.prenominas.index') }}"
-            class="btn btn-secondary"
-        >
+        <div class="d-flex justify-content-between align-items-center">
 
-            <i class="bi bi-arrow-left"></i>
+            <div>
 
-            Volver
+                <h2 class="gtri-page-title">
 
-        </a>
+                    <i class="bi bi-calculator me-2"></i>
+
+                    Nueva Prenómina
+
+                </h2>
+
+                <p class="gtri-page-subtitle">
+
+                    Registre el periodo, empleados, percepciones,
+                    deducciones y ajustes de la prenómina.
+
+                </p>
+
+            </div>
+
+            <a
+                href="{{ route('administracion.prenominas.index') }}"
+                class="btn gtri-btn-secondary"
+            >
+
+                <i class="bi bi-arrow-left me-1"></i>
+
+                Volver
+
+            </a>
+
+        </div>
 
     </div>
 
-    <x-rh.card-rh titulo="Nueva Prenómina">
+
+    <div class="gtri-card">
 
         <form
             action="{{ route('administracion.prenominas.store') }}"
@@ -34,11 +58,12 @@
 
         </form>
 
-    </x-rh.card-rh>
+    </div>
 
 </div>
 
 @endsection
+
 
 @push('scripts')
 

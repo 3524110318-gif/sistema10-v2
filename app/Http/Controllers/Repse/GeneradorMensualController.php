@@ -1200,11 +1200,19 @@ class GeneradorMensualController extends Controller
             )
             ->isNotEmpty();
 
+        $hayGuardias =
+            $empleados->isNotEmpty();
+
+
         $paqueteGeneralListo =
+            $hayGuardias &&
             $tienePagoSua &&
             $empleados->every(
                 function ($empleado) {
-                    return$empleado->paquete_repse_listo;
+
+                    return
+                        $empleado->paquete_repse_listo;
+
                 }
             );
 
@@ -1217,6 +1225,7 @@ class GeneradorMensualController extends Controller
             'inicioMes',
             'finMes',
             'tienePagoSua',
+            'hayGuardias',
             'paqueteGeneralListo'
         );
     }

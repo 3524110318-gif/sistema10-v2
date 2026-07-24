@@ -1,201 +1,630 @@
-<div class="row">
+<div class="gtri-form">
 
-    <div class="col-md-6">
+    {{-- ========================================= --}}
+    {{-- 01 DATOS GENERALES --}}
+    {{-- ========================================= --}}
 
-        <label class="form-label">
+    <div class="gtri-section">
 
-            Categoría
+        <div class="gtri-section-title">
 
-        </label>
+            <span>01</span>
 
-        <select
-            name="categoria_producto_id"
-            class="form-select"
-        >
+            Datos generales
 
-            <option value="">
+        </div>
 
-                Seleccione una categoría
 
-            </option>
+        <div class="row g-4">
 
-            @foreach($categorias as $categoria)
+            {{-- CATEGORÍA --}}
+            <div class="col-md-6">
 
-                <option
-                    value="{{ $categoria->id }}"
-                    @selected(old('categoria_producto_id', $producto->categoria_producto_id ?? '') == $categoria->id)
+                <label
+                    for="categoria_producto_id"
+                    class="gtri-label mb-2"
                 >
 
-                    {{ $categoria->nombre }}
+                    Categoría
 
-                </option>
+                    <span class="text-danger">*</span>
 
-            @endforeach
+                </label>
 
-        </select>
-
-    </div>
-
-    <div class="col-md-6">
-
-        <x-rh.input-rh
-            label="Código"
-            name="codigo"
-            type="text"
-            :value="old('codigo', $producto->codigo ?? '')"
-        />
-
-    </div>
-
-</div>
-
-<div class="row mt-3">
-
-    <div class="col-md-6">
-
-        <x-rh.input-rh
-            label="Nombre"
-            name="nombre"
-            type="text"
-            :value="old('nombre', $producto->nombre ?? '')"
-        />
-
-    </div>
-
-    <div class="col-md-6">
-
-        <label class="form-label">
-
-            Unidad de medida
-
-        </label>
-
-        <select
-            name="unidad_medida"
-            class="form-select"
-        >
-
-            @foreach([
-                'Pieza',
-                'Caja',
-                'Par',
-                'Paquete',
-                'Juego',
-                'Kilogramo',
-                'Litro',
-                'Metro'
-            ] as $unidad)
-
-                <option
-                    value="{{ $unidad }}"
-                    @selected(old('unidad_medida', $producto->unidad_medida ?? 'Pieza') == $unidad)
+                <select
+                    name="categoria_producto_id"
+                    id="categoria_producto_id"
+                    class="form-select gtri-select"
+                    required
                 >
 
-                    {{ $unidad }}
+                    <option value="">
 
-                </option>
+                        Seleccione una categoría
 
-            @endforeach
+                    </option>
 
-        </select>
+                    @foreach($categorias as $categoria)
+
+                        <option
+                            value="{{ $categoria->id }}"
+                            @selected(
+                                old(
+                                    'categoria_producto_id',
+                                    $producto->categoria_producto_id ?? ''
+                                ) == $categoria->id
+                            )
+                        >
+
+                            {{ $categoria->nombre }}
+
+                        </option>
+
+                    @endforeach
+
+                </select>
+
+                @error('categoria_producto_id')
+
+                    <small class="text-danger d-block mt-1">
+
+                        {{ $message }}
+
+                    </small>
+
+                @enderror
+
+            </div>
+
+
+            {{-- CÓDIGO --}}
+            <div class="col-md-6">
+
+                <label
+                    for="codigo"
+                    class="gtri-label mb-2"
+                >
+
+                    Código
+
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                <input
+                    type="text"
+                    name="codigo"
+                    id="codigo"
+                    value="{{ old(
+                        'codigo',
+                        $producto->codigo ?? ''
+                    ) }}"
+                    class="form-control gtri-input"
+                    placeholder="Ej. PROD-001"
+                    maxlength="100"
+                    required
+                >
+
+                @error('codigo')
+
+                    <small class="text-danger d-block mt-1">
+
+                        {{ $message }}
+
+                    </small>
+
+                @enderror
+
+            </div>
+
+
+            {{-- NOMBRE --}}
+            <div class="col-md-6">
+
+                <label
+                    for="nombre"
+                    class="gtri-label mb-2"
+                >
+
+                    Nombre del producto
+
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                <input
+                    type="text"
+                    name="nombre"
+                    id="nombre"
+                    value="{{ old(
+                        'nombre',
+                        $producto->nombre ?? ''
+                    ) }}"
+                    class="form-control gtri-input"
+                    placeholder="Ej. Radio portátil Motorola"
+                    maxlength="255"
+                    required
+                >
+
+                @error('nombre')
+
+                    <small class="text-danger d-block mt-1">
+
+                        {{ $message }}
+
+                    </small>
+
+                @enderror
+
+            </div>
+
+
+            {{-- UNIDAD DE MEDIDA --}}
+            <div class="col-md-6">
+
+                <label
+                    for="unidad_medida"
+                    class="gtri-label mb-2"
+                >
+
+                    Unidad de medida
+
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                <select
+                    name="unidad_medida"
+                    id="unidad_medida"
+                    class="form-select gtri-select"
+                    required
+                >
+
+                    @foreach([
+                        'Pieza',
+                        'Caja',
+                        'Par',
+                        'Paquete',
+                        'Juego',
+                        'Kilogramo',
+                        'Litro',
+                        'Metro'
+                    ] as $unidad)
+
+                        <option
+                            value="{{ $unidad }}"
+                            @selected(
+                                old(
+                                    'unidad_medida',
+                                    $producto->unidad_medida ?? 'Pieza'
+                                ) == $unidad
+                            )
+                        >
+
+                            {{ $unidad }}
+
+                        </option>
+
+                    @endforeach
+
+                </select>
+
+                @error('unidad_medida')
+
+                    <small class="text-danger d-block mt-1">
+
+                        {{ $message }}
+
+                    </small>
+
+                @enderror
+
+            </div>
+
+        </div>
 
     </div>
 
-</div>
 
-<div class="row mt-3">
+    {{-- ========================================= --}}
+    {{-- 02 CONTROL DE INVENTARIO --}}
+    {{-- ========================================= --}}
 
-    <div class="col-md-6">
+    <div class="gtri-section">
 
-        <x-rh.input-rh
-            label="Stock mínimo"
-            name="stock_minimo"
-            type="number"
-            :value="old('stock_minimo', $producto->stock_minimo ?? 0)"
-        />
+        <div class="gtri-section-title">
+
+            <span>02</span>
+
+            Control de inventario
+
+        </div>
+
+
+        <div class="row g-4">
+
+            {{-- STOCK MÍNIMO --}}
+            <div class="col-md-4">
+
+                <label
+                    for="stock_minimo"
+                    class="gtri-label mb-2"
+                >
+
+                    Stock mínimo
+
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                <input
+                    type="number"
+                    name="stock_minimo"
+                    id="stock_minimo"
+                    min="0"
+                    value="{{ old(
+                        'stock_minimo',
+                        $producto->stock_minimo ?? 0
+                    ) }}"
+                    class="form-control gtri-input"
+                    required
+                >
+
+                <small class="gtri-help d-block mt-1">
+
+                    Se usará para generar alertas de existencias bajas.
+
+                </small>
+
+                @error('stock_minimo')
+
+                    <small class="text-danger d-block mt-1">
+
+                        {{ $message }}
+
+                    </small>
+
+                @enderror
+
+            </div>
+
+
+            {{-- STOCK MÁXIMO --}}
+            <div class="col-md-4">
+
+                <label
+                    for="stock_maximo"
+                    class="gtri-label mb-2"
+                >
+
+                    Stock máximo
+
+                </label>
+
+                <input
+                    type="number"
+                    name="stock_maximo"
+                    id="stock_maximo"
+                    min="0"
+                    value="{{ old(
+                        'stock_maximo',
+                        $producto->stock_maximo ?? ''
+                    ) }}"
+                    class="form-control gtri-input"
+                    placeholder="Opcional"
+                >
+
+                <small class="gtri-help d-block mt-1">
+
+                    Nivel máximo recomendado de inventario.
+
+                </small>
+
+                @error('stock_maximo')
+
+                    <small class="text-danger d-block mt-1">
+
+                        {{ $message }}
+
+                    </small>
+
+                @enderror
+
+            </div>
+
+
+            {{-- TIPO DE PRODUCTO --}}
+            <div class="col-md-4">
+
+                <label
+                    for="tipo_producto"
+                    class="gtri-label mb-2"
+                >
+
+                    Tipo de producto
+
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                <select
+                    name="tipo_producto"
+                    id="tipo_producto"
+                    class="form-select gtri-select"
+                    required
+                >
+
+                    <option
+                        value="consumible"
+                        @selected(
+                            old(
+                                'tipo_producto',
+                                $producto->tipo_producto ?? 'consumible'
+                            ) == 'consumible'
+                        )
+                    >
+
+                        Consumible
+
+                    </option>
+
+                    <option
+                        value="activo"
+                        @selected(
+                            old(
+                                'tipo_producto',
+                                $producto->tipo_producto ?? ''
+                            ) == 'activo'
+                        )
+                    >
+
+                        Activo
+
+                    </option>
+
+                </select>
+
+                <small class="gtri-help d-block mt-1">
+
+                    Consumible: se agota. Activo: puede asignarse y controlarse.
+
+                </small>
+
+                @error('tipo_producto')
+
+                    <small class="text-danger d-block mt-1">
+
+                        {{ $message }}
+
+                    </small>
+
+                @enderror
+
+            </div>
+
+        </div>
 
     </div>
 
-    <div class="col-md-6">
 
-        <x-rh.input-rh
-            label="Precio de compra"
-            name="precio_compra"
-            type="number"
-            step="0.01"
-            :value="old('precio_compra', $producto->precio_compra ?? 0)"
-        />
+    {{-- ========================================= --}}
+    {{-- 03 COSTOS --}}
+    {{-- ========================================= --}}
+
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>03</span>
+
+            Costos
+
+        </div>
+
+
+        <div class="row g-4">
+
+            {{-- PRECIO DE COMPRA --}}
+            <div class="col-md-6">
+
+                <label
+                    for="precio_compra"
+                    class="gtri-label mb-2"
+                >
+
+                    Precio de compra
+
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                <div class="input-group">
+
+                    <span class="input-group-text gtri-addon">
+
+                        $
+
+                    </span>
+
+                    <input
+                        type="number"
+                        name="precio_compra"
+                        id="precio_compra"
+                        min="0"
+                        step="0.01"
+                        value="{{ old(
+                            'precio_compra',
+                            $producto->precio_compra ?? 0
+                        ) }}"
+                        class="form-control gtri-input"
+                        required
+                    >
+
+                </div>
+
+                @error('precio_compra')
+
+                    <small class="text-danger d-block mt-1">
+
+                        {{ $message }}
+
+                    </small>
+
+                @enderror
+
+            </div>
+
+
+            {{-- PRECIO PROMEDIO --}}
+            <div class="col-md-6">
+
+                <label
+                    for="precio_promedio"
+                    class="gtri-label mb-2"
+                >
+
+                    Precio promedio
+
+                </label>
+
+                <div class="input-group">
+
+                    <span class="input-group-text gtri-addon">
+
+                        $
+
+                    </span>
+
+                    <input
+                        type="number"
+                        name="precio_promedio"
+                        id="precio_promedio"
+                        min="0"
+                        step="0.01"
+                        value="{{ old(
+                            'precio_promedio',
+                            $producto->precio_promedio ?? ''
+                        ) }}"
+                        class="form-control gtri-input"
+                        placeholder="Opcional"
+                    >
+
+                </div>
+
+                <small class="gtri-help d-block mt-1">
+
+                    Puede actualizarse después con base en las compras realizadas.
+
+                </small>
+
+                @error('precio_promedio')
+
+                    <small class="text-danger d-block mt-1">
+
+                        {{ $message }}
+
+                    </small>
+
+                @enderror
+
+            </div>
+
+        </div>
 
     </div>
 
-</div>
 
-<div class="mt-3">
+    {{-- ========================================= --}}
+    {{-- 04 INFORMACIÓN COMPLEMENTARIA --}}
+    {{-- ========================================= --}}
 
-    <label class="form-label">
+    <div class="gtri-section">
 
-        Tipo de producto
+        <div class="gtri-section-title">
 
-    </label>
+            <span>04</span>
 
-    <select
-        name="tipo_producto"
-        class="form-select"
-    >
+            Información complementaria
 
-        <option
-            value="consumible"
-            @selected(old('tipo_producto', $producto->tipo_producto ?? 'consumible') == 'consumible')
+        </div>
+
+
+        <div>
+
+            <label
+                for="descripcion"
+                class="gtri-label mb-2"
+            >
+
+                Descripción
+
+            </label>
+
+            <textarea
+                name="descripcion"
+                id="descripcion"
+                rows="4"
+                maxlength="500"
+                class="form-control gtri-textarea"
+                placeholder="Ingrese una descripción general del producto..."
+            >{{ old(
+                'descripcion',
+                $producto->descripcion ?? ''
+            ) }}</textarea>
+
+            <small class="gtri-help d-block mt-1">
+
+                Máximo 500 caracteres.
+
+            </small>
+
+            @error('descripcion')
+
+                <small class="text-danger d-block mt-1">
+
+                    {{ $message }}
+
+                </small>
+
+            @enderror
+
+        </div>
+
+    </div>
+
+
+    {{-- ========================================= --}}
+    {{-- ACCIONES --}}
+    {{-- ========================================= --}}
+
+    <div class="d-flex justify-content-end gap-3 mt-4">
+
+        <a
+            href="{{ route('administracion.productos.index') }}"
+            class="btn gtri-btn-secondary"
         >
 
-            Consumible
+            <i class="bi bi-x-circle me-1"></i>
 
-        </option>
+            Cancelar
 
-        <option
-            value="activo"
-            @selected(old('tipo_producto', $producto->tipo_producto ?? '') == 'activo')
+        </a>
+
+
+        <button
+            type="submit"
+            class="btn gtri-btn-primary"
         >
 
-            Activo
+            <i class="bi bi-check-circle me-1"></i>
 
-        </option>
+            {{ isset($producto)
+                ? 'Actualizar producto'
+                : 'Guardar producto'
+            }}
 
-    </select>
+        </button>
 
-</div>
-
-<div class="mt-3">
-
-    <label class="form-label">
-
-        Descripción
-
-    </label>
-
-    <textarea
-        name="descripcion"
-        rows="4"
-        class="form-control"
-    >{{ old('descripcion', $producto->descripcion ?? '') }}</textarea>
-
-</div>
-
-<div class="mt-4">
-
-    <button class="btn btn-primary">
-
-        {{ isset($producto) ? 'Actualizar' : 'Guardar' }}
-
-    </button>
-
-    <a
-        href="{{ route('administracion.productos.index') }}"
-        class="btn btn-secondary"
-    >
-
-        Cancelar
-
-    </a>
+    </div>
 
 </div>

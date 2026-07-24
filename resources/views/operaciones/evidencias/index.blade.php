@@ -2,154 +2,319 @@
 
 @section('contenido')
 
-<div class="container">
+<div class="container-fluid">
 
-    <div
-        class="d-flex justify-content-between mb-4"
-    >
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-        <h1>
+        <div>
 
-            Evidencias
+            <h2 class="gtri-page-title">
 
-        </h1>
+                <i class="bi bi-images me-2"></i>
+
+                Evidencias
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Consulta las evidencias fotográficas registradas durante las supervisiones.
+
+            </p>
+
+        </div>
 
         <a
             href="{{ route(
                 'operaciones.evidencias.create'
             ) }}"
-            class="btn btn-primary"
+            class="btn gtri-btn-primary"
         >
 
-            Nueva Evidencia
+            <i class="bi bi-camera-fill me-1"></i>
+
+            Nueva evidencia
 
         </a>
 
     </div>
 
-    <table class="table">
 
-        <thead>
+    {{-- LISTADO --}}
+    <div class="gtri-section mb-0">
 
-            <tr>
+        <div
+            class="
+                d-flex
+                flex-wrap
+                justify-content-between
+                align-items-center
+                gap-2
+                mb-4
+            "
+        >
 
-                <th>
+            <div class="gtri-section-title mb-0">
 
-                    Guardia
+                <span>01</span>
 
-                </th>
+                Lista de evidencias
 
-                <th>
+            </div>
 
-                    Servicio
+            <div>
 
-                </th>
+                <span class="text-secondary">
 
-                <th>
+                    Registros:
 
-                    Título
+                </span>
 
-                </th>
+                <span class="text-warning fw-bold">
 
-                <th>
+                    {{ $evidencias->count() }}
 
-                    Foto
+                </span>
 
-                </th>
+            </div>
 
-                <th>
+        </div>
 
-                    Acciones
 
-                </th>
+        <div class="gtri-table-wrapper">
 
-            </tr>
+            <div class="table-responsive">
 
-        </thead>
+                <table class="table gtri-table align-middle mb-0">
 
-        <tbody>
+                    <thead>
 
-            @forelse($evidencias as $evidencia)
+                        <tr>
 
-                <tr>
+                            <th>Guardia</th>
 
-                    <td>
+                            <th>Servicio</th>
 
-                        {{ $evidencia->supervision->asignacion->empleado->nombre }}
+                            <th>Título</th>
 
-                        {{ $evidencia->supervision->asignacion->empleado->apellido_paterno }}
+                            <th>Fotografía</th>
 
-                    </td>
+                            <th class="text-center">
 
-                    <td>
+                                Acciones
 
-                        {{ $evidencia->supervision->asignacion->plaza->servicio->nombre }}
+                            </th>
 
-                    </td>
+                        </tr>
 
-                    <td>
+                    </thead>
 
-                        {{ $evidencia->titulo }}
+                    <tbody>
 
-                    </td>
+                        @forelse(
+                            $evidencias
+                            as $evidencia
+                        )
 
-                    <td>
+                            <tr>
 
-                        <img
-                            src="{{ asset('storage/'.$evidencia->foto) }}"
-                            width="120"
-                            class="rounded"
-                        >
+                                {{-- GUARDIA --}}
+                                <td>
 
-                    </td>
+                                    <div>
 
-                    <td>
+                                        <span
+                                            class="
+                                                text-light
+                                                fw-semibold
+                                                d-block
+                                            "
+                                        >
 
-                        <a
-                            href="{{ route(
-                                'operaciones.evidencias.show',
-                                $evidencia
-                            ) }}"
-                            class="btn btn-primary btn-sm"
-                        >
+                                            {{
+                                                $evidencia
+                                                    ->supervision
+                                                    ->asignacion
+                                                    ->empleado
+                                                    ->nombre
+                                            }}
 
-                            Ver
+                                            {{
+                                                $evidencia
+                                                    ->supervision
+                                                    ->asignacion
+                                                    ->empleado
+                                                    ->apellido_paterno
+                                            }}
 
-                        </a>
+                                        </span>
 
-                        <a
-                            href="{{ route(
-                                'operaciones.evidencias.edit',
-                                $evidencia
-                            ) }}"
-                            class="btn btn-warning btn-sm"
-                        >
+                                        <small class="text-secondary">
 
-                            Editar
+                                            {{
+                                                $evidencia
+                                                    ->supervision
+                                                    ->asignacion
+                                                    ->empleado
+                                                    ->numero_control
+                                            }}
 
-                        </a>
+                                        </small>
 
-                    </td>
+                                    </div>
 
-                </tr>
+                                </td>
 
-            @empty
 
-                <tr>
+                                {{-- SERVICIO --}}
+                                <td>
 
-                    <td colspan="5">
+                                    <span class="text-light">
 
-                        Sin evidencias registradas.
+                                        {{
+                                            $evidencia
+                                                ->supervision
+                                                ->asignacion
+                                                ->plaza
+                                                ->servicio
+                                                ->nombre
+                                        }}
 
-                    </td>
+                                    </span>
 
-                </tr>
+                                </td>
 
-            @endforelse
 
-        </tbody>
+                                {{-- TÍTULO --}}
+                                <td>
 
-    </table>
+                                    <span class="text-warning fw-semibold">
+
+                                        {{ $evidencia->titulo }}
+
+                                    </span>
+
+                                </td>
+
+
+                                {{-- FOTO --}}
+                                <td>
+
+                                    <img
+                                        src="{{ asset(
+                                            'storage/' .
+                                            $evidencia->foto
+                                        ) }}"
+                                        width="120"
+                                        height="75"
+                                        class="rounded"
+                                        style="
+                                            object-fit:cover;
+                                            border:
+                                                1px solid
+                                                rgba(212,175,55,.35);
+                                        "
+                                        alt="Evidencia"
+                                    >
+
+                                </td>
+
+
+                                {{-- ACCIONES --}}
+                                <td class="text-center">
+
+                                    <div
+                                        class="
+                                            d-flex
+                                            justify-content-center
+                                            gap-2
+                                            flex-nowrap
+                                        "
+                                    >
+
+                                        <a
+                                            href="{{ route(
+                                                'operaciones.evidencias.show',
+                                                $evidencia
+                                            ) }}"
+                                            class="btn btn-primary btn-sm"
+                                            title="Ver evidencia"
+                                        >
+
+                                            <i class="bi bi-eye"></i>
+
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    class="text-center py-5"
+                                >
+
+                                    <i
+                                        class="
+                                            bi
+                                            bi-camera
+                                            d-block
+                                            fs-1
+                                            text-secondary
+                                            mb-3
+                                        "
+                                    ></i>
+
+                                    <h5 class="text-light">
+
+                                        Sin evidencias registradas
+
+                                    </h5>
+
+                                    <p class="text-secondary mb-0">
+
+                                        Registra una nueva evidencia fotográfica para comenzar.
+
+                                    </p>
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        {{-- PAGINACIÓN --}}
+        @if(
+            method_exists($evidencias, 'hasPages')
+            &&
+            $evidencias->hasPages()
+        )
+
+            <div class="d-flex justify-content-center mt-4">
+
+                {{ $evidencias->withQueryString()->links() }}
+
+            </div>
+
+        @endif
+
+    </div>
 
 </div>
 

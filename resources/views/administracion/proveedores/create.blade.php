@@ -2,24 +2,49 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <div class="mb-3">
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-        <a
-            href="{{ route('administracion.proveedores.index') }}"
-            class="btn btn-secondary"
-        >
+        <div class="d-flex justify-content-between align-items-center">
 
-            <i class="bi bi-arrow-left"></i>
+            <div>
 
-            Volver
+                <h2 class="gtri-page-title">
 
-        </a>
+                    <i class="bi bi-truck me-2"></i>
+
+                    Nuevo proveedor
+
+                </h2>
+
+                <p class="gtri-page-subtitle">
+
+                    Registre un nuevo proveedor para la gestión de compras y abastecimiento.
+
+                </p>
+
+            </div>
+
+            <a
+                href="{{ route('administracion.proveedores.index') }}"
+                class="btn gtri-btn-secondary"
+            >
+
+                <i class="bi bi-arrow-left me-1"></i>
+
+                Volver
+
+            </a>
+
+        </div>
 
     </div>
 
-    <x-rh.card-rh titulo="Nuevo proveedor">
+
+    {{-- FORMULARIO --}}
+    <div class="gtri-card">
 
         <form
             action="{{ route('administracion.proveedores.store') }}"
@@ -32,7 +57,7 @@
 
         </form>
 
-    </x-rh.card-rh>
+    </div>
 
 </div>
 

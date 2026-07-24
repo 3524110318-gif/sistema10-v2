@@ -79,6 +79,10 @@ class ProductoController extends Controller
 
             'tipo_producto' => 'required|in:consumible,activo',
 
+            'stock_maximo' => 'nullable|integer|min:0',
+
+            'precio_promedio' => 'nullable|numeric|min:0',
+
         ]);
 
         $producto = Producto::create([
@@ -102,6 +106,12 @@ class ProductoController extends Controller
             'estado' => 'activo',
 
             'tipo_producto' => $request->tipo_producto,
+
+            'stock_maximo' =>
+                $request->stock_maximo,
+
+            'precio_promedio' =>
+                $request->precio_promedio ?? $request->precio_compra,
 
         ]);
 
@@ -144,10 +154,8 @@ class ProductoController extends Controller
         );
     }
 
-    public function update(
-        Request $request,
-        Producto $producto
-    ) {
+    public function update(Request $request,Producto $producto) 
+    {
         $request->validate([
 
             'categoria_producto_id' => 'required|exists:categorias_productos,id',
@@ -192,6 +200,12 @@ class ProductoController extends Controller
             'precio_compra' => $request->precio_compra,
 
             'tipo_producto' => $request->tipo_producto,
+
+            'stock_maximo' =>
+                $request->stock_maximo,
+
+            'precio_promedio' =>
+                $request->precio_promedio ?? $request->precio_compra,
 
         ]);
 

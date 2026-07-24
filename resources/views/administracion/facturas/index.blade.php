@@ -2,241 +2,343 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
     <x-rh.alert-success />
 
-    <h1 class="mb-4">
 
-        FACTURACIÓN
+    <div class="gtri-page-header">
 
-    </h1>
+        <div class="d-flex justify-content-between align-items-center">
 
-    <div class="d-flex justify-content-between mb-4">
+            <div>
 
-        <a
-            href="{{ route('administracion.facturas.create') }}"
-            class="btn btn-primary"
-        >
+                <h2 class="gtri-page-title">
 
-            <i class="bi bi-plus-circle me-1"></i>
+                    <i class="bi bi-receipt me-2"></i>
 
-            Nueva factura
+                    Facturación
 
-        </a>
+                </h2>
 
-        <form
-            method="GET"
-            class="d-flex"
-        >
+                <p class="gtri-page-subtitle">
 
-            <input
-                type="text"
-                name="buscar"
-                class="form-control me-2"
-                placeholder="Buscar por folio o cliente..."
-                value="{{ request('buscar') }}"
+                    Administración y seguimiento de facturas por cliente y contrato.
+
+                </p>
+
+            </div>
+
+            <a
+                href="{{ route('administracion.facturas.create') }}"
+                class="btn gtri-btn-primary"
             >
 
-            <button
-                class="btn btn-outline-primary"
-            >
+                <i class="bi bi-plus-circle me-1"></i>
 
-                Buscar
+                Nueva factura
 
-            </button>
+            </a>
+
+        </div>
+
+    </div>
+
+
+    {{-- BUSCADOR --}}
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>01</span>
+
+            Filtros de búsqueda
+
+        </div>
+
+        <form method="GET">
+
+            <div class="row g-3 align-items-end">
+
+                <div class="col-md-5">
+
+                    <label class="gtri-label mb-2">
+
+                        Folio o cliente
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="buscar"
+                        class="form-control gtri-input"
+                        placeholder="Buscar por folio o cliente..."
+                        value="{{ request('buscar') }}"
+                    >
+
+                </div>
+
+                <div class="col-auto">
+
+                    <button
+                        class="btn gtri-btn-primary"
+                    >
+
+                        <i class="bi bi-search me-1"></i>
+
+                        Buscar
+
+                    </button>
+
+                </div>
+
+                @if(request('buscar'))
+
+                    <div class="col-auto">
+
+                        <a
+                            href="{{ route('administracion.facturas.index') }}"
+                            class="btn gtri-btn-secondary"
+                        >
+
+                            Limpiar
+
+                        </a>
+
+                    </div>
+
+                @endif
+
+            </div>
 
         </form>
 
     </div>
 
-    <x-rh.card-rh titulo="Listado de facturas">
 
-        <div class="table-responsive">
+    {{-- LISTADO --}}
+    <div class="gtri-section">
 
-            <table class="table table-hover table-bordered align-middle">
+        <div class="gtri-section-title">
 
-                <thead class="table-dark">
+            <span>02</span>
 
-                    <tr>
+            Listado de facturas
 
-                        <th>Folio</th>
+        </div>
 
-                        <th>Cliente</th>
+        <div class="gtri-table-wrapper">
 
-                        <th>Contrato</th>
+            <div class="table-responsive">
 
-                        <th>Fecha</th>
+                <table class="table gtri-table align-middle">
 
-                        <th>Total</th>
-
-                        <th>Estado</th>
-
-                        <th width="220">
-
-                            Acciones
-
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @forelse($facturas as $factura)
+                    <thead>
 
                         <tr>
 
-                            <td>
+                            <th>Folio</th>
 
-                                {{ $factura->folio }}
+                            <th>Cliente</th>
 
-                            </td>
+                            <th>Contrato</th>
 
-                            <td>
+                            <th>Fecha</th>
 
-                                {{ $factura->cliente->razon_social }}
+                            <th>Total</th>
 
-                            </td>
+                            <th class="text-center">
+                                Estado
+                            </th>
 
-                            <td>
+                            <th class="text-center">
+                                Acciones
+                            </th>
 
-                                {{ $factura->contrato->numero_contrato }}
+                        </tr>
 
-                            </td>
+                    </thead>
 
-                            <td>
+                    <tbody>
 
-                                {{ $factura->fecha_factura->format('d/m/Y') }}
+                        @forelse($facturas as $factura)
 
-                            </td>
+                            <tr>
 
-                            <td>
+                                <td>
 
-                                $ {{ number_format($factura->total,2) }}
+                                    <span class="text-warning fw-semibold">
 
-                            </td>
+                                        {{ $factura->folio }}
 
-                            <td>
+                                    </span>
 
-                                @switch($factura->estado)
+                                </td>
 
-                                    @case('borrador')
+                                <td class="text-light">
 
-                                        <span class="badge bg-warning">
+                                    {{ $factura->cliente->razon_social }}
 
-                                            Borrador
+                                </td>
 
-                                        </span>
+                                <td class="text-secondary">
 
-                                    @break
+                                    {{ $factura->contrato->numero_contrato }}
 
-                                    @case('emitida')
+                                </td>
 
-                                        <span class="badge bg-success">
+                                <td class="text-secondary">
 
-                                            Emitida
+                                    {{ $factura->fecha_factura->format('d/m/Y') }}
 
-                                        </span>
+                                </td>
 
-                                    @break
+                                <td class="fw-semibold text-light">
 
-                                    @case('cancelada')
+                                    ${{ number_format($factura->total, 2) }}
 
-                                        <span class="badge bg-danger">
+                                </td>
 
-                                            Cancelada
+                                <td class="text-center">
 
-                                        </span>
+                                    @switch($factura->estado)
 
-                                    @break
+                                        @case('borrador')
 
-                                @endswitch
+                                            <span class="badge gtri-badge-warning">
+                                                Borrador
+                                            </span>
 
-                            </td>
+                                            @break
 
-                            <td>
+                                        @case('emitida')
 
-                                <div class="d-flex gap-2">
+                                            <span class="badge gtri-badge-success">
+                                                Emitida
+                                            </span>
 
-                                    <a
-                                        href="{{ route('administracion.facturas.show',$factura) }}"
-                                        class="btn btn-info btn-sm"
-                                    >
+                                            @break
 
-                                        <i class="bi bi-eye"></i>
+                                        @case('cancelada')
 
-                                    </a>
+                                            <span class="badge gtri-badge-danger">
+                                                Cancelada
+                                            </span>
 
-                                    <a
-                                        href="{{ route('administracion.facturas.edit',$factura) }}"
-                                        class="btn btn-warning btn-sm"
-                                    >
+                                            @break
 
-                                        <i class="bi bi-pencil"></i>
+                                    @endswitch
 
-                                    </a>
+                                </td>
 
-                                    @if($factura->estado!='cancelada')
+                                <td>
 
-                                        <form
-                                            action="{{ route('administracion.facturas.destroy',$factura) }}"
-                                            method="POST"
+                                    <div class="d-flex justify-content-center gap-2">
+
+                                        <a
+                                            href="{{ route(
+                                                'administracion.facturas.show',
+                                                $factura
+                                            ) }}"
+                                            class="btn btn-sm gtri-btn-secondary"
+                                            title="Ver detalle"
                                         >
 
-                                            @csrf
-                                            @method('DELETE')
+                                            <i class="bi bi-eye"></i>
 
-                                            <button
-                                                class="btn btn-danger btn-sm"
-                                                onclick="return confirm('¿Cancelar esta factura?')"
+                                        </a>
+
+                                        <a
+                                            href="{{ route(
+                                                'administracion.facturas.edit',
+                                                $factura
+                                            ) }}"
+                                            class="btn btn-sm gtri-btn-secondary"
+                                            title="Editar factura"
+                                        >
+
+                                            <i class="bi bi-pencil"></i>
+
+                                        </a>
+
+                                        @if($factura->estado != 'cancelada')
+
+                                            <form
+                                                action="{{ route(
+                                                    'administracion.facturas.destroy',
+                                                    $factura
+                                                ) }}"
+                                                method="POST"
                                             >
 
-                                                <i class="bi bi-x-circle"></i>
+                                                @csrf
+                                                @method('DELETE')
 
-                                            </button>
+                                                <button
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm(
+                                                        '¿Cancelar esta factura?'
+                                                    )"
+                                                    title="Cancelar factura"
+                                                >
 
-                                        </form>
+                                                    <i class="bi bi-x-circle"></i>
 
-                                    @endif
+                                                </button>
 
-                                </div>
+                                            </form>
 
-                            </td>
+                                        @endif
 
-                        </tr>
+                                    </div>
 
-                    @empty
+                                </td>
 
-                        <tr>
+                            </tr>
 
-                            <td
-                                colspan="7"
-                                class="text-center"
-                            >
+                        @empty
 
-                                No existen facturas registradas.
+                            <tr>
 
-                            </td>
+                                <td
+                                    colspan="7"
+                                    class="text-center py-5"
+                                >
 
-                        </tr>
+                                    <div class="text-secondary">
 
-                    @endforelse
+                                        <i class="bi bi-receipt fs-1 d-block mb-3"></i>
 
-                </tbody>
+                                        No existen facturas registradas.
 
-            </table>
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
-        <div class="mt-3">
 
-            {{ $facturas->links() }}
+        @if($facturas->hasPages())
 
-        </div>
+            <div class="d-flex justify-content-center mt-4">
 
-    </x-rh.card-rh>
+                {{ $facturas->links() }}
+
+            </div>
+
+        @endif
+
+    </div>
 
 </div>
 

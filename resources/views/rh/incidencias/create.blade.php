@@ -2,147 +2,271 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <h1 class="mb-4">
+    <div class="gtri-page-header">
 
-        Nueva incidencia
+        <div>
 
-    </h1>
+            <h2 class="gtri-page-title">
+
+                <i class="bi bi-exclamation-triangle me-2"></i>
+
+                Nueva incidencia
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Registra una incidencia relacionada con un empleado.
+
+            </p>
+
+        </div>
 
 
-    <x-rh.card-rh titulo="Registrar incidencia">
-
-        <form
-
-            method="POST"
-
-            action="{{ route('rh.incidencias.store') }}"
-
+        <a
+            href="{{ route('rh.incidencias.index') }}"
+            class="btn gtri-btn-secondary"
         >
 
-            @csrf
+            <i class="bi bi-arrow-left me-1"></i>
+
+            Volver
+
+        </a>
+
+    </div>
 
 
-            <!-- EMPLEADO -->
+    <form
+        method="POST"
+        action="{{ route('rh.incidencias.store') }}"
+    >
 
-            <div class="mb-4">
-
-                <label class="form-label">
-
-                    Empleado
-
-                </label>
+        @csrf
 
 
-                <select
+        <div class="gtri-section">
 
-                    name="empleado_id"
+            <div class="gtri-section-title">
 
-                    class="form-select"
+                <span>01</span>
 
-                >
+                Datos de la incidencia
 
-                    @foreach ($empleados as $empleado)
+            </div>
 
-                        <option value="{{ $empleado->id }}">
 
-                            {{ $empleado->nombre }}
+            <div class="row g-3">
 
-                            {{ $empleado->apellido_paterno }}
+                {{-- EMPLEADO --}}
+                <div class="col-md-6">
+
+                    <label
+                        for="empleado_id"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Empleado
+
+                    </label>
+
+
+                    <select
+                        name="empleado_id"
+                        id="empleado_id"
+                        class="form-select gtri-input"
+                        required
+                    >
+
+                        <option value="">
+
+                            Selecciona un empleado
 
                         </option>
 
-                    @endforeach
+                        @foreach ($empleados as $empleado)
 
-                </select>
+                            <option
+                                value="{{ $empleado->id }}"
+                                @selected(
+                                    old('empleado_id') ==
+                                    $empleado->id
+                                )
+                            >
+
+                                {{ $empleado->numero_control }}
+
+                                -
+
+                                {{ $empleado->nombre }}
+
+                                {{ $empleado->apellido_paterno }}
+
+                                {{ $empleado->apellido_materno }}
+
+                            </option>
+
+                        @endforeach
+
+                    </select>
+
+
+                    @error('empleado_id')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
+
+
+                {{-- TIPO --}}
+                <div class="col-md-6">
+
+                    <label
+                        for="tipo"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Tipo de incidencia
+
+                    </label>
+
+
+                    <select
+                        name="tipo"
+                        id="tipo"
+                        class="form-select gtri-input"
+                        required
+                    >
+
+                        <option value="">
+
+                            Selecciona un tipo
+
+                        </option>
+
+                        <option
+                            value="falta"
+                            @selected(old('tipo') === 'falta')
+                        >
+
+                            Falta
+
+                        </option>
+
+                        <option
+                            value="retardo"
+                            @selected(old('tipo') === 'retardo')
+                        >
+
+                            Retardo
+
+                        </option>
+
+                        <option
+                            value="permiso"
+                            @selected(old('tipo') === 'permiso')
+                        >
+
+                            Permiso
+
+                        </option>
+
+                        <option
+                            value="incapacidad"
+                            @selected(old('tipo') === 'incapacidad')
+                        >
+
+                            Incapacidad
+
+                        </option>
+
+                    </select>
+
+
+                    @error('tipo')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
+
+
+                {{-- FECHA --}}
+                <div class="col-md-6">
+
+                    <x-rh.input-rh
+                        label="Fecha"
+                        name="fecha"
+                        type="date"
+                    />
+
+                </div>
+
+
+                {{-- DESCRIPCIÓN --}}
+                <div class="col-12">
+
+                    <x-rh.textarea-rh
+                        label="Descripción"
+                        name="descripcion"
+                        placeholder="Describe el motivo o los detalles de la incidencia..."
+
+                    />
+
+                </div>
 
             </div>
 
-
-            <!-- TIPO -->
-
-            <div class="mb-4">
-
-                <label class="form-label">
-
-                    Tipo incidencia
-
-                </label>
+        </div>
 
 
-                <select
+        <div class="gtri-section mb-0">
 
-                    name="tipo"
+            <div class="d-flex flex-wrap justify-content-end gap-2">
 
-                    class="form-select"
-
+                <a
+                    href="{{ route('rh.incidencias.index') }}"
+                    class="btn gtri-btn-secondary"
                 >
 
-                    <option value="falta">
+                    <i class="bi bi-x-circle me-1"></i>
 
-                        Falta
+                    Cancelar
 
-                    </option>
-
-
-                    <option value="retardo">
-
-                        Retardo
-
-                    </option>
+                </a>
 
 
-                    <option value="permiso">
+                <button
+                    type="submit"
+                    class="btn gtri-btn-primary"
+                >
 
-                        Permiso
+                    <i class="bi bi-save me-1"></i>
 
-                    </option>
+                    Guardar incidencia
 
-
-                    <option value="incapacidad">
-
-                        Incapacidad
-
-                    </option>
-
-                </select>
+                </button>
 
             </div>
 
+        </div>
 
-            <!-- FECHA -->
-
-            <x-rh.input-rh
-                label="Fecha"
-                name="fecha"
-                type="date"
-            />
-
-
-            <!-- DESCRIPCION -->
-
-            <x-rh.textarea-rh
-                label="Descripción"
-                name="descripcion"
-            />
-
-
-            <!-- BOTON -->
-
-            <button
-
-                class="btn btn-primary rounded-3 px-4"
-
-            >
-
-                Guardar incidencia
-
-            </button>
-
-        </form>
-
-    </x-rh.card-rh>
+    </form>
 
 </div>
 

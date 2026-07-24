@@ -2,140 +2,352 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <h1 class="mb-4">
+    <div class="gtri-page-header">
 
-        Nuevo Prospecto
+        <div>
 
-    </h1>
+            <h2 class="gtri-page-title">
 
-    <x-rh.card-rh titulo="Registro de candidato">
+                <i class="bi bi-person-plus me-2"></i>
 
-        <form
-            method="POST"
-            action="{{ route('rh.prospectos.store') }}"
+                Nuevo prospecto
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Registra un nuevo candidato para el proceso de reclutamiento.
+
+            </p>
+
+        </div>
+
+
+        <a
+            href="{{ route('rh.prospectos.index') }}"
+            class="btn gtri-btn-secondary"
         >
 
-            @csrf
+            <i class="bi bi-arrow-left me-1"></i>
 
-            <div class="row">
+            Volver
 
-                <div class="col-md-4 mb-3">
+        </a>
 
-                    <label>Nombre</label>
+    </div>
+
+
+    <form
+        method="POST"
+        action="{{ route('rh.prospectos.store') }}"
+    >
+
+        @csrf
+
+
+        {{-- DATOS PERSONALES --}}
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>01</span>
+
+                Datos personales
+
+            </div>
+
+
+            <div class="row g-3">
+
+                <div class="col-md-4">
+
+                    <label
+                        for="nombre"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Nombre
+
+                    </label>
 
                     <input
                         type="text"
                         name="nombre"
-                        class="form-control"
+                        id="nombre"
+                        class="form-control gtri-input"
+                        value="{{ old('nombre') }}"
                         required
                     >
 
+                    @error('nombre')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
                 </div>
 
-                <div class="col-md-4 mb-3">
 
-                    <label>Apellido paterno</label>
+                <div class="col-md-4">
+
+                    <label
+                        for="apellido_paterno"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Apellido paterno
+
+                    </label>
 
                     <input
                         type="text"
                         name="apellido_paterno"
-                        class="form-control"
+                        id="apellido_paterno"
+                        class="form-control gtri-input"
+                        value="{{ old('apellido_paterno') }}"
                         required
                     >
 
+                    @error('apellido_paterno')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
                 </div>
 
-                <div class="col-md-4 mb-3">
 
-                    <label>Apellido materno</label>
+                <div class="col-md-4">
+
+                    <label
+                        for="apellido_materno"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Apellido materno
+
+                    </label>
 
                     <input
                         type="text"
                         name="apellido_materno"
-                        class="form-control"
+                        id="apellido_materno"
+                        class="form-control gtri-input"
+                        value="{{ old('apellido_materno') }}"
                     >
+
+                    @error('apellido_materno')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
 
                 </div>
 
             </div>
 
-            <div class="row">
+        </div>
 
-                <div class="col-md-4 mb-3">
 
-                    <label>Teléfono</label>
+        {{-- CONTACTO Y PUESTO --}}
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>02</span>
+
+                Contacto y vacante
+
+            </div>
+
+
+            <div class="row g-3">
+
+                <div class="col-md-4">
+
+                    <label
+                        for="telefono"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Teléfono
+
+                    </label>
 
                     <input
                         type="text"
                         name="telefono"
-                        class="form-control"
+                        id="telefono"
+                        class="form-control gtri-input"
+                        value="{{ old('telefono') }}"
                     >
 
                 </div>
 
-                <div class="col-md-4 mb-3">
 
-                    <label>Correo</label>
+                <div class="col-md-4">
+
+                    <label
+                        for="correo"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Correo electrónico
+
+                    </label>
 
                     <input
                         type="email"
                         name="correo"
-                        class="form-control"
+                        id="correo"
+                        class="form-control gtri-input"
+                        value="{{ old('correo') }}"
                     >
 
                 </div>
 
-                <div class="col-md-4 mb-3">
 
-                    <label>Puesto solicitado</label>
+                <div class="col-md-4">
+
+                    <label
+                        for="puesto_solicitado"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Puesto solicitado
+
+                    </label>
 
                     <input
                         type="text"
                         name="puesto_solicitado"
-                        class="form-control"
+                        id="puesto_solicitado"
+                        class="form-control gtri-input"
+                        value="{{ old('puesto_solicitado') }}"
                     >
 
                 </div>
 
             </div>
 
-            <div class="mb-3">
+        </div>
 
-                <label>Fecha entrevista</label>
 
-                <input
-                    type="date"
-                    name="fecha_entrevista"
-                    class="form-control"
+        {{-- ENTREVISTA --}}
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>03</span>
+
+                Entrevista
+
+            </div>
+
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+
+                    <label
+                        for="fecha_entrevista"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Fecha de entrevista
+
+                    </label>
+
+                    <input
+                        type="date"
+                        name="fecha_entrevista"
+                        id="fecha_entrevista"
+                        class="form-control gtri-input"
+                        value="{{ old('fecha_entrevista') }}"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {{-- OBSERVACIONES --}}
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>04</span>
+
+                Observaciones
+
+            </div>
+
+            <textarea
+                name="observaciones"
+                class="form-control gtri-textarea"
+                rows="4"
+                placeholder="Escribe aquí información adicional del candidato..."
+            >{{ old('observaciones') }}</textarea>
+
+        </div>
+
+
+        {{-- ACCIONES --}}
+        <div class="gtri-section mb-0">
+
+            <div class="d-flex justify-content-end gap-2 flex-wrap">
+
+                <a
+                    href="{{ route('rh.prospectos.index') }}"
+                    class="btn gtri-btn-secondary"
                 >
 
+                    <i class="bi bi-x-circle me-1"></i>
+
+                    Cancelar
+
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="btn gtri-btn-primary"
+                >
+
+                    <i class="bi bi-person-check me-1"></i>
+
+                    Registrar prospecto
+
+                </button>
+
             </div>
 
-            <div class="mb-4">
+        </div>
 
-                <label>Observaciones</label>
-
-                <textarea
-                    name="observaciones"
-                    class="form-control"
-                    rows="3"
-                ></textarea>
-
-            </div>
-
-            <button
-                class="btn btn-primary"
-            >
-
-                Registrar Prospecto
-
-            </button>
-
-        </form>
-
-    </x-rh.card-rh>
+    </form>
 
 </div>
 

@@ -1,307 +1,179 @@
-<!DOCTYPE html>
+@extends('layouts.gtri')
 
-<html lang="es">
+@section('titulo', 'GTRI Operaciones')
 
-<head>
+@section('nombre_modulo', 'Operaciones')
 
-    <meta charset="UTF-8">
+@section('nombre_sistema', 'Sistema Operaciones')
 
-    <meta
 
-        name="viewport"
+@section('menu')
 
-        content="width=device-width, initial-scale=1.0"
-
+    {{-- INICIO --}}
+    <x-rh.sidebar-link
+        href="{{ route('operaciones.dashboard') }}"
+        active="operaciones.dashboard"
     >
 
+        <i class="bi bi-house-door me-2"></i>
 
-    <title>
+        Inicio
 
-        GTRI Operaciones
-
-    </title>
-
-
-    @vite([
-
-        'resources/css/app.css',
-
-        'resources/js/app.js'
-
-    ])
+    </x-rh.sidebar-link>
 
 
-    <!-- BOOTSTRAP ICONS -->
-
-    <link
-
-        rel="stylesheet"
-
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-
+    {{-- CLIENTES --}}
+    <x-rh.sidebar-link
+        href="{{ route('operaciones.clientes.index') }}"
+        active="operaciones.clientes*"
     >
 
-</head>
+        <i class="bi bi-people me-2"></i>
 
-<body style="background: #F5F7FB;">
-    <div class="container-fluid">
+        Clientes
 
-        <div class="row">
+    </x-rh.sidebar-link>
 
 
-            <!-- SIDEBAR -->
+    {{-- CONTRATOS --}}
+    <x-rh.sidebar-link
+        href="{{ route('operaciones.contratos.index') }}"
+        active="operaciones.contratos*"
+    >
 
-            <div
+        <i class="bi bi-file-earmark-text me-2"></i>
 
-                class="col-2 text-white min-vh-100 p-4 shadow"
+        Contratos
 
-                style="background: #0B1220;"
+    </x-rh.sidebar-link>
 
-            >
 
-                <!-- LOGO -->
+    {{-- SERVICIOS --}}
+    <x-rh.sidebar-link
+        href="{{ route('operaciones.servicios.index') }}"
+        active="operaciones.servicios*"
+    >
 
-                <h3 class="fw-bold mb-4">
+        <i class="bi bi-building me-2"></i>
 
-                    Operaciones
+        Servicios
 
-                </h3>
+    </x-rh.sidebar-link>
 
-                <hr class="border-secondary">
 
+    {{-- PLAZAS OPERATIVAS --}}
+    <x-rh.sidebar-link
+        href="{{ route('operaciones.plazas.index') }}"
+        active="operaciones.plazas*"
+    >
 
-                <!-- MENU -->
+        <i class="bi bi-geo-alt me-2"></i>
 
-                <ul class="nav flex-column gap-2">
+        Plazas Operativas
 
+    </x-rh.sidebar-link>
 
-                    <!-- INICIO -->
 
-                    <x-rh.sidebar-link
-                        href="{{ route('operaciones.dashboard') }}"
-                        active="operaciones.dashboard"
-                    >
+    {{-- ASIGNACIONES --}}
+    <x-rh.sidebar-link
+        href="{{ route('operaciones.asignaciones.index') }}"
+        active="operaciones.asignaciones*"
+    >
 
-                        <i class="bi bi-house-door me-2"></i>
+        <i class="bi bi-person-check me-2"></i>
 
-                        Inicio
+        Asignaciones
 
-                    </x-rh.sidebar-link>
+    </x-rh.sidebar-link>
 
-                    <x-rh.sidebar-link
-                        href="{{ route('operaciones.clientes.index') }}"
-                        active="operaciones.clientes*"
-                    >
 
-                        <i class="bi bi-people me-2"></i>
+    {{-- SUPERVISIONES --}}
+    <x-rh.sidebar-link
+        href="{{ route(
+            'operaciones.supervisiones.index'
+        ) }}"
+        active="operaciones.supervisiones*"
+    >
 
-                        Clientes
+        <i class="bi bi-clipboard-check me-2"></i>
 
-                    </x-rh.sidebar-link>
+        Supervisiones
 
-                    <x-rh.sidebar-link
-                        href="{{ route('operaciones.contratos.index') }}"
-                        active="operaciones.contrato*"
-                    >
+    </x-rh.sidebar-link>
 
-                        <i class="bi bi-calendar2-week me-2"></i>
 
-                        Contratos
+    {{-- EVIDENCIAS --}}
+    <x-rh.sidebar-link
+        href="{{ route(
+            'operaciones.evidencias.index'
+        ) }}"
+        active="operaciones.evidencias*"
+    >
 
-                    </x-rh.sidebar-link>
+        <i class="bi bi-camera me-2"></i>
 
-                    <x-rh.sidebar-link
-                        href="{{ route('operaciones.servicios.index') }}"
-                        active="operaciones.servicios*"
-                    >
-                        <i class="bi bi-building me-2"></i>
+        Evidencias
 
-                        Servicios
+    </x-rh.sidebar-link>
 
-                    </x-rh.sidebar-link>
 
-                    <x-rh.sidebar-link
-                        href="{{ route('operaciones.plazas.index') }}"
-                        active="operaciones.plazas*"
-                    >
+    {{-- INCIDENCIAS --}}
+    <x-rh.sidebar-link
+        href="{{ route(
+            'operaciones.incidencias.index'
+        ) }}"
+        active="operaciones.incidencias*"
+    >
 
-                        <i class="bi bi-calendar-event me-2"></i>
+        <i class="bi bi-exclamation-triangle me-2"></i>
 
-                        Plazas Operativas
+        Incidencias
 
-                    </x-rh.sidebar-link>
+    </x-rh.sidebar-link>
 
-                    <x-rh.sidebar-link
-                        href="{{ route('operaciones.asignaciones.index') }}"
-                        active="operaciones.asignaciones*"
-                    >
 
-                        <i class="bi bi-exclamation-triangle me-2"></i>
+    {{-- DOBLETES --}}
+    <x-rh.sidebar-link
+        href="{{ route(
+            'operaciones.dobletes.index'
+        ) }}"
+        active="operaciones.dobletes*"
+    >
 
-                        Asignaciones
+        <i class="bi bi-clock-history me-2"></i>
 
-                    </x-rh.sidebar-link>
+        Dobletes
 
-                    <x-rh.sidebar-link
-                        href="{{ route(
-                            'operaciones.supervisiones.index'
-                        ) }}"
-                        active="operaciones.supervisiones*"
-                    >
+    </x-rh.sidebar-link>
 
-                        <i class="bi bi-clipboard-check me-2"></i>
 
-                        Supervisiones
+    {{-- VEHÍCULOS --}}
+    <x-rh.sidebar-link
+        href="{{ route(
+            'operaciones.vehiculos.index'
+        ) }}"
+        active="operaciones.vehiculos*"
+    >
 
-                    </x-rh.sidebar-link>
+        <i class="bi bi-car-front me-2"></i>
 
-                    <x-rh.sidebar-link
-                        href="{{ route(
-                            'operaciones.evidencias.index'
-                        ) }}"
-                        active="operaciones.evidencias*"
-                    >
+        Vehículos
 
-                        <i class="bi bi-camera me-2"></i>
+    </x-rh.sidebar-link>
 
-                        Evidencias
 
-                    </x-rh.sidebar-link>
+    {{-- MANTENIMIENTOS --}}
+    <x-rh.sidebar-link
+        href="{{ route(
+            'operaciones.mantenimientos.index'
+        ) }}"
+        active="operaciones.mantenimientos*"
+    >
 
-                    <x-rh.sidebar-link
-                        href="{{ route(
-                            'operaciones.incidencias.index'
-                        ) }}"
-                        active="operaciones.incidencias*"
-                    >
+        <i class="bi bi-wrench-adjustable me-2"></i>
 
-                        <i class="bi bi-exclamation-triangle me-2"></i>
+        Mantenimientos
 
-                        Incidencias
+    </x-rh.sidebar-link>
 
-                    </x-rh.sidebar-link>
-
-                    <x-rh.sidebar-link
-                        href="{{ route(
-                            'operaciones.dobletes.index'
-                        ) }}"
-                        active="operaciones.dobletes*"
-                    >
-
-                        <i class="bi bi-clock-history me-2"></i>
-
-                        Dobletes
-
-                    </x-rh.sidebar-link>
-
-                    <x-rh.sidebar-link
-                        href="{{ route(
-                            'operaciones.vehiculos.index'
-                        ) }}"
-                        active="operaciones.vehiculos*"
-                    >
-
-                        <i class="bi bi-car-front me-2"></i>
-
-                        Vehículos
-
-                    </x-rh.sidebar-link>
-
-                    <x-rh.sidebar-link
-                        href="{{ route(
-                            'operaciones.mantenimientos.index'
-                        ) }}"
-                        active="operaciones.mantenimientos*"
-                    >
-
-                        <i class="bi bi-wrench-adjustable me-2"></i>
-
-                        Mantenimientos
-
-                    </x-rh.sidebar-link>
-
-                </ul>
-
-            </div>
-
-
-            <!-- CONTENIDO -->
-
-            <div class="col-10 p-0">
-
-
-                <!-- NAVBAR -->
-
-                <nav
-
-                    class="navbar navbar-expand-lg bg-white shadow-sm px-4 py-3"
-
-                >
-
-                    <!-- TITULO -->
-
-                    <h4 class="mb-0 fw-semibold">
-
-                        Sistema Operaciones
-
-                    </h4>
-
-
-                    <!-- DERECHA -->
-
-                    <div
-
-                        class="ms-auto d-flex align-items-center gap-3"
-
-                    >
-                        <!-- LOGOUT -->
-
-                        <form
-
-                            method="POST"
-
-                            action="{{ route('logout') }}"
-
-                        >
-
-                            @csrf
-
-
-                            <button
-
-                                class="btn btn-outline-danger btn-sm rounded-3"
-
-                            >
-
-                                <i class="bi bi-box-arrow-right me-1"></i>
-
-                                Salir
-
-                            </button>
-
-                        </form>
-
-                    </div>
-
-                </nav>
-
-
-                <!-- CONTENIDO -->
-
-                <div class="p-4">
-
-                    @yield('contenido')
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    @stack('scripts')
-
-</body>
-
-</html>
+@endsection

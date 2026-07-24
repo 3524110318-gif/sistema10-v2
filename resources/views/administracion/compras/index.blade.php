@@ -2,49 +2,91 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
     <x-rh.alert-success />
 
-    <h1 class="mb-4">
 
-        COMPRAS
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-    </h1>
+        <div class="d-flex justify-content-between align-items-center">
 
-    <div class="d-flex gap-2 mb-4">
+            <div>
 
-        <a
-            href="{{ route('administracion.compras.create') }}"
-            class="btn btn-primary"
-        >
+                <h2 class="gtri-page-title">
 
-            Nueva compra
+                    <i class="bi bi-cart-check me-2"></i>
 
-        </a>
+                    Compras
+
+                </h2>
+
+                <p class="gtri-page-subtitle">
+
+                    Gestión y seguimiento de las compras realizadas a proveedores.
+
+                </p>
+
+            </div>
+
+            <a
+                href="{{ route('administracion.compras.create') }}"
+                class="btn gtri-btn-primary"
+            >
+
+                <i class="bi bi-plus-circle me-1"></i>
+
+                Nueva compra
+
+            </a>
+
+        </div>
 
     </div>
 
-    <x-rh.card-rh titulo="Buscar compra">
+
+    {{-- BUSCADOR --}}
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>01</span>
+
+            Filtros de búsqueda
+
+        </div>
 
         <form method="GET">
 
-            <div class="row align-items-end">
+            <div class="row g-3 align-items-end">
 
-                <div class="col-md-4">
+                <div class="col-md-5">
 
-                    <x-rh.input-rh
-                        label="Folio"
-                        name="buscar"
+                    <label class="gtri-label mb-2">
+
+                        Folio de compra
+
+                    </label>
+
+                    <input
                         type="text"
-                        :value="request('buscar')"
-                    />
+                        name="buscar"
+                        value="{{ request('buscar') }}"
+                        class="form-control gtri-input"
+                        placeholder="Buscar por folio..."
+                    >
 
                 </div>
 
                 <div class="col-auto">
 
-                    <button class="btn btn-primary">
+                    <button
+                        type="submit"
+                        class="btn gtri-btn-primary"
+                    >
+
+                        <i class="bi bi-search me-1"></i>
 
                         Buscar
 
@@ -52,167 +94,254 @@
 
                 </div>
 
+                @if(request('buscar'))
+
+                    <div class="col-auto">
+
+                        <a
+                            href="{{ route('administracion.compras.index') }}"
+                            class="btn gtri-btn-secondary"
+                        >
+
+                            <i class="bi bi-arrow-clockwise me-1"></i>
+
+                            Limpiar
+
+                        </a>
+
+                    </div>
+
+                @endif
+
             </div>
 
         </form>
 
-    </x-rh.card-rh>
+    </div>
 
-    <x-rh.card-rh titulo="Listado de compras">
 
-        <div class="table-responsive">
+    {{-- LISTADO --}}
+    <div class="gtri-section">
 
-            <table class="table table-bordered table-hover align-middle">
+        <div class="gtri-section-title">
 
-                <thead class="table-dark">
+            <span>02</span>
 
-                    <tr>
+            Listado de compras
 
-                        <th>Folio</th>
+        </div>
 
-                        <th>Proveedor</th>
+        <div class="gtri-table-wrapper">
 
-                        <th>Fecha</th>
+            <div class="table-responsive">
 
-                        <th>Estado</th>
+                <table class="table gtri-table align-middle">
 
-                        <th>Acciones</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @forelse($compras as $compra)
+                    <thead>
 
                         <tr>
 
-                            <td>
+                            <th>Folio</th>
 
-                                {{ $compra->folio }}
+                            <th>Proveedor</th>
 
-                            </td>
+                            <th>Fecha</th>
 
-                            <td>
+                            <th class="text-center">
+                                Estado
+                            </th>
 
-                                {{ $compra->proveedor->razon_social }}
+                            <th class="text-center">
+                                Acciones
+                            </th>
 
-                            </td>
+                        </tr>
 
-                            <td>
+                    </thead>
 
-                                {{ $compra->fecha_compra->format('d/m/Y') }}
+                    <tbody>
 
-                            </td>
+                        @forelse($compras as $compra)
 
-                            <td>
+                            <tr>
 
-                                @if($compra->estado == 'pendiente')
+                                <td>
 
-                                    <span class="badge bg-warning text-dark">
+                                    <span class="text-warning fw-semibold">
 
-                                        Pendiente
-
-                                    </span>
-
-                                @elseif($compra->estado == 'recibida')
-
-                                    <span class="badge bg-success">
-
-                                        Recibida
+                                        {{ $compra->folio }}
 
                                     </span>
 
-                                @else
+                                </td>
 
-                                    <span class="badge bg-danger">
+                                <td>
 
-                                        Cancelada
+                                    <div class="fw-semibold text-light">
+
+                                        {{ $compra->proveedor->razon_social }}
+
+                                    </div>
+
+                                </td>
+
+                                <td>
+
+                                    <span class="text-secondary">
+
+                                        {{ $compra->fecha_compra->format('d/m/Y') }}
 
                                     </span>
 
-                                @endif
+                                </td>
 
-                            </td>
+                                <td class="text-center">
 
-                            <td class="d-flex gap-2">
+                                    @if($compra->estado == 'pendiente')
 
-                                <a
-                                    href="{{ route('administracion.compras.show',$compra) }}"
-                                    class="btn btn-info btn-sm"
-                                >
+                                        <span class="badge gtri-badge-warning">
 
-                                    Ver
+                                            <i class="bi bi-clock me-1"></i>
 
-                                </a>
+                                            Pendiente
 
-                                <a
-                                    href="{{ route('administracion.compras.edit',$compra) }}"
-                                    class="btn btn-warning btn-sm"
-                                >
+                                        </span>
 
-                                    Editar
+                                    @elseif($compra->estado == 'recibida')
 
-                                </a>
+                                        <span class="badge gtri-badge-success">
 
-                                @if($compra->estado != 'cancelada')
+                                            <i class="bi bi-check-circle me-1"></i>
 
-                                    <form
-                                        action="{{ route('administracion.compras.destroy',$compra) }}"
-                                        method="POST"
-                                    >
+                                            Recibida
 
-                                        @csrf
-                                        @method('DELETE')
+                                        </span>
 
-                                        <button
-                                            class="btn btn-danger btn-sm"
-                                            onclick="return confirm('¿Desea cancelar esta compra?')"
+                                    @else
+
+                                        <span class="badge gtri-badge-danger">
+
+                                            <i class="bi bi-x-circle me-1"></i>
+
+                                            Cancelada
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+                                <td>
+
+                                    <div class="d-flex justify-content-center gap-2">
+
+                                        <a
+                                            href="{{ route(
+                                                'administracion.compras.show',
+                                                $compra
+                                            ) }}"
+                                            class="btn btn-sm gtri-btn-secondary"
+                                            title="Ver detalle"
                                         >
 
-                                            Cancelar
+                                            <i class="bi bi-eye"></i>
 
-                                        </button>
+                                        </a>
 
-                                    </form>
+                                        <a
+                                            href="{{ route(
+                                                'administracion.compras.edit',
+                                                $compra
+                                            ) }}"
+                                            class="btn btn-sm gtri-btn-secondary"
+                                            title="Editar compra"
+                                        >
 
-                                @endif
+                                            <i class="bi bi-pencil"></i>
 
-                            </td>
+                                        </a>
 
-                        </tr>
+                                        @if($compra->estado != 'cancelada')
 
-                    @empty
+                                            <form
+                                                action="{{ route(
+                                                    'administracion.compras.destroy',
+                                                    $compra
+                                                ) }}"
+                                                method="POST"
+                                            >
 
-                        <tr>
+                                                @csrf
+                                                @method('DELETE')
 
-                            <td
-                                colspan="5"
-                                class="text-center"
-                            >
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm(
+                                                        '¿Desea cancelar esta compra?'
+                                                    )"
+                                                    title="Cancelar compra"
+                                                >
 
-                                No hay compras registradas.
+                                                    <i class="bi bi-x-lg"></i>
 
-                            </td>
+                                                </button>
 
-                        </tr>
+                                            </form>
 
-                    @endforelse
+                                        @endif
 
-                </tbody>
+                                    </div>
 
-            </table>
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    class="text-center py-5"
+                                >
+
+                                    <div class="text-secondary">
+
+                                        <i
+                                            class="bi bi-cart-x fs-1 d-block mb-3"
+                                        ></i>
+
+                                        No hay compras registradas.
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
-        <div class="d-flex justify-content-center mt-4">
 
-            {{ $compras->links() }}
+        @if($compras->hasPages())
 
-        </div>
+            <div class="d-flex justify-content-center mt-4">
 
-    </x-rh.card-rh>
+                {{ $compras->links() }}
+
+            </div>
+
+        @endif
+
+    </div>
 
 </div>
 

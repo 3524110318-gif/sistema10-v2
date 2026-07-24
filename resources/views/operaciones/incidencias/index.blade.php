@@ -2,208 +2,429 @@
 
 @section('contenido')
 
-<div class="container">
+<div class="container-fluid">
 
-    <div
-        class="d-flex justify-content-between mb-4"
-    >
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-        <h1>
+        <div>
 
-            Incidencias Operativas
+            <h2 class="gtri-page-title">
 
-        </h1>
+                <i class="bi bi-exclamation-triangle me-2"></i>
+
+                Incidencias operativas
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Consulta y gestiona las incidencias registradas
+                durante la operación.
+
+            </p>
+
+        </div>
 
         <a
             href="{{ route(
                 'operaciones.incidencias.create'
             ) }}"
-            class="btn btn-primary"
+            class="btn gtri-btn-primary"
         >
 
-            Nueva Incidencia
+            <i class="bi bi-plus-circle me-1"></i>
+
+            Nueva incidencia
 
         </a>
 
     </div>
 
-    <table class="table">
 
-        <thead>
+    {{-- LISTADO --}}
+    <div class="gtri-section mb-0">
 
-            <tr>
+        <div
+            class="
+                d-flex
+                justify-content-between
+                align-items-center
+                flex-wrap
+                gap-2
+                mb-4
+            "
+        >
 
-                <th>
+            <div class="gtri-section-title mb-0">
 
-                    Guardia
+                <span>01</span>
 
-                </th>
+                Lista de incidencias
 
-                <th>
+            </div>
 
-                    Servicio
+            <div>
 
-                </th>
+                <span class="text-secondary">
 
-                <th>
+                    Registros:
 
-                    Plaza
+                </span>
 
-                </th>
+                <span class="text-warning fw-bold">
 
-                <th>
+                    {{ $incidencias->count() }}
 
-                    Fecha
+                </span>
 
-                </th>
+            </div>
 
-                <th>
+        </div>
 
-                    Tipo
 
-                </th>
+        <div class="gtri-table-wrapper">
 
-                <th>
+            <div class="table-responsive">
 
-                    Estado
+                <table class="table gtri-table align-middle mb-0">
 
-                </th>
+                    <thead>
 
-                <th>
+                        <tr>
 
-                    Acciones
+                            <th>Guardia</th>
 
-                </th>
+                            <th>Servicio</th>
 
-            </tr>
+                            <th>Plaza</th>
 
-        </thead>
+                            <th>Fecha</th>
 
-        <tbody>
+                            <th>Tipo</th>
 
-            @forelse(
-                $incidencias
-                as $incidencia
-            )
+                            <th>Estado</th>
 
-                <tr>
+                            <th class="text-center">
 
-                    <td>
+                                Acciones
 
-                        {{ $incidencia->supervision?->asignacion?->empleado?->nombre }}
+                            </th>
 
-                        {{ $incidencia->supervision?->asignacion?->empleado?->apellido_paterno }}
+                        </tr>
 
-                    </td>
+                    </thead>
 
-                    <td>
+                    <tbody>
 
-                        {{ $incidencia->servicio->nombre }}
+                        @forelse(
+                            $incidencias
+                            as $incidencia
+                        )
 
-                    </td>
+                            <tr>
 
-                    <td>
+                                {{-- GUARDIA --}}
+                                <td>
 
-                        {{ $incidencia->supervision?->asignacion?->plaza?->nombre_plaza }}
+                                    @if(
+                                        $incidencia
+                                            ->supervision
+                                            ?->asignacion
+                                            ?->empleado
+                                    )
 
-                    </td>
+                                        <div>
 
-                    <td>
+                                            <span class="text-light fw-semibold d-block">
 
-                        {{ $incidencia->supervision?->fecha_supervision }}
+                                                {{
+                                                    $incidencia
+                                                        ->supervision
+                                                        ->asignacion
+                                                        ->empleado
+                                                        ->nombre
+                                                }}
 
-                    </td>
+                                                {{
+                                                    $incidencia
+                                                        ->supervision
+                                                        ->asignacion
+                                                        ->empleado
+                                                        ->apellido_paterno
+                                                }}
 
-                    <td>
+                                            </span>
 
-                        {{ ucfirst($incidencia->tipo) }}
+                                            <small class="text-secondary">
 
-                    </td>
+                                                {{
+                                                    $incidencia
+                                                        ->supervision
+                                                        ->asignacion
+                                                        ->empleado
+                                                        ->numero_control
+                                                }}
 
-                    <td>
+                                            </small>
 
-                        @if($incidencia->estado == 'abierta')
+                                        </div>
 
-                            <span class="badge bg-danger">
+                                    @else
 
-                                Abierta
+                                        <span class="text-secondary">
 
-                            </span>
+                                            No relacionado
 
-                        @else
+                                        </span>
 
-                            <span class="badge bg-success">
+                                    @endif
 
-                                Cerrada
+                                </td>
 
-                            </span>
 
-                        @endif
+                                {{-- SERVICIO --}}
+                                <td>
 
-                    </td>
+                                    <span class="text-light">
 
-                    <td>
+                                        {{ $incidencia->servicio->nombre }}
 
-                        <a
-                            href="{{ route(
-                                'operaciones.incidencias.show',
-                                $incidencia
-                            ) }}"
-                            class="btn btn-primary btn-sm"
-                        >
+                                    </span>
 
-                            Ver
+                                </td>
 
-                        </a>
 
-                        @if($incidencia->estado != 'cerrada')
+                                {{-- PLAZA --}}
+                                <td>
 
-                            <form
-                                method="POST"
-                                action="{{ route(
-                                    'operaciones.incidencias.cerrar',
-                                    $incidencia
-                                ) }}"
-                                class="d-inline"
-                            >
+                                    @if(
+                                        $incidencia
+                                            ->supervision
+                                            ?->asignacion
+                                            ?->plaza
+                                    )
 
-                                @csrf
+                                        <span class="text-warning fw-semibold">
 
-                                @method('PATCH')
+                                            {{
+                                                $incidencia
+                                                    ->supervision
+                                                    ->asignacion
+                                                    ->plaza
+                                                    ->nombre_plaza
+                                            }}
 
-                                <button
-                                    class="btn btn-success btn-sm"
+                                        </span>
+
+                                    @else
+
+                                        <span class="text-secondary">
+
+                                            Sin plaza
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                {{-- FECHA --}}
+                                <td>
+
+                                    @if($incidencia->supervision)
+
+                                        {{
+                                            $incidencia
+                                                ->supervision
+                                                ->fecha_supervision
+                                        }}
+
+                                    @else
+
+                                        <span class="text-secondary">
+
+                                            Sin supervisión
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                {{-- TIPO --}}
+                                <td>
+
+                                    <span class="badge bg-secondary">
+
+                                        {{ ucfirst($incidencia->tipo) }}
+
+                                    </span>
+
+                                </td>
+
+
+                                {{-- ESTADO --}}
+                                <td>
+
+                                    @if($incidencia->estado === 'abierta')
+
+                                        <span class="badge bg-danger">
+
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+
+                                            Abierta
+
+                                        </span>
+
+                                    @else
+
+                                        <span class="badge bg-success">
+
+                                            <i class="bi bi-check-circle me-1"></i>
+
+                                            Cerrada
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                {{-- ACCIONES --}}
+                                <td class="text-center">
+
+                                    <div
+                                        class="
+                                            d-flex
+                                            justify-content-center
+                                            align-items-center
+                                            gap-2
+                                            flex-nowrap
+                                        "
+                                    >
+
+                                        <a
+                                            href="{{ route(
+                                                'operaciones.incidencias.show',
+                                                $incidencia
+                                            ) }}"
+                                            class="btn btn-primary btn-sm"
+                                            title="Ver incidencia"
+                                        >
+
+                                            <i class="bi bi-eye"></i>
+
+                                        </a>
+
+
+                                        @if(
+                                            $incidencia->estado
+                                            !=
+                                            'cerrada'
+                                        )
+
+                                            <form
+                                                method="POST"
+                                                action="{{ route(
+                                                    'operaciones.incidencias.cerrar',
+                                                    $incidencia
+                                                ) }}"
+                                                class="d-inline"
+                                                onsubmit="return confirm(
+                                                    '¿Seguro que deseas cerrar esta incidencia?'
+                                                )"
+                                            >
+
+                                                @csrf
+                                                @method('PATCH')
+
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-success btn-sm"
+                                                    title="Cerrar incidencia"
+                                                >
+
+                                                    <i class="bi bi-check-lg"></i>
+
+                                                </button>
+
+                                            </form>
+
+                                        @endif
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="7"
+                                    class="text-center py-5"
                                 >
 
-                                    Cerrar
+                                    <i
+                                        class="
+                                            bi
+                                            bi-shield-check
+                                            fs-1
+                                            text-secondary
+                                            d-block
+                                            mb-3
+                                        "
+                                    ></i>
 
-                                </button>
+                                    <h5 class="text-light">
 
-                            </form>
+                                        Sin incidencias operativas
 
-                        @endif
+                                    </h5>
 
-                    </td>
+                                    <p class="text-secondary mb-0">
 
-                </tr>
+                                        Actualmente no existen incidencias registradas.
 
-            @empty
+                                    </p>
 
-                <tr>
+                                </td>
 
-                    <td colspan="4">
+                            </tr>
 
-                        Sin incidencias
+                        @endforelse
 
-                    </td>
+                    </tbody>
 
-                </tr>
+                </table>
 
-            @endforelse
+            </div>
 
-        </tbody>
+        </div>
 
-    </table>
+
+        {{-- PAGINACIÓN --}}
+        @if(
+            method_exists($incidencias, 'hasPages')
+            &&
+            $incidencias->hasPages()
+        )
+
+            <div class="d-flex justify-content-center mt-4">
+
+                {{ $incidencias->withQueryString()->links() }}
+
+            </div>
+
+        @endif
+
+    </div>
 
 </div>
 

@@ -2,11 +2,14 @@
 
 @section('contenido')
 
-<div class="container">
+<div class="container-fluid">
 
+    {{-- MENSAJES --}}
     @if(session('success'))
 
         <div class="alert alert-success">
+
+            <i class="bi bi-check-circle me-1"></i>
 
             {{ session('success') }}
 
@@ -14,9 +17,12 @@
 
     @endif
 
+
     @if(session('error'))
 
         <div class="alert alert-danger">
+
+            <i class="bi bi-exclamation-triangle me-1"></i>
 
             {{ session('error') }}
 
@@ -24,123 +30,188 @@
 
     @endif
 
-    <div
-        class="d-flex justify-content-between align-items-center mb-4"
-    >
 
-        <h1>
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-            Servicios
+        <div>
 
-        </h1>
+            <h2 class="gtri-page-title">
+
+                <i class="bi bi-building me-2"></i>
+
+                Servicios
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Consulta y administra los servicios operativos registrados.
+
+            </p>
+
+        </div>
 
         <a
             href="{{ route(
                 'operaciones.servicios.create'
             ) }}"
-            class="btn btn-primary"
+            class="btn gtri-btn-primary"
         >
 
-            Nuevo Servicio
+            <i class="bi bi-plus-circle me-1"></i>
+
+            Nuevo servicio
 
         </a>
 
     </div>
 
-    <form
-        method="GET"
-        action="{{ route(
-            'operaciones.servicios.index'
-        ) }}"
-        class="row mb-4"
-    >
 
-        <div class="col-md-6">
+    {{-- BUSCADOR --}}
+    <div class="gtri-section">
 
-            <input
-                type="text"
-                name="buscar"
-                class="form-control"
-                placeholder="Buscar servicio, cliente, contrato o municipio..."
-                value="{{ $buscar }}"
-            >
+        <div class="gtri-section-title">
+
+            <span>01</span>
+
+            Buscar servicios
 
         </div>
 
-        <div class="col-md-2">
+        <form
+            method="GET"
+            action="{{ route(
+                'operaciones.servicios.index'
+            ) }}"
+        >
 
-            <button
-                class="btn btn-dark w-100"
-            >
+            <div class="row g-3 align-items-end">
 
-                Buscar
+                <div class="col-lg-7">
 
-            </button>
+                    <label
+                        for="buscar"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Buscar
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="buscar"
+                        id="buscar"
+                        class="form-control gtri-input"
+                        placeholder="Buscar servicio, cliente, contrato o municipio..."
+                        value="{{ $buscar }}"
+                    >
+
+                </div>
+
+                <div class="col-lg-2 col-md-6">
+
+                    <button
+                        type="submit"
+                        class="btn gtri-btn-primary w-100"
+                    >
+
+                        <i class="bi bi-search me-1"></i>
+
+                        Buscar
+
+                    </button>
+
+                </div>
+
+                <div class="col-lg-2 col-md-6">
+
+                    <a
+                        href="{{ route(
+                            'operaciones.servicios.index'
+                        ) }}"
+                        class="btn gtri-btn-secondary w-100"
+                    >
+
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>
+
+                        Limpiar
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    {{-- LISTADO --}}
+    <div class="gtri-section mb-0">
+
+        <div
+            class="
+                d-flex
+                flex-wrap
+                justify-content-between
+                align-items-center
+                gap-2
+                mb-4
+            "
+        >
+
+            <div class="gtri-section-title mb-0">
+
+                <span>02</span>
+
+                Lista de servicios
+
+            </div>
+
+            <div>
+
+                <span class="text-secondary">
+
+                    Registros en esta página:
+
+                </span>
+
+                <span class="text-warning fw-bold">
+
+                    {{ $servicios->count() }}
+
+                </span>
+
+            </div>
 
         </div>
 
-        <div class="col-md-2">
 
-            <a
-                href="{{ route(
-                    'operaciones.servicios.index'
-                ) }}"
-                class="btn btn-secondary w-100"
-            >
-
-                Limpiar
-
-            </a>
-
-        </div>
-
-    </form>
-
-    <div class="card shadow-sm">
-
-        <div class="card-body">
+        <div class="gtri-table-wrapper">
 
             <div class="table-responsive">
 
-                <table
-                    class="table table-hover align-middle"
-                >
+                <table class="table gtri-table align-middle mb-0">
 
                     <thead>
 
                         <tr>
 
-                            <th>
+                            <th>Cliente</th>
 
-                                Cliente
+                            <th>Contrato</th>
 
-                            </th>
+                            <th>Servicio</th>
 
-                            <th>
+                            <th>Municipio</th>
 
-                                Contrato
+                            <th>Estado</th>
 
-                            </th>
-
-                            <th>
-
-                                Servicio
-
-                            </th>
-
-                            <th>
-
-                                Municipio
-
-                            </th>
-
-                            <th>
-
-                                Estado
-
-                            </th>
-
-                            <th width="250">
+                            <th class="text-center">
 
                                 Acciones
 
@@ -156,43 +227,84 @@
 
                             <tr>
 
+                                {{-- CLIENTE --}}
                                 <td>
 
-                                    {{ $servicio->contrato->cliente->razon_social }}
+                                    <span class="text-light fw-semibold">
+
+                                        {{
+                                            $servicio
+                                                ->contrato
+                                                ->cliente
+                                                ->razon_social
+                                        }}
+
+                                    </span>
 
                                 </td>
 
+
+                                {{-- CONTRATO --}}
                                 <td>
 
-                                    {{ $servicio->contrato->numero_contrato }}
+                                    <span class="text-warning fw-semibold">
+
+                                        {{
+                                            $servicio
+                                                ->contrato
+                                                ->numero_contrato
+                                        }}
+
+                                    </span>
 
                                 </td>
 
+
+                                {{-- SERVICIO --}}
                                 <td>
 
-                                    {{ $servicio->nombre }}
+                                    <span class="text-light">
+
+                                        {{ $servicio->nombre }}
+
+                                    </span>
 
                                 </td>
 
+
+                                {{-- MUNICIPIO --}}
                                 <td>
 
-                                    {{ $servicio->municipio }}
+                                    <span class="text-light">
+
+                                        {{
+                                            $servicio->municipio
+                                            ?: 'No registrado'
+                                        }}
+
+                                    </span>
 
                                 </td>
 
+
+                                {{-- ESTADO --}}
                                 <td>
 
-                                    @if($servicio->estado=='activo')
+                                    @if($servicio->estado === 'activo')
 
                                         <span class="badge bg-success">
+
+                                            <i class="bi bi-check-circle me-1"></i>
 
                                             Activo
 
                                         </span>
 
-                                    @elseif($servicio->estado=='suspendido')
+                                    @elseif($servicio->estado === 'suspendido')
 
                                         <span class="badge bg-warning text-dark">
+
+                                            <i class="bi bi-pause-circle me-1"></i>
 
                                             Suspendido
 
@@ -202,6 +314,8 @@
 
                                         <span class="badge bg-danger">
 
+                                            <i class="bi bi-x-circle me-1"></i>
+
                                             Finalizado
 
                                         </span>
@@ -210,57 +324,61 @@
 
                                 </td>
 
-                                <td>
 
-                                    <a
-                                        href="{{ route(
-                                            'operaciones.servicios.show',
-                                            $servicio
-                                        ) }}"
-                                        class="btn btn-primary btn-sm"
+                                {{-- ACCIONES --}}
+                                <td class="text-center">
+
+                                    <div
+                                        class="
+                                            d-flex
+                                            justify-content-center
+                                            align-items-center
+                                            gap-2
+                                            flex-nowrap
+                                        "
                                     >
 
-                                        Ver
-
-                                    </a>
-
-                                    <a
-                                        href="{{ route(
-                                            'operaciones.servicios.edit',
-                                            $servicio
-                                        ) }}"
-                                        class="btn btn-warning btn-sm"
-                                    >
-
-                                        Editar
-
-                                    </a>
-
-                                    <form
-                                        action="{{ route(
-                                            'operaciones.servicios.destroy',
-                                            $servicio
-                                        ) }}"
-                                        method="POST"
-                                        class="d-inline"
-                                        onsubmit="return confirm(
-                                            '¿Desea eliminar este servicio?'
-                                        )"
-                                    >
-
-                                        @csrf
-
-                                        @method('DELETE')
-
-                                        <button
-                                            class="btn btn-danger btn-sm"
+                                        <a
+                                            href="{{ route(
+                                                'operaciones.servicios.show',
+                                                $servicio
+                                            ) }}"
+                                            class="btn btn-primary btn-sm"
+                                            title="Ver servicio"
                                         >
 
-                                            Eliminar
+                                            <i class="bi bi-eye"></i>
 
-                                        </button>
+                                        </a>
 
-                                    </form>
+                                        <form
+                                            action="{{ route(
+                                                'operaciones.servicios.destroy',
+                                                $servicio
+                                            ) }}"
+                                            method="POST"
+                                            class="d-inline"
+                                            onsubmit="return confirm(
+                                                '¿Desea eliminar este servicio?'
+                                            )"
+                                        >
+
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-danger btn-sm"
+                                                title="Eliminar servicio"
+                                            >
+
+                                                <i class="bi bi-trash"></i>
+
+                                            </button>
+
+                                        </form>
+
+                                    </div>
 
                                 </td>
 
@@ -272,10 +390,31 @@
 
                                 <td
                                     colspan="6"
-                                    class="text-center"
+                                    class="text-center py-5"
                                 >
 
-                                    No existen servicios registrados.
+                                    <i
+                                        class="
+                                            bi
+                                            bi-building-x
+                                            d-block
+                                            fs-1
+                                            text-secondary
+                                            mb-3
+                                        "
+                                    ></i>
+
+                                    <h5 class="text-light">
+
+                                        No existen servicios registrados
+
+                                    </h5>
+
+                                    <p class="text-secondary mb-0">
+
+                                        Registra un nuevo servicio para comenzar.
+
+                                    </p>
 
                                 </td>
 
@@ -289,15 +428,25 @@
 
             </div>
 
+        </div>
+
+
+        {{-- PAGINACIÓN --}}
+        @if($servicios->hasPages())
+
             <div
-                class="mt-3"
+                class="
+                    d-flex
+                    justify-content-center
+                    mt-4
+                "
             >
 
-                {{ $servicios->links() }}
+                {{ $servicios->withQueryString()->links() }}
 
             </div>
 
-        </div>
+        @endif
 
     </div>
 

@@ -1,0 +1,612 @@
+:root {
+    --gtri-bg: #0b0f16;
+    --gtri-bg-soft: #111722;
+    --gtri-panel: #151c27;
+
+    --gtri-gold: #d4a935;
+    --gtri-gold-light: #f0cd67;
+
+    --gtri-blue: #0f5ec7;
+    --gtri-blue-soft: #123b6d;
+
+    --gtri-text: #f4f4f4;
+    --gtri-muted: #8d95a3;
+
+    --gtri-border: rgba(212, 169, 53, 0.35);
+
+    --gtri-success: #198754;
+    --gtri-warning: #ffc107;
+    --gtri-danger: #dc3545;
+}
+
+/* ============================= */
+/* BASE GENERAL                  */
+/* ============================= */
+
+body {
+    background: var(--gtri-bg);
+    color: var(--gtri-text);
+}
+
+.gtri-page {
+    background: var(--gtri-bg);
+    min-height: 100vh;
+}
+
+.gtri-page-header {
+    background:
+        linear-gradient(
+            135deg,
+            #101722,
+            #0b0f16
+        );
+
+    border: 1px solid var(--gtri-border);
+    border-radius: 12px;
+
+    padding: 22px;
+
+    margin-bottom: 24px;
+
+    box-shadow:
+        0 8px 24px
+        rgba(0, 0, 0, 0.25);
+}
+
+.gtri-page-title {
+    color: var(--gtri-gold);
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.gtri-page-subtitle {
+    color: var(--gtri-muted);
+    margin-bottom: 0;
+}
+
+
+/* ============================= */
+/* TARJETAS                      */
+/* ============================= */
+
+.gtri-card {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(21, 28, 39, 0.98),
+            rgba(10, 14, 20, 0.98)
+        );
+
+    border: 1px solid var(--gtri-border);
+
+    border-radius: 12px;
+
+    padding: 22px;
+
+    box-shadow:
+        0 8px 24px
+        rgba(0, 0, 0, 0.3);
+}
+
+
+/* ============================= */
+/* SECCIONES                     */
+/* ============================= */
+
+.gtri-section {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15, 18, 24, 0.98),
+            rgba(9, 12, 18, 0.98)
+        );
+
+    border: 1px solid var(--gtri-border);
+
+    border-radius: 10px;
+
+    padding: 22px;
+
+    margin-bottom: 20px;
+}
+
+.gtri-section-title {
+    color: var(--gtri-gold);
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.6px;
+
+    margin-bottom: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+.gtri-section-title span {
+    background:
+        linear-gradient(
+            135deg,
+            var(--gtri-gold),
+            var(--gtri-gold-light)
+        );
+
+    color: #10131a;
+
+    min-width: 32px;
+
+    height: 32px;
+
+    border-radius: 6px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 0.85rem;
+
+    font-weight: 800;
+}
+
+
+/* ============================= */
+/* FORMULARIOS                   */
+/* ============================= */
+
+.gtri-input,
+.gtri-select,
+.gtri-textarea {
+    background-color: #0c1118 !important;
+
+    border:
+        1px solid
+        var(--gtri-border) !important;
+
+    color:
+        var(--gtri-text) !important;
+
+    min-height: 46px;
+
+    border-radius: 6px;
+}
+
+.gtri-input:focus,
+.gtri-select:focus,
+.gtri-textarea:focus {
+    background-color: #0c1118 !important;
+
+    color: #ffffff !important;
+
+    border-color:
+        var(--gtri-gold) !important;
+
+    box-shadow:
+        0 0 0 0.18rem
+        rgba(212, 169, 53, 0.12) !important;
+}
+
+.gtri-input::placeholder,
+.gtri-textarea::placeholder {
+    color: #737c89;
+}
+
+.gtri-select option {
+    background: #0c1118;
+    color: #ffffff;
+}
+
+.gtri-label {
+    color: #e4e7eb;
+    font-weight: 600;
+}
+
+.gtri-help {
+    color: var(--gtri-muted);
+    font-size: 0.85rem;
+}
+
+
+/* ============================= */
+/* BOTONES                       */
+/* ============================= */
+
+.gtri-btn-primary {
+    background:
+        linear-gradient(
+            135deg,
+            #c99720,
+            #e0b843
+        );
+
+    color: #11151c;
+
+    border: none;
+
+    font-weight: 700;
+
+    padding:
+        10px
+        22px;
+
+    border-radius: 6px;
+}
+
+.gtri-btn-primary:hover {
+    background:
+        linear-gradient(
+            135deg,
+            #d9ad32,
+            #f0ca58
+        );
+
+    color: #000000;
+}
+
+.gtri-btn-secondary {
+    background: #151a23;
+
+    color: #d8dde6;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.16);
+
+    padding:
+        10px
+        22px;
+
+    border-radius: 6px;
+}
+
+.gtri-btn-secondary:hover {
+    background: #202734;
+    color: #ffffff;
+}
+
+
+/* ============================= */
+/* TABLAS                        */
+/* ============================= */
+
+.gtri-table-wrapper {
+    background: #0f141c;
+
+    border: 1px solid var(--gtri-border);
+
+    border-radius: 10px;
+
+    overflow: hidden;
+}
+
+.gtri-table{
+    background:#111827;
+    color:#F8FAFC;
+}
+
+.gtri-table thead{
+    background:#1E293B;
+}
+
+.gtri-table thead th{
+    background:#1E293B;
+    color:#D4AF37;
+    font-size:15px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    border-bottom:2px solid rgba(212,175,55,.35);
+    padding:16px 18px;
+}
+
+.gtri-table tbody td{
+    background:#111827;
+    color:#F8FAFC;
+    border-color:rgba(255,255,255,.08);
+}
+
+.gtri-table tbody tr:hover{
+    background:#1F2937;
+}
+
+.gtri-table tbody tr:hover td{
+    background:#1F2937;
+}
+
+
+/* ============================= */
+/* BADGES                        */
+/* ============================= */
+
+.gtri-badge-success {
+    background:
+        rgba(25, 135, 84, 0.18);
+
+    color: #4ed58a;
+
+    border:
+        1px solid
+        rgba(25, 135, 84, 0.45);
+}
+
+.gtri-badge-warning {
+    background:
+        rgba(255, 193, 7, 0.15);
+
+    color: #ffd65a;
+
+    border:
+        1px solid
+        rgba(255, 193, 7, 0.4);
+}
+
+.gtri-badge-danger {
+    background:
+        rgba(220, 53, 69, 0.15);
+
+    color: #ff6574;
+
+    border:
+        1px solid
+        rgba(220, 53, 69, 0.4);
+}
+
+
+/* ============================= */
+/* SIDEBAR                       */
+/* ============================= */
+
+.gtri-sidebar {
+    background:
+        linear-gradient(
+            180deg,
+            #0a0f17,
+            #0d131c
+        );
+
+    border-right:
+        1px solid
+        rgba(212, 169, 53, 0.25);
+}
+
+.gtri-sidebar-title {
+    color: var(--gtri-gold);
+
+    font-weight: 800;
+}
+
+.gtri-sidebar-link {
+    color: #d8dde6;
+
+    border-radius: 6px;
+
+    transition:
+        0.2s ease;
+}
+
+.gtri-sidebar-link:hover {
+    background:
+        rgba(15, 94, 199, 0.12);
+
+    color: #ffffff;
+}
+
+.gtri-sidebar-link.active {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(212, 169, 53, 0.15),
+            rgba(15, 94, 199, 0.12)
+        );
+
+    color: var(--gtri-gold);
+
+    border:
+        1px solid
+        rgba(212, 169, 53, 0.4);
+}
+
+
+/* ============================= */
+/* NAVBAR                        */
+/* ============================= */
+
+.gtri-navbar {
+    background:
+        #0f151e !important;
+
+    border-bottom:
+        1px solid
+        rgba(212, 169, 53, 0.2);
+
+    color:
+        var(--gtri-text);
+}
+
+
+/* ============================= */
+/* ALERTAS                       */
+/* ============================= */
+
+.gtri-alert {
+    border-radius: 8px;
+    border: 1px solid var(--gtri-border);
+}
+
+/* ============================= */
+/* LOGO / MARCA GTRI             */
+/* ============================= */
+
+.gtri-logo-mark {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--gtri-gold),
+            var(--gtri-gold-light)
+        );
+
+    color: #0b0f16;
+
+    border-radius: 8px;
+
+    font-size: 1.5rem;
+    font-weight: 900;
+
+    box-shadow:
+        0 0 18px
+        rgba(212, 169, 53, 0.25);
+}
+
+
+/* ============================= */
+/* ESTRUCTURA GLOBAL             */
+/* ============================= */
+
+.gtri-page {
+    margin: 0;
+
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(15, 94, 199, 0.08),
+            transparent 35%
+        ),
+        #090d13;
+
+    color: var(--gtri-text);
+
+    min-height: 100vh;
+}
+
+
+.gtri-sidebar {
+    background:
+        linear-gradient(
+            180deg,
+            #090d14 0%,
+            #0c121b 55%,
+            #090d14 100%
+        );
+
+    border-right:
+        1px solid
+        rgba(212, 169, 53, 0.25);
+
+    box-shadow:
+        8px 0 25px
+        rgba(0, 0, 0, 0.25);
+}
+
+
+.gtri-navbar {
+    background:
+        rgba(
+            13,
+            19,
+            28,
+            0.98
+        ) !important;
+
+    border-bottom:
+        1px solid
+        rgba(212, 169, 53, 0.2);
+
+    min-height: 76px;
+
+    box-shadow:
+        0 5px 20px
+        rgba(0, 0, 0, 0.2);
+}
+
+
+.gtri-check-card{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    width:100%;
+    min-height:64px;
+    padding:15px 16px;
+    background:#111827;
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:12px;
+    color:#F8FAFC;
+    cursor:pointer;
+    transition:.2s ease;
+}
+
+.gtri-check-card:hover{
+    border-color:#D4AF37;
+    background:#172033;
+}
+
+.gtri-check-card .form-check-input{
+    width:19px;
+    height:19px;
+    margin:0;
+    flex-shrink:0;
+}
+
+.gtri-check-card .form-check-input:checked{
+    background-color:#D4AF37;
+    border-color:#D4AF37;
+}
+
+.gtri-check-card i{
+    color:#D4AF37;
+}
+
+.gtri-stat-icon{
+    width:48px;
+    height:48px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#111827;
+    border:1px solid rgba(212,175,55,.25);
+    color:#D4AF37;
+    font-size:1.35rem;
+}
+
+.gtri-card{
+    background:#0F172A;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:16px;
+    padding:22px;
+    box-shadow:0 10px 25px rgba(0,0,0,.12);
+}
+
+.gtri-info-card{
+    background:#111827;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+    padding:20px;
+}
+
+.gtri-info-label{
+    color:#D4AF37;
+    font-size:.82rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+}
+
+.gtri-info-value{
+    color:#F8FAFC;
+    font-size:1rem;
+    font-weight:500;
+    word-break:break-word;
+}

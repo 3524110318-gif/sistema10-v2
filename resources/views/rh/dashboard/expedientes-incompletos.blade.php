@@ -2,77 +2,138 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <h1 class="mb-4">
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-        Expedientes incompletos
+        <div>
 
-    </h1>
+            <h2 class="gtri-page-title">
 
-    @forelse($empleadosIncompletos as $item)
+                <i class="bi bi-folder-x me-2"></i>
 
-        <div class="card shadow-sm mb-3">
+                Expedientes incompletos
 
-            <div class="card-body">
+            </h2>
 
-                <h5>
+            <p class="gtri-page-subtitle">
 
-                    {{ $item['empleado']->numero_control }}
+                Empleados con documentación pendiente dentro de su expediente.
 
-                    -
+            </p>
 
-                    {{ $item['empleado']->nombre }}
+        </div>
 
-                    {{ $item['empleado']->apellido_paterno }}
+    </div>
 
-                </h5>
 
-                <strong>
+    {{-- LISTADO --}}
+    <div class="gtri-section">
 
-                    Faltan:
+        <div class="gtri-section-title">
 
-                </strong>
+            <span>01</span>
 
-                <ul class="mt-2">
+            Expedientes pendientes
 
-                    @foreach($item['faltantes'] as $faltante)
+        </div>
 
-                        <li>
 
-                            {{ $faltante }}
+        @forelse($empleadosIncompletos as $item)
 
-                        </li>
+            <div class="gtri-card mb-3">
 
-                    @endforeach
+                <div class="d-flex justify-content-between align-items-start gap-3">
 
-                </ul>
+                    <div>
 
-                <a
-                    href="{{ route(
-                        'rh.empleados.show',
-                        $item['empleado']->id
-                    ) }}"
-                    class="btn btn-primary btn-sm"
-                >
+                        <div class="fw-bold text-light fs-5">
 
-                    Ver expediente
+                            {{ $item['empleado']->numero_control }}
 
-                </a>
+                            -
+
+                            {{ $item['empleado']->nombre }}
+
+                            {{ $item['empleado']->apellido_paterno }}
+
+                        </div>
+
+                        <div class="mt-3">
+
+                            <span class="text-warning fw-semibold">
+
+                                <i class="bi bi-exclamation-triangle me-1"></i>
+
+                                Documentos faltantes
+
+                            </span>
+
+                            <ul class="mt-2 mb-0 text-secondary">
+
+                                @foreach($item['faltantes'] as $faltante)
+
+                                    <li>
+
+                                        {{ $faltante }}
+
+                                    </li>
+
+                                @endforeach
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+
+                    <a
+                        href="{{ route(
+                            'rh.empleados.show',
+                            $item['empleado']->id
+                        ) }}"
+                        class="btn gtri-btn-primary"
+                    >
+
+                        <i class="bi bi-folder2-open me-1"></i>
+
+                        Ver expediente
+
+                    </a>
+
+                </div>
 
             </div>
 
-        </div>
+        @empty
 
-    @empty
+            <div class="gtri-card text-center py-5">
 
-        <div class="alert alert-success">
+                <div class="fs-1 text-success mb-3">
 
-            Todos los expedientes están completos.
+                    <i class="bi bi-check-circle"></i>
 
-        </div>
+                </div>
 
-    @endforelse
+                <h5 class="text-light">
+
+                    Todos los expedientes están completos
+
+                </h5>
+
+                <p class="text-secondary mb-0">
+
+                    No existen documentos pendientes actualmente.
+
+                </p>
+
+            </div>
+
+        @endforelse
+
+    </div>
 
 </div>
 

@@ -2,49 +2,91 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
     <x-rh.alert-success />
 
-    <h1 class="mb-4">
 
-        ACTIVOS
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-    </h1>
+        <div class="d-flex justify-content-between align-items-center">
 
-    <div class="d-flex gap-2 mb-4">
+            <div>
 
-        <a
-            href="{{ route('administracion.activos.create') }}"
-            class="btn btn-primary"
-        >
+                <h2 class="gtri-page-title">
 
-            Nuevo activo
+                    <i class="bi bi-pc-display me-2"></i>
 
-        </a>
+                    Activos
+
+                </h2>
+
+                <p class="gtri-page-subtitle">
+
+                    Control y seguimiento de los activos registrados en GTRI.
+
+                </p>
+
+            </div>
+
+            <a
+                href="{{ route('administracion.activos.create') }}"
+                class="btn gtri-btn-primary"
+            >
+
+                <i class="bi bi-plus-circle me-1"></i>
+
+                Nuevo activo
+
+            </a>
+
+        </div>
 
     </div>
 
-    <x-rh.card-rh titulo="Buscar activo">
+
+    {{-- BUSCADOR --}}
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>01</span>
+
+            Filtros de búsqueda
+
+        </div>
 
         <form method="GET">
 
-            <div class="row align-items-end">
+            <div class="row g-3 align-items-end">
 
-                <div class="col-md-4">
+                <div class="col-md-5">
 
-                    <x-rh.input-rh
-                        label="Código del activo"
-                        name="buscar"
+                    <label class="gtri-label mb-2">
+
+                        Código del activo
+
+                    </label>
+
+                    <input
                         type="text"
-                        :value="request('buscar')"
-                    />
+                        name="buscar"
+                        value="{{ request('buscar') }}"
+                        class="form-control gtri-input"
+                        placeholder="Buscar por código..."
+                    >
 
                 </div>
 
                 <div class="col-auto">
 
-                    <button class="btn btn-primary">
+                    <button
+                        type="submit"
+                        class="btn gtri-btn-primary"
+                    >
+
+                        <i class="bi bi-search me-1"></i>
 
                         Buscar
 
@@ -52,191 +94,300 @@
 
                 </div>
 
+                @if(request('buscar'))
+
+                    <div class="col-auto">
+
+                        <a
+                            href="{{ route('administracion.activos.index') }}"
+                            class="btn gtri-btn-secondary"
+                        >
+
+                            <i class="bi bi-arrow-clockwise me-1"></i>
+
+                            Limpiar
+
+                        </a>
+
+                    </div>
+
+                @endif
+
             </div>
 
         </form>
 
-    </x-rh.card-rh>
+    </div>
 
-    <x-rh.card-rh titulo="Listado de activos">
 
-        <div class="table-responsive">
+    {{-- LISTADO --}}
+    <div class="gtri-section">
 
-            <table class="table table-bordered table-hover align-middle">
+        <div class="gtri-section-title">
 
-                <thead class="table-dark">
+            <span>02</span>
 
-                    <tr>
+            Listado de activos
 
-                        <th>Código</th>
+        </div>
 
-                        <th>Producto</th>
+        <div class="gtri-table-wrapper">
 
-                        <th>Marca</th>
+            <div class="table-responsive">
 
-                        <th>Modelo</th>
+                <table class="table gtri-table align-middle">
 
-                        <th>Estado</th>
-
-                        <th>Acciones</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @forelse($activos as $activo)
+                    <thead>
 
                         <tr>
 
-                            <td>
+                            <th>Código</th>
 
-                                {{ $activo->codigo_activo }}
+                            <th>Producto</th>
 
-                            </td>
+                            <th>Marca</th>
 
-                            <td>
+                            <th>Modelo</th>
 
-                                {{ $activo->producto->nombre }}
+                            <th class="text-center">
+                                Estado
+                            </th>
 
-                            </td>
+                            <th class="text-center">
+                                Acciones
+                            </th>
 
-                            <td>
+                        </tr>
 
-                                {{ $activo->marca ?? '-' }}
+                    </thead>
 
-                            </td>
+                    <tbody>
 
-                            <td>
+                        @forelse($activos as $activo)
 
-                                {{ $activo->modelo ?? '-' }}
+                            <tr>
 
-                            </td>
+                                <td>
 
-                            <td>
+                                    <span class="text-warning fw-semibold">
 
-                                @switch($activo->estado)
+                                        {{ $activo->codigo_activo }}
 
-                                    @case('disponible')
+                                    </span>
 
-                                        <span class="badge bg-success">
+                                </td>
 
-                                            Disponible
+                                <td>
 
-                                        </span>
+                                    <div class="fw-semibold text-light">
 
-                                        @break
+                                        {{ $activo->producto->nombre }}
 
-                                    @case('asignado')
+                                    </div>
 
-                                        <span class="badge bg-primary">
+                                </td>
 
-                                            Asignado
+                                <td>
 
-                                        </span>
+                                    <span class="text-secondary">
 
-                                        @break
+                                        {{ $activo->marca ?? '-' }}
 
-                                    @case('mantenimiento')
+                                    </span>
 
-                                        <span class="badge bg-warning text-dark">
+                                </td>
 
-                                            Mantenimiento
+                                <td>
 
-                                        </span>
+                                    <span class="text-secondary">
 
-                                        @break
+                                        {{ $activo->modelo ?? '-' }}
 
-                                    @default
+                                    </span>
 
-                                        <span class="badge bg-danger">
+                                </td>
 
-                                            Baja
+                                <td class="text-center">
 
-                                        </span>
+                                    @switch($activo->estado)
 
-                                @endswitch
+                                        @case('disponible')
 
-                            </td>
+                                            <span class="badge gtri-badge-success">
 
-                            <td>
+                                                <i class="bi bi-check-circle me-1"></i>
 
-                                <div class="d-flex gap-2">
+                                                Disponible
 
-                                    <a
-                                        href="{{ route('administracion.activos.show',$activo) }}"
-                                        class="btn btn-info btn-sm"
-                                    >
+                                            </span>
 
-                                        Ver
+                                            @break
 
-                                    </a>
 
-                                    <a
-                                        href="{{ route('administracion.activos.edit',$activo) }}"
-                                        class="btn btn-warning btn-sm"
-                                    >
+                                        @case('asignado')
 
-                                        Editar
+                                            <span class="badge bg-primary">
 
-                                    </a>
+                                                <i class="bi bi-person-check me-1"></i>
 
-                                    <form
-                                        action="{{ route('administracion.activos.destroy',$activo) }}"
-                                        method="POST"
-                                    >
+                                                Asignado
 
-                                        @csrf
-                                        @method('DELETE')
+                                            </span>
 
-                                        <button
-                                            class="btn btn-secondary btn-sm"
-                                            onclick="return confirm('¿Desea cambiar el estado del activo?')"
+                                            @break
+
+
+                                        @case('mantenimiento')
+
+                                            <span class="badge gtri-badge-warning">
+
+                                                <i class="bi bi-tools me-1"></i>
+
+                                                Mantenimiento
+
+                                            </span>
+
+                                            @break
+
+
+                                        @default
+
+                                            <span class="badge gtri-badge-danger">
+
+                                                <i class="bi bi-x-circle me-1"></i>
+
+                                                Baja
+
+                                            </span>
+
+                                    @endswitch
+
+                                </td>
+
+                                <td>
+
+                                    <div class="d-flex justify-content-center gap-2">
+
+                                        <a
+                                            href="{{ route(
+                                                'administracion.activos.show',
+                                                $activo
+                                            ) }}"
+                                            class="btn btn-sm gtri-btn-secondary"
+                                            title="Ver detalle"
                                         >
 
-                                            {{ $activo->estado == 'baja' ? 'Activar' : 'Dar de baja' }}
+                                            <i class="bi bi-eye"></i>
 
-                                        </button>
+                                        </a>
 
-                                    </form>
 
-                                </div>
+                                        <a
+                                            href="{{ route(
+                                                'administracion.activos.edit',
+                                                $activo
+                                            ) }}"
+                                            class="btn btn-sm gtri-btn-secondary"
+                                            title="Editar activo"
+                                        >
 
-                            </td>
+                                            <i class="bi bi-pencil"></i>
 
-                        </tr>
+                                        </a>
 
-                    @empty
 
-                        <tr>
+                                        <form
+                                            action="{{ route(
+                                                'administracion.activos.destroy',
+                                                $activo
+                                            ) }}"
+                                            method="POST"
+                                        >
 
-                            <td
-                                colspan="6"
-                                class="text-center"
-                            >
+                                            @csrf
+                                            @method('DELETE')
 
-                                No hay activos registrados.
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm
+                                                {{ $activo->estado == 'baja'
+                                                    ? 'btn-outline-success'
+                                                    : 'btn-outline-danger'
+                                                }}"
+                                                onclick="return confirm(
+                                                    '¿Desea cambiar el estado del activo?'
+                                                )"
+                                                title="{{ $activo->estado == 'baja'
+                                                    ? 'Activar'
+                                                    : 'Dar de baja'
+                                                }}"
+                                            >
 
-                            </td>
+                                                @if($activo->estado == 'baja')
 
-                        </tr>
+                                                    <i class="bi bi-check-lg"></i>
 
-                    @endforelse
+                                                @else
 
-                </tbody>
+                                                    <i class="bi bi-power"></i>
 
-            </table>
+                                                @endif
+
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="6"
+                                    class="text-center py-5"
+                                >
+
+                                    <div class="text-secondary">
+
+                                        <i
+                                            class="bi bi-pc-display fs-1 d-block mb-3"
+                                        ></i>
+
+                                        No hay activos registrados.
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
-        <div class="d-flex justify-content-center mt-4">
 
-            {{ $activos->links() }}
+        @if($activos->hasPages())
 
-        </div>
+            <div class="d-flex justify-content-center mt-4">
 
-    </x-rh.card-rh>
+                {{ $activos->links() }}
+
+            </div>
+
+        @endif
+
+    </div>
 
 </div>
 

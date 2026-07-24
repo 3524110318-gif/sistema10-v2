@@ -1,238 +1,253 @@
-<h5 class="mb-3">
+<div class="gtri-section">
 
-    Servicios facturados
+    <div class="gtri-section-title">
 
-</h5>
+        <span>02</span>
 
-<div class="table-responsive">
+        Servicios facturados
 
-    <table
-        class="table table-bordered align-middle"
-        id="tabla-servicios"
-    >
+    </div>
 
-        <thead class="table-dark">
 
-            <tr>
+    <div class="gtri-table-wrapper">
 
-                <th style="width:28%;">
+        <div class="table-responsive">
 
-                    Servicio
+            <table
+                class="table gtri-table align-middle"
+                id="tabla-servicios"
+            >
 
-                </th>
+                <thead>
 
-                <th style="width:15%;">
+                    <tr>
 
-                    Plazas contratadas
+                        <th style="width:28%;">
+                            Servicio
+                        </th>
 
-                </th>
+                        <th style="width:15%;">
+                            Plazas contratadas
+                        </th>
 
-                <th style="width:15%;">
+                        <th style="width:15%;">
+                            Plazas cubiertas
+                        </th>
 
-                    Plazas cubiertas
+                        <th style="width:15%;">
+                            Precio unitario
+                        </th>
 
-                </th>
+                        <th style="width:15%;">
+                            Subtotal
+                        </th>
 
-                <th style="width:15%;">
+                        <th
+                            style="width:12%;"
+                            class="text-center"
+                        >
+                            Acción
+                        </th>
 
-                    Precio unitario
+                    </tr>
 
-                </th>
+                </thead>
 
-                <th style="width:15%;">
 
-                    Subtotal
+                <tbody id="detalle-body">
 
-                </th>
+                    <tr>
 
-                <th style="width:12%;">
+                        <td>
 
-                    Acción
-
-                </th>
-
-            </tr>
-
-        </thead>
-
-        <tbody id="detalle-body">
-
-            <tr>
-
-                <td>
-
-                    <select
-                        name="servicio_id[]"
-                        class="form-select"
-                        required
-                    >
-
-                        <option value="">
-
-                            Seleccione
-
-                        </option>
-
-                        @foreach($servicios as $servicio)
-
-                            <option
-                                value="{{ $servicio->id }}"
+                            <select
+                                name="servicio_id[]"
+                                class="form-select gtri-select"
+                                required
                             >
 
-                                {{ $servicio->nombre }}
+                                <option value="">
 
-                            </option>
+                                    Seleccione
 
-                        @endforeach
+                                </option>
 
-                    </select>
+                                @foreach($servicios as $servicio)
 
-                </td>
+                                    <option value="{{ $servicio->id }}">
 
-                <td>
+                                        {{ $servicio->nombre }}
 
-                    <input
-                        type="number"
-                        name="plazas_contratadas[]"
-                        class="form-control plazas"
-                        min="0"
-                        value="0"
-                        required
+                                    </option>
+
+                                @endforeach
+
+                            </select>
+
+                        </td>
+
+
+                        <td>
+
+                            <input
+                                type="number"
+                                name="plazas_contratadas[]"
+                                class="form-control gtri-input plazas"
+                                min="0"
+                                value="0"
+                                required
+                            >
+
+                        </td>
+
+
+                        <td>
+
+                            <input
+                                type="number"
+                                name="plazas_cubiertas[]"
+                                class="form-control gtri-input cubiertas"
+                                min="0"
+                                value="0"
+                                required
+                            >
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text gtri-addon">
+                                    $
+                                </span>
+
+                                <input
+                                    type="text"
+                                    name="precio_unitario[]"
+                                    class="form-control gtri-input precio"
+                                    value="0"
+                                    autocomplete="off"
+                                    required
+                                >
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            <input
+                                type="text"
+                                class="form-control gtri-input subtotal"
+                                value="0.00"
+                                readonly
+                            >
+
+                        </td>
+
+
+                        <td class="text-center">
+
+                            <button
+                                type="button"
+                                class="btn btn-outline-danger btn-sm eliminar-fila"
+                                title="Eliminar servicio"
+                            >
+
+                                <i class="bi bi-trash"></i>
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <div class="mt-3">
+
+        <button
+            type="button"
+            class="btn gtri-btn-secondary"
+            id="agregar-servicio"
+        >
+
+            <i class="bi bi-plus-circle me-1"></i>
+
+            Agregar servicio
+
+        </button>
+
+    </div>
+
+
+    {{-- TOTALES --}}
+    <div class="row justify-content-end mt-4">
+
+        <div class="col-md-5 col-lg-4">
+
+            <div class="gtri-card">
+
+                <div
+                    class="d-flex justify-content-between py-2 border-bottom border-secondary"
+                >
+
+                    <span class="text-secondary">
+                        Subtotal
+                    </span>
+
+                    <strong id="subtotal-general">
+                        $0.00
+                    </strong>
+
+                </div>
+
+                <div
+                    class="d-flex justify-content-between py-2 border-bottom border-secondary"
+                >
+
+                    <span class="text-secondary">
+                        IVA (16%)
+                    </span>
+
+                    <strong id="iva-general">
+                        $0.00
+                    </strong>
+
+                </div>
+
+                <div class="d-flex justify-content-between pt-3">
+
+                    <span class="text-warning fw-bold">
+
+                        Total
+
+                    </span>
+
+                    <strong
+                        id="total-general"
+                        class="text-warning fs-5"
                     >
 
-                </td>
+                        $0.00
 
-                <td>
+                    </strong>
 
-                    <input
-                        type="number"
-                        name="plazas_cubiertas[]"
-                        class="form-control cubiertas"
-                        min="0"
-                        value="0"
-                        required
-                    >
+                </div>
 
-                </td>
+            </div>
 
-                <td>
-
-                    <input
-                        type="text"
-                        name="precio_unitario[]"
-                        class="form-control precio"
-                        value="0"
-                        autocomplete="off"
-                        required
-                    >
-
-                </td>
-
-                <td>
-
-                    <input
-                        type="text"
-                        class="form-control subtotal"
-                        value="0.00"
-                        readonly
-                    >
-
-                </td>
-
-                <td class="text-center">
-
-                    <button
-                        type="button"
-                        class="btn btn-danger btn-sm eliminar-fila"
-                    >
-
-                        <i class="bi bi-trash"></i>
-
-                    </button>
-
-                </td>
-
-            </tr>
-
-        </tbody>
-
-    </table>
-
-</div>
-
-<div class="mt-3">
-
-    <button
-        type="button"
-        class="btn btn-success"
-        id="agregar-servicio"
-    >
-
-        <i class="bi bi-plus-circle"></i>
-
-        Agregar servicio
-
-    </button>
-
-</div>
-
-<hr class="my-4">
-
-<div class="row justify-content-end">
-
-    <div class="col-md-4">
-
-        <table class="table table-bordered">
-
-            <tr>
-
-                <th>
-
-                    Subtotal
-
-                </th>
-
-                <td id="subtotal-general">
-
-                    $0.00
-
-                </td>
-
-            </tr>
-
-            <tr>
-
-                <th>
-
-                    IVA (16%)
-
-                </th>
-
-                <td id="iva-general">
-
-                    $0.00
-
-                </td>
-
-            </tr>
-
-            <tr class="table-light">
-
-                <th>
-
-                    Total
-
-                </th>
-
-                <th id="total-general">
-
-                    $0.00
-
-                </th>
-
-            </tr>
-
-        </table>
+        </div>
 
     </div>
 

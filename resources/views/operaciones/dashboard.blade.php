@@ -2,73 +2,478 @@
 
 @section('contenido')
 
-<div class="container">
+<div class="container-fluid">
 
-    <h1 class="mb-4">
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-        inicio Operaciones
+        <div>
 
-    </h1>
+            <h2 class="gtri-page-title">
 
-    <div class="card mt-4 shadow-sm">
+                <i class="bi bi-speedometer2 me-2"></i>
 
-            <div class="card-header bg-dark text-white">
+                Datos Generales de Operaciones
 
-                <strong>
+            </h2>
 
-                    🚨 Centro de Alertas
+            <p class="gtri-page-subtitle">
 
-                </strong>
+                Consulta el estado general de servicios, plazas, supervisiones,
+                incidencias, vehículos y personal operativo.
 
-            </div>
+            </p>
 
-            <div class="card-body">
+        </div>
 
-                @forelse($alertas as $alerta)
+    </div>
+
+
+    {{-- CENTRO DE ALERTAS --}}
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>01</span>
+
+            Centro de alertas
+
+        </div>
+
+
+        <div class="row g-3">
+
+            @forelse($alertas as $alerta)
+
+                <div class="col-12">
 
                     <div
-                        class="alert alert-{{ $alerta['tipo'] }}"
+                        class="
+                            alert
+                            alert-{{ $alerta['tipo'] }}
+                            mb-0
+                            d-flex
+                            align-items-center
+                            gap-2
+                        "
                     >
 
-                        {{ $alerta['mensaje'] }}
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+
+                        <span>
+
+                            {{ $alerta['mensaje'] }}
+
+                        </span>
 
                     </div>
 
-                @empty
+                </div>
+
+            @empty
+
+                <div class="col-12">
 
                     <div
-                        class="alert alert-success mb-0"
+                        class="
+                            alert
+                            alert-success
+                            mb-0
+                            d-flex
+                            align-items-center
+                            gap-2
+                        "
                     >
 
-                        No existen alertas operativas.
+                        <i class="bi bi-check-circle-fill"></i>
+
+                        <span>
+
+                            No existen alertas operativas.
+
+                        </span>
 
                     </div>
 
-                @endforelse
+                </div>
 
-            </div>
+            @endforelse
 
         </div>
 
-    <div class="row g-4">
+    </div>
 
-        <div class="col-md-4">
 
-            <div class="card shadow-sm">
+    {{-- INDICADORES PRINCIPALES --}}
+    <div class="gtri-section">
 
-                <div class="card-body">
+        <div class="gtri-section-title">
 
-                    <h6>
+            <span>02</span>
 
-                        Servicios Activos
+            Indicadores principales
 
-                    </h6>
+        </div>
 
-                    <h2>
 
-                        {{ $serviciosActivos }}
+        <div class="row g-4">
 
-                    </h2>
+            {{-- SERVICIOS ACTIVOS --}}
+            <div class="col-xl-3 col-md-6">
+
+                <div class="gtri-card h-100">
+
+                    <div
+                        class="
+                            d-flex
+                            justify-content-between
+                            align-items-start
+                        "
+                    >
+
+                        <div>
+
+                            <div class="text-secondary small">
+
+                                Servicios activos
+
+                            </div>
+
+                            <div class="display-6 fw-bold text-light mt-2">
+
+                                {{ $serviciosActivos }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="gtri-stat-icon">
+
+                            <i class="bi bi-building-check"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- PLAZAS TOTALES --}}
+            <div class="col-xl-3 col-md-6">
+
+                <div class="gtri-card h-100">
+
+                    <div
+                        class="
+                            d-flex
+                            justify-content-between
+                            align-items-start
+                        "
+                    >
+
+                        <div>
+
+                            <div class="text-secondary small">
+
+                                Plazas totales
+
+                            </div>
+
+                            <div class="display-6 fw-bold text-light mt-2">
+
+                                {{ $plazasTotales }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="gtri-stat-icon">
+
+                            <i class="bi bi-geo-alt"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- PLAZAS CUBIERTAS --}}
+            <div class="col-xl-3 col-md-6">
+
+                <div class="gtri-card h-100">
+
+                    <div
+                        class="
+                            d-flex
+                            justify-content-between
+                            align-items-start
+                        "
+                    >
+
+                        <div>
+
+                            <div class="text-secondary small">
+
+                                Plazas cubiertas
+
+                            </div>
+
+                            <div class="display-6 fw-bold text-success mt-2">
+
+                                {{ $plazasCubiertas }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="gtri-stat-icon">
+
+                            <i class="bi bi-check-circle"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- PLAZAS VACANTES --}}
+            <div class="col-xl-3 col-md-6">
+
+                <div class="gtri-card h-100">
+
+                    <div
+                        class="
+                            d-flex
+                            justify-content-between
+                            align-items-start
+                        "
+                    >
+
+                        <div>
+
+                            <div class="text-secondary small">
+
+                                Plazas vacantes
+
+                            </div>
+
+                            <div class="display-6 fw-bold text-danger mt-2">
+
+                                {{ $plazasVacantes }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="gtri-stat-icon">
+
+                            <i class="bi bi-exclamation-circle"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- COBERTURA GLOBAL --}}
+            <div class="col-xl-3 col-md-6">
+
+                <div class="gtri-card h-100">
+
+                    <div
+                        class="
+                            d-flex
+                            justify-content-between
+                            align-items-start
+                        "
+                    >
+
+                        <div>
+
+                            <div class="text-secondary small">
+
+                                Cobertura global
+
+                            </div>
+
+                            <div class="display-6 fw-bold text-warning mt-2">
+
+                                {{ $coberturaGlobal }}%
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="gtri-stat-icon">
+
+                            <i class="bi bi-pie-chart"></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="progress mt-3">
+
+                        <div
+                            class="progress-bar"
+                            role="progressbar"
+                            style="
+                                width:
+                                {{ min(100, $coberturaGlobal) }}%;
+                                background:#D4AF37;
+                            "
+                            aria-valuenow="{{ $coberturaGlobal }}"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- SUPERVISIONES TOTALES --}}
+            <div class="col-xl-3 col-md-6">
+
+                <div class="gtri-card h-100">
+
+                    <div
+                        class="
+                            d-flex
+                            justify-content-between
+                            align-items-start
+                        "
+                    >
+
+                        <div>
+
+                            <div class="text-secondary small">
+
+                                Supervisiones totales
+
+                            </div>
+
+                            <div class="display-6 fw-bold text-light mt-2">
+
+                                {{ $supervisiones }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="gtri-stat-icon">
+
+                            <i class="bi bi-clipboard-check"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- SUPERVISIONES HOY --}}
+            <div class="col-xl-3 col-md-6">
+
+                <div class="gtri-card h-100">
+
+                    <div
+                        class="
+                            d-flex
+                            justify-content-between
+                            align-items-start
+                        "
+                    >
+
+                        <div>
+
+                            <div class="text-secondary small">
+
+                                Supervisiones hoy
+
+                            </div>
+
+                            <div class="display-6 fw-bold text-info mt-2">
+
+                                {{ $supervisionesHoy }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="gtri-stat-icon">
+
+                            <i class="bi bi-calendar-check"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- INCIDENCIAS ABIERTAS --}}
+            <div class="col-xl-3 col-md-6">
+
+                <div class="gtri-card h-100">
+
+                    <div
+                        class="
+                            d-flex
+                            justify-content-between
+                            align-items-start
+                        "
+                    >
+
+                        <div>
+
+                            <div class="text-secondary small">
+
+                                Incidencias abiertas
+
+                            </div>
+
+                            <div class="display-6 fw-bold text-danger mt-2">
+
+                                {{ $incidenciasAbiertas }}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="gtri-stat-icon">
+
+                            <i class="bi bi-exclamation-triangle"></i>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
@@ -76,335 +481,213 @@
 
         </div>
 
-        <div class="col-md-4">
+    </div>
 
-            <div class="card shadow-sm">
 
-                <div class="card-body">
+    {{-- RECURSOS OPERATIVOS --}}
+    <div class="gtri-section">
 
-                    <h6>
+        <div class="gtri-section-title">
 
-                        Plazas Totales
+            <span>03</span>
 
-                    </h6>
-
-                    <h2>
-
-                        {{ $plazasTotales }}
-
-                    </h2>
-
-                </div>
-
-            </div>
+            Recursos operativos
 
         </div>
 
-        <div class="col-md-4">
 
-            <div class="card shadow-sm">
+        <div class="row g-4">
 
-                <div class="card-body">
+            {{-- VEHÍCULOS ACTIVOS --}}
+            <div class="col-xl-3 col-md-6">
 
-                    <h6>
+                <div class="gtri-card h-100">
 
-                        Plazas Cubiertas
+                    <div class="text-secondary small">
 
-                    </h6>
+                        Vehículos activos
 
-                    <h2>
+                    </div>
 
-                        {{ $plazasCubiertas }}
-
-                    </h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <div class="card shadow-sm">
-
-                <div class="card-body">
-
-                    <h6>
-
-                        Plazas Vacantes
-
-                    </h6>
-
-                    <h2>
-
-                        {{ $plazasVacantes }}
-
-                    </h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <div class="card shadow-sm">
-
-                <div class="card-body">
-
-                    <h6>
-
-                        Cobertura Global
-
-                    </h6>
-
-                    <h2>
-
-                        {{ $coberturaGlobal }}%
-
-                    </h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <div class="card shadow-sm">
-
-                <div class="card-body">
-
-                    <h6>
-
-                        Supervisiones Totales
-
-                    </h6>
-
-                    <h2>
-
-                        {{ $supervisiones }}
-
-                    </h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <div class="card shadow-sm">
-
-                <div class="card-body">
-
-                    <h6>
-
-                        Supervisiones Hoy
-
-                    </h6>
-
-                    <h2>
-
-                        {{ $supervisionesHoy }}
-
-                    </h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <div class="card shadow-sm">
-
-                <div class="card-body">
-
-                    <h6>
-
-                        Incidencias Abiertas
-
-                    </h6>
-
-                    <h2>
-
-                        {{ $incidenciasAbiertas }}
-
-                    </h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <div class="card shadow-sm">
-
-                <div class="card-body">
-
-                    <h6>
-
-                        Vehiculos Activos
-
-                    </h6>
-
-                    <h2>
+                    <div class="display-6 fw-bold text-success mt-2">
 
                         {{ $vehiculosActivos }}
 
-                    </h2>
+                    </div>
+
+                    <div class="mt-3 text-warning">
+
+                        <i class="bi bi-car-front fs-3"></i>
+
+                    </div>
 
                 </div>
 
             </div>
 
-        </div>
 
-        <div class="col-md-4">
+            {{-- VEHÍCULOS EN TALLER --}}
+            <div class="col-xl-3 col-md-6">
 
-            <div class="card shadow-sm">
+                <div class="gtri-card h-100">
 
-                <div class="card-body">
+                    <div class="text-secondary small">
 
-                    <h6>
+                        Vehículos en taller
 
-                        Vehiculos En Taller
+                    </div>
 
-                    </h6>
-
-                    <h2>
+                    <div class="display-6 fw-bold text-warning mt-2">
 
                         {{ $vehiculosTaller }}
 
-                    </h2>
+                    </div>
+
+                    <div class="mt-3 text-warning">
+
+                        <i class="bi bi-wrench-adjustable fs-3"></i>
+
+                    </div>
 
                 </div>
 
             </div>
 
-        </div>
 
-        <div class="col-md-4">
+            {{-- MANTENIMIENTOS VENCIDOS --}}
+            <div class="col-xl-3 col-md-6">
 
-            <div class="card shadow-sm">
+                <div class="gtri-card h-100">
 
-                <div class="card-body">
+                    <div class="text-secondary small">
 
-                    <h6>
+                        Mantenimientos vencidos
 
-                        Mantenimientos Vencidos
+                    </div>
 
-                    </h6>
-
-                    <h2>
+                    <div class="display-6 fw-bold text-danger mt-2">
 
                         {{ $mantenimientosVencidos }}
 
-                    </h2>
+                    </div>
+
+                    <div class="mt-3 text-warning">
+
+                        <i class="bi bi-tools fs-3"></i>
+
+                    </div>
 
                 </div>
 
             </div>
 
-        </div>
 
-        <div class="col-md-4">
+            {{-- DOBLETES ACTIVOS --}}
+            <div class="col-xl-3 col-md-6">
 
-            <div class="card shadow-sm">
+                <div class="gtri-card h-100">
 
-                <div class="card-body">
+                    <div class="text-secondary small">
 
-                    <h6>
+                        Dobletes activos
 
-                        Guardias Activos
+                    </div>
 
-                    </h6>
-
-                    <h2>
-
-                        {{ $guardiasActivos }}
-
-                    </h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <div class="card shadow-sm">
-
-                <div class="card-body">
-
-                    <h6>
-
-                        Guardias Asignados
-
-                    </h6>
-
-                    <h2>
-
-                        {{ $guardiasAsignados }}
-
-                    </h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <div class="card shadow-sm">
-
-                <div class="card-body">
-
-                    <h6>
-
-                        Guardias Disponibles
-
-                    </h6>
-
-                    <h2>
-
-                        {{ $guardiasDisponibles }}
-
-                    </h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <div class="card shadow-sm">
-
-                <div class="card-body">
-
-                    <h6>
-
-                        Dobletes Activos
-
-                    </h6>
-
-                    <h2>
+                    <div class="display-6 fw-bold text-light mt-2">
 
                         {{ $dobletesActivos }}
 
-                    </h2>
+                    </div>
+
+                    <div class="mt-3 text-warning">
+
+                        <i class="bi bi-clock-history fs-3"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- GUARDIAS ACTIVOS --}}
+            <div class="col-xl-4 col-md-6">
+
+                <div class="gtri-card h-100">
+
+                    <div class="text-secondary small">
+
+                        Guardias activos
+
+                    </div>
+
+                    <div class="display-6 fw-bold text-light mt-2">
+
+                        {{ $guardiasActivos }}
+
+                    </div>
+
+                    <div class="mt-3 text-warning">
+
+                        <i class="bi bi-shield-check fs-3"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- GUARDIAS ASIGNADOS --}}
+            <div class="col-xl-4 col-md-6">
+
+                <div class="gtri-card h-100">
+
+                    <div class="text-secondary small">
+
+                        Guardias asignados
+
+                    </div>
+
+                    <div class="display-6 fw-bold text-info mt-2">
+
+                        {{ $guardiasAsignados }}
+
+                    </div>
+
+                    <div class="mt-3 text-warning">
+
+                        <i class="bi bi-person-check fs-3"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- GUARDIAS DISPONIBLES --}}
+            <div class="col-xl-4 col-md-6">
+
+                <div class="gtri-card h-100">
+
+                    <div class="text-secondary small">
+
+                        Guardias disponibles
+
+                    </div>
+
+                    <div class="display-6 fw-bold text-success mt-2">
+
+                        {{ $guardiasDisponibles }}
+
+                    </div>
+
+                    <div class="mt-3 text-warning">
+
+                        <i class="bi bi-person-plus fs-3"></i>
+
+                    </div>
 
                 </div>
 
@@ -412,64 +695,153 @@
 
         </div>
 
-        <div class="card mt-4">
+    </div>
 
-            <div class="card-header">
 
-                <strong>
+    {{-- RIESGOS DE COBERTURA --}}
+    <div class="gtri-section mb-0">
 
-                    Riesgos de Cobertura
+        <div class="gtri-section-title">
 
-                </strong>
+            <span>04</span>
 
-            </div>
+            Riesgos de cobertura
 
-            <div class="card-body">
+        </div>
 
-                @forelse(
-                    $riesgosCobertura
-                    as $servicio
-                )
+
+        <div class="row g-3">
+
+            @forelse(
+                $riesgosCobertura
+                as $servicio
+            )
+
+                <div class="col-md-6">
 
                     <div
-                        class="alert alert-warning"
+                        class="
+                            p-4
+                            rounded-3
+                            h-100
+                        "
+                        style="
+                            background:#111827;
+                            border:
+                                1px solid
+                                rgba(212,175,55,.30);
+                        "
                     >
 
-                        <strong>
+                        <div
+                            class="
+                                d-flex
+                                justify-content-between
+                                align-items-start
+                                gap-3
+                            "
+                        >
 
-                            {{ $servicio->nombre }}
+                            <div>
 
-                        </strong>
+                                <h5 class="text-light mb-1">
 
-                        tiene
+                                    {{ $servicio->nombre }}
 
-                        {{
-                            $servicio
-                            ->plazas
-                            ->where(
-                                'estado',
-                                'vacante'
-                            )
-                            ->count()
-                        }}
+                                </h5>
 
-                        plaza(s) vacante(s).
+                                <p class="text-secondary mb-0">
+
+                                    Presenta plazas sin cobertura.
+
+                                </p>
+
+                            </div>
+
+
+                            <span
+                                class="
+                                    badge
+                                    bg-warning
+                                    text-dark
+                                    fs-6
+                                "
+                            >
+
+                                {{
+                                    $servicio
+                                    ->plazas
+                                    ->where(
+                                        'estado',
+                                        'vacante'
+                                    )
+                                    ->count()
+                                }}
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="mt-3 text-warning">
+
+                            <i class="bi bi-exclamation-triangle me-1"></i>
+
+                            plaza(s) vacante(s)
+
+                        </div>
 
                     </div>
 
-                @empty
+                </div>
+
+            @empty
+
+                <div class="col-12">
 
                     <div
-                        class="alert alert-success"
+                        class="
+                            p-4
+                            rounded-3
+                            text-center
+                        "
+                        style="
+                            background:#111827;
+                            border:
+                                1px solid
+                                rgba(255,255,255,.08);
+                        "
                     >
 
-                        No existen riesgos de cobertura.
+                        <i
+                            class="
+                                bi
+                                bi-shield-check
+                                fs-1
+                                text-success
+                                d-block
+                                mb-3
+                            "
+                        ></i>
+
+                        <h5 class="text-light">
+
+                            Sin riesgos de cobertura
+
+                        </h5>
+
+                        <p class="text-secondary mb-0">
+
+                            Actualmente todos los servicios cuentan
+                            con cobertura suficiente.
+
+                        </p>
 
                     </div>
 
-                @endforelse
+                </div>
 
-            </div>
+            @endforelse
 
         </div>
 

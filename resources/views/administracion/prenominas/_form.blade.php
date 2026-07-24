@@ -1,130 +1,201 @@
-<div class="row">
+<div class="gtri-form">
 
-    <div class="col-md-4 mb-3">
+    {{-- 01 PERIODO --}}
+    <div class="gtri-section">
 
-        <label class="form-label">
+        <div class="gtri-section-title">
 
-            Periodo inicio
+            <span>01</span>
 
-        </label>
+            Información del periodo
 
-        <input
-            type="date"
-            name="periodo_inicio"
-            class="form-control"
-            value="{{ old('periodo_inicio', isset($prenomina) ? $prenomina->periodo_inicio->format('Y-m-d') : '') }}"
-            required
-        >
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-4">
+
+                <label
+                    for="periodo_inicio"
+                    class="gtri-label mb-2"
+                >
+
+                    Periodo inicio
+
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                <input
+                    type="date"
+                    name="periodo_inicio"
+                    id="periodo_inicio"
+                    class="form-control gtri-input"
+                    value="{{ old(
+                        'periodo_inicio',
+                        isset($prenomina)
+                            ? $prenomina->periodo_inicio->format('Y-m-d')
+                            : ''
+                    ) }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <label
+                    for="periodo_fin"
+                    class="gtri-label mb-2"
+                >
+
+                    Periodo fin
+
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                <input
+                    type="date"
+                    name="periodo_fin"
+                    id="periodo_fin"
+                    class="form-control gtri-input"
+                    value="{{ old(
+                        'periodo_fin',
+                        isset($prenomina)
+                            ? $prenomina->periodo_fin->format('Y-m-d')
+                            : ''
+                    ) }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <label
+                    for="estatus"
+                    class="gtri-label mb-2"
+                >
+
+                    Estatus
+
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                <select
+                    name="estatus"
+                    id="estatus"
+                    class="form-select gtri-select"
+                    required
+                >
+
+                    <option
+                        value="abierta"
+                        @selected(
+                            old(
+                                'estatus',
+                                $prenomina->estatus ?? 'abierta'
+                            ) == 'abierta'
+                        )
+                    >
+                        Abierta
+                    </option>
+
+                    <option
+                        value="cerrada"
+                        @selected(
+                            old(
+                                'estatus',
+                                $prenomina->estatus ?? ''
+                            ) == 'cerrada'
+                        )
+                    >
+                        Cerrada
+                    </option>
+
+                    <option
+                        value="autorizada"
+                        @selected(
+                            old(
+                                'estatus',
+                                $prenomina->estatus ?? ''
+                            ) == 'autorizada'
+                        )
+                    >
+                        Autorizada
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="mt-4">
+
+            <label
+                for="observaciones"
+                class="gtri-label mb-2"
+            >
+
+                Observaciones
+
+            </label>
+
+            <textarea
+                name="observaciones"
+                id="observaciones"
+                class="form-control gtri-textarea"
+                rows="3"
+                placeholder="Ingrese observaciones relacionadas con la prenómina..."
+            >{{ old(
+                'observaciones',
+                $prenomina->observaciones ?? ''
+            ) }}</textarea>
+
+        </div>
 
     </div>
 
-    <div class="col-md-4 mb-3">
 
-        <label class="form-label">
+    @include(
+        'administracion.prenominas._detalle_empleados'
+    )
 
-            Periodo fin
 
-        </label>
+    {{-- ACCIONES --}}
+    <div class="d-flex justify-content-end gap-3 mt-4">
 
-        <input
-            type="date"
-            name="periodo_fin"
-            class="form-control"
-            value="{{ old('periodo_fin', isset($prenomina) ? $prenomina->periodo_fin->format('Y-m-d') : '') }}"
-            required
+        <a
+            href="{{ route('administracion.prenominas.index') }}"
+            class="btn gtri-btn-secondary"
         >
 
-    </div>
+            <i class="bi bi-x-circle me-1"></i>
 
-    <div class="col-md-4 mb-3">
+            Cancelar
 
-        <label class="form-label">
+        </a>
 
-            Estatus
-
-        </label>
-
-        <select
-            name="estatus"
-            class="form-select"
-            required
+        <button
+            type="submit"
+            class="btn gtri-btn-primary"
         >
 
-            <option
-                value="abierta"
-                @selected(old('estatus', $prenomina->estatus ?? 'abierta') == 'abierta')
-            >
+            <i class="bi bi-check-circle me-1"></i>
 
-                Abierta
+            {{ isset($prenomina)
+                ? 'Actualizar Prenómina'
+                : 'Guardar Prenómina'
+            }}
 
-            </option>
-
-            <option
-                value="cerrada"
-                @selected(old('estatus', $prenomina->estatus ?? '') == 'cerrada')
-            >
-
-                Cerrada
-
-            </option>
-
-            <option
-                value="autorizada"
-                @selected(old('estatus', $prenomina->estatus ?? '') == 'autorizada')
-            >
-
-                Autorizada
-
-            </option>
-
-        </select>
+        </button>
 
     </div>
-
-</div>
-
-<div class="mb-3">
-
-    <label class="form-label">
-
-        Observaciones
-
-    </label>
-
-    <textarea
-        name="observaciones"
-        class="form-control"
-        rows="3"
-    >{{ old('observaciones', $prenomina->observaciones ?? '') }}</textarea>
-
-</div>
-
-<hr>
-
-@include(
-    'administracion.prenominas._detalle_empleados'
-)
-
-<div class="text-end mt-4">
-
-    <button
-        type="submit"
-        class="btn btn-primary"
-    >
-
-        <i class="bi bi-check-circle"></i>
-
-        Guardar Prenómina
-
-    </button>
-
-    <a
-        href="{{ route('administracion.prenominas.index') }}"
-        class="btn btn-secondary"
-    >
-
-        Cancelar
-
-    </a>
 
 </div>

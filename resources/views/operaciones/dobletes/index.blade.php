@@ -2,172 +2,362 @@
 
 @section('contenido')
 
-<div class="container">
+<div class="container-fluid">
 
-    <div
-        class="d-flex justify-content-between mb-4"
-    >
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-        <h1>
+        <div>
 
-            Gestión de Dobletes
+            <h2 class="gtri-page-title">
 
-        </h1>
+                <i class="bi bi-clock-history me-2"></i>
+
+                Gestión de dobletes
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Consulta y administra las coberturas temporales realizadas
+                por ausencia de personal operativo.
+
+            </p>
+
+        </div>
 
         <a
             href="{{ route(
                 'operaciones.dobletes.create'
             ) }}"
-            class="btn btn-primary"
+            class="btn gtri-btn-primary"
         >
 
-            Nuevo Doblete
+            <i class="bi bi-plus-circle me-1"></i>
+
+            Nuevo doblete
 
         </a>
 
     </div>
 
-    <table class="table">
 
-        <thead>
+    {{-- LISTADO --}}
+    <div class="gtri-section mb-0">
 
-            <tr>
+        <div
+            class="
+                d-flex
+                justify-content-between
+                align-items-center
+                flex-wrap
+                gap-2
+                mb-4
+            "
+        >
 
-                <th>Guardia</th>
+            <div class="gtri-section-title mb-0">
 
-                <th>Plaza</th>
+                <span>01</span>
 
-                <th>Ausente</th>
+                Lista de dobletes
 
-                <th>Fecha</th>
+            </div>
 
-                <th>Estado</th>
+            <div>
 
-                <th>Acciones</th>
+                <span class="text-secondary">
 
-            </tr>
+                    Registros:
 
-        </thead>
+                </span>
 
-        <tbody>
+                <span class="text-warning fw-bold">
 
-            @forelse(
-                $dobletes as $doblete
-            )
+                    {{ $dobletes->count() }}
 
-                <tr>
+                </span>
 
-                    <td>
+            </div>
 
-                        {{ $doblete
-                            ->empleado
-                            ->nombre }}
+        </div>
 
-                        {{ $doblete
-                            ->empleado
-                            ->apellido_paterno }}
 
-                    </td>
+        <div class="gtri-table-wrapper">
 
-                    <td>
+            <div class="table-responsive">
 
-                        {{ $doblete
-                            ->plaza
-                            ->nombre_plaza }}
+                <table class="table gtri-table align-middle mb-0">
 
-                    </td>
+                    <colgroup>
 
-                    <td>
+                        <col style="width:24%">
 
-                        {{ $doblete
-                            ->guardia_ausente }}
+                        <col style="width:22%">
 
-                    </td>
+                        <col style="width:20%">
 
-                    <td>
+                        <col style="width:14%">
 
-                        {{ $doblete
-                            ->fecha }}
+                        <col style="width:10%">
 
-                    </td>
+                        <col style="width:10%">
 
-                    <td>
+                    </colgroup>
 
-                        @if($doblete->estado == 'activo')
+                    <thead>
 
-                            <span class="badge bg-success">
+                        <tr>
 
-                                Activo
+                            <th>Guardia que cubre</th>
 
-                            </span>
+                            <th>Plaza</th>
 
-                        @else
+                            <th>Guardia ausente</th>
 
-                            <span class="badge bg-secondary">
+                            <th>Fecha</th>
 
-                                Finalizado
+                            <th>Estado</th>
 
-                            </span>
+                            <th class="text-center">
 
-                        @endif
+                                Acciones
 
-                    </td>
+                            </th>
 
-                    <td>
+                        </tr>
 
-                        @if($doblete->estado == 'activo')
+                    </thead>
 
-                            <form
-                                action="{{ route('operaciones.dobletes.finalizar', $doblete) }}"
-                                method="POST"
-                            >
+                    <tbody>
 
-                                @csrf
+                        @forelse(
+                            $dobletes
+                            as $doblete
+                        )
 
-                                @method('PATCH')
+                            <tr>
 
-                                <button
-                                    class="btn btn-warning btn-sm"
-                                    onclick="return confirm('¿Finalizar este doblete?')"
+                                {{-- GUARDIA --}}
+                                <td>
+
+                                    <div>
+
+                                        <span
+                                            class="
+                                                text-light
+                                                fw-semibold
+                                                d-block
+                                            "
+                                        >
+
+                                            {{ $doblete->empleado->nombre }}
+
+                                            {{
+                                                $doblete
+                                                    ->empleado
+                                                    ->apellido_paterno
+                                            }}
+
+                                        </span>
+
+                                        <small class="text-secondary">
+
+                                            {{
+                                                $doblete
+                                                    ->empleado
+                                                    ->numero_control
+                                            }}
+
+                                        </small>
+
+                                    </div>
+
+                                </td>
+
+
+                                {{-- PLAZA --}}
+                                <td>
+
+                                    <span class="text-warning fw-semibold">
+
+                                        {{ $doblete->plaza->nombre_plaza }}
+
+                                    </span>
+
+                                </td>
+
+
+                                {{-- AUSENTE --}}
+                                <td>
+
+                                    <span class="text-light">
+
+                                        {{ $doblete->guardia_ausente }}
+
+                                    </span>
+
+                                </td>
+
+
+                                {{-- FECHA --}}
+                                <td>
+
+                                    <span class="text-light">
+
+                                        <i
+                                            class="
+                                                bi
+                                                bi-calendar3
+                                                text-warning
+                                                me-1
+                                            "
+                                        ></i>
+
+                                        {{ $doblete->fecha }}
+
+                                    </span>
+
+                                </td>
+
+
+                                {{-- ESTADO --}}
+                                <td>
+
+                                    @if($doblete->estado === 'activo')
+
+                                        <span class="badge bg-success">
+
+                                            <i class="bi bi-clock me-1"></i>
+
+                                            Activo
+
+                                        </span>
+
+                                    @else
+
+                                        <span class="badge bg-secondary">
+
+                                            <i class="bi bi-check-circle me-1"></i>
+
+                                            Finalizado
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                {{-- ACCIONES --}}
+                                <td class="text-center">
+
+                                    @if($doblete->estado === 'activo')
+
+                                        <form
+                                            action="{{ route(
+                                                'operaciones.dobletes.finalizar',
+                                                $doblete
+                                            ) }}"
+                                            method="POST"
+                                            class="d-inline"
+                                            onsubmit="return confirm(
+                                                '¿Seguro que deseas finalizar este doblete?'
+                                            )"
+                                        >
+
+                                            @csrf
+                                            @method('PATCH')
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-warning btn-sm"
+                                                title="Finalizar doblete"
+                                            >
+
+                                                <i class="bi bi-check2-circle"></i>
+
+                                            </button>
+
+                                        </form>
+
+                                    @else
+
+                                        <span class="text-secondary">
+
+                                            <i class="bi bi-dash-circle"></i>
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="6"
+                                    class="text-center py-5"
                                 >
 
-                                    Finalizar
+                                    <i
+                                        class="
+                                            bi
+                                            bi-clock-history
+                                            fs-1
+                                            text-secondary
+                                            d-block
+                                            mb-3
+                                        "
+                                    ></i>
 
-                                </button>
+                                    <h5 class="text-light">
 
-                            </form>
+                                        Sin dobletes registrados
 
-                        @else
+                                    </h5>
 
-                            <span class="text-muted">
+                                    <p class="text-secondary mb-0">
 
-                                Sin acciones
+                                        Actualmente no existen coberturas temporales registradas.
 
-                            </span>
+                                    </p>
 
-                        @endif
+                                </td>
 
-                    </td>
+                            </tr>
 
-                </tr>
+                        @endforelse
 
-            @empty
+                    </tbody>
 
-                <tr>
+                </table>
 
-                    <td colspan="6">
+            </div>
 
-                        Sin dobletes registrados.
+        </div>
 
-                    </td>
 
-                </tr>
+        {{-- PAGINACIÓN --}}
+        @if(
+            method_exists($dobletes, 'hasPages')
+            &&
+            $dobletes->hasPages()
+        )
 
-            @endforelse
+            <div class="d-flex justify-content-center mt-4">
 
-        </tbody>
+                {{ $dobletes->withQueryString()->links() }}
 
-    </table>
+            </div>
+
+        @endif
+
+    </div>
 
 </div>
 

@@ -2,40 +2,56 @@
 
 @section('contenido')
 
-<div class="container">
+<div class="container-fluid">
 
-    <div
-        class="d-flex justify-content-between align-items-center mb-4"
-    >
-
-        <h1>
-
-            Detalle del Cliente
-
-        </h1>
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
         <div>
+
+            <h2 class="gtri-page-title">
+
+                <i class="bi bi-building me-2"></i>
+
+                Detalle del cliente
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Consulta la información general y los contratos asociados al cliente.
+
+            </p>
+
+        </div>
+
+
+        <div class="d-flex flex-wrap gap-2">
+
+            <a
+                href="{{ route(
+                    'operaciones.clientes.index'
+                ) }}"
+                class="btn gtri-btn-secondary"
+            >
+
+                <i class="bi bi-arrow-left me-1"></i>
+
+                Regresar
+
+            </a>
 
             <a
                 href="{{ route(
                     'operaciones.clientes.edit',
                     $cliente
                 ) }}"
-                class="btn btn-warning"
+                class="btn gtri-btn-primary"
             >
+
+                <i class="bi bi-pencil-square me-1"></i>
 
                 Editar
-
-            </a>
-
-            <a
-                href="{{ route(
-                    'operaciones.clientes.index'
-                ) }}"
-                class="btn btn-secondary"
-            >
-
-                Regresar
 
             </a>
 
@@ -43,129 +59,178 @@
 
     </div>
 
-    <div class="card shadow-sm">
 
-        <div class="card-body">
+    {{-- INFORMACIÓN GENERAL --}}
+    <div class="gtri-section">
 
-            <div class="row">
+        <div class="gtri-section-title">
 
-                <div class="col-md-6 mb-3">
+            <span>01</span>
 
-                    <strong>
+            Información general
 
-                        Razón Social
+        </div>
 
-                    </strong>
 
-                    <br>
+        <div class="row g-4">
 
-                    {{ $cliente->razon_social }}
+            {{-- RAZÓN SOCIAL --}}
+            <div class="col-lg-6">
+
+                <div class="gtri-info-card h-100">
+
+                    <div class="gtri-info-label">
+
+                        <i class="bi bi-building me-2"></i>
+
+                        Razón social
+
+                    </div>
+
+                    <div class="gtri-info-value">
+
+                        {{ $cliente->razon_social }}
+
+                    </div>
 
                 </div>
 
-                <div class="col-md-6 mb-3">
+            </div>
 
-                    <strong>
+
+            {{-- RFC --}}
+            <div class="col-lg-6">
+
+                <div class="gtri-info-card h-100">
+
+                    <div class="gtri-info-label">
+
+                        <i class="bi bi-file-earmark-text me-2"></i>
 
                         RFC
 
-                    </strong>
+                    </div>
 
-                    <br>
+                    <div class="gtri-info-value">
 
-                    {{ $cliente->rfc }}
+                        {{ $cliente->rfc }}
+
+                    </div>
 
                 </div>
 
-                <div class="col-md-6 mb-3">
+            </div>
 
-                    <strong>
+
+            {{-- REPRESENTANTE --}}
+            <div class="col-lg-6">
+
+                <div class="gtri-info-card h-100">
+
+                    <div class="gtri-info-label">
+
+                        <i class="bi bi-person-badge me-2"></i>
 
                         Representante
 
-                    </strong>
+                    </div>
 
-                    <br>
+                    <div class="gtri-info-value">
 
-                    {{ $cliente->representante ?: 'No registrado' }}
+                        {{ $cliente->representante ?: 'No registrado' }}
+
+                    </div>
 
                 </div>
 
-                <div class="col-md-6 mb-3">
+            </div>
 
-                    <strong>
+
+            {{-- TELÉFONO --}}
+            <div class="col-lg-6">
+
+                <div class="gtri-info-card h-100">
+
+                    <div class="gtri-info-label">
+
+                        <i class="bi bi-telephone me-2"></i>
 
                         Teléfono
 
-                    </strong>
+                    </div>
 
-                    <br>
+                    <div class="gtri-info-value">
 
-                    {{ $cliente->telefono ?: 'No registrado' }}
+                        {{ $cliente->telefono ?: 'No registrado' }}
+
+                    </div>
 
                 </div>
 
-                <div class="col-md-6 mb-3">
+            </div>
 
-                    <strong>
+
+            {{-- CORREO --}}
+            <div class="col-lg-6">
+
+                <div class="gtri-info-card h-100">
+
+                    <div class="gtri-info-label">
+
+                        <i class="bi bi-envelope me-2"></i>
 
                         Correo
 
-                    </strong>
+                    </div>
 
-                    <br>
+                    <div class="gtri-info-value">
 
-                    {{ $cliente->correo ?: 'No registrado' }}
+                        {{ $cliente->correo ?: 'No registrado' }}
+
+                    </div>
 
                 </div>
 
-                <div class="col-md-6 mb-3">
+            </div>
 
-                    <strong>
+
+            {{-- ESTADO --}}
+            <div class="col-lg-6">
+
+                <div class="gtri-info-card h-100">
+
+                    <div class="gtri-info-label">
+
+                        <i class="bi bi-toggle-on me-2"></i>
 
                         Estado
 
-                    </strong>
+                    </div>
 
-                    <br>
 
-                    @if($cliente->estado=='activo')
+                    <div class="mt-2">
 
-                        <span
-                            class="badge bg-success"
-                        >
+                        @if($cliente->estado === 'activo')
 
-                            Activo
+                            <span class="badge bg-success">
 
-                        </span>
+                                <i class="bi bi-check-circle me-1"></i>
 
-                    @else
+                                Activo
 
-                        <span
-                            class="badge bg-danger"
-                        >
+                            </span>
 
-                            Inactivo
+                        @else
 
-                        </span>
+                            <span class="badge bg-danger">
 
-                    @endif
+                                <i class="bi bi-x-circle me-1"></i>
 
-                </div>
+                                Inactivo
 
-                <div class="col-12">
+                            </span>
 
-                    <strong>
-
-                        Dirección
-
-                    </strong>
-
-                    <div
-                        class="border rounded p-3 mt-2"
-                    >
-
-                        {{ $cliente->direccion ?: 'Sin dirección registrada.' }}
+                        @endif
 
                     </div>
 
@@ -177,109 +242,244 @@
 
     </div>
 
-    <div class="card shadow-sm mt-4">
 
-        <div class="card-header">
+    {{-- DIRECCIÓN --}}
+    <div class="gtri-section">
 
-            <strong>
+        <div class="gtri-section-title">
 
-                Contratos del Cliente
+            <span>02</span>
 
-            </strong>
+            Dirección
 
         </div>
 
-        <div class="card-body">
 
-            @if(
-                $cliente->contratos->count()
-            )
+        <div class="gtri-info-card">
 
-                <table
-                    class="table table-hover"
-                >
+            <div class="gtri-info-label">
 
-                    <thead>
+                <i class="bi bi-geo-alt me-2"></i>
 
-                        <tr>
+                Dirección registrada
 
-                            <th>
+            </div>
 
-                                Contrato
+            <div class="gtri-info-value mt-2">
 
-                            </th>
+                {{ $cliente->direccion ?: 'Sin dirección registrada.' }}
 
-                            <th>
+            </div>
 
-                                Estado
+        </div>
 
-                            </th>
+    </div>
 
-                            <th>
 
-                                Acciones
+    {{-- CONTRATOS --}}
+    <div class="gtri-section mb-0">
 
-                            </th>
+        <div
+            class="
+                d-flex
+                flex-wrap
+                justify-content-between
+                align-items-center
+                gap-2
+                mb-4
+            "
+        >
 
-                        </tr>
+            <div class="gtri-section-title mb-0">
 
-                    </thead>
+                <span>03</span>
 
-                    <tbody>
+                Contratos del cliente
 
-                        @foreach(
-                            $cliente->contratos
-                            as $contrato
-                        )
+            </div>
+
+
+            <div>
+
+                <span class="text-secondary">
+
+                    Registros:
+
+                </span>
+
+                <span class="text-warning fw-bold">
+
+                    {{ $cliente->contratos->count() }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+        @if($cliente->contratos->count())
+
+            <div class="gtri-table-wrapper">
+
+                <div class="table-responsive">
+
+                    <table class="table gtri-table align-middle mb-0">
+
+                        <colgroup>
+
+                            <col style="width:50%">
+
+                            <col style="width:20%">
+
+                            <col style="width:30%">
+
+                        </colgroup>
+
+                        <thead>
 
                             <tr>
 
-                                <td>
+                                <th>Contrato</th>
 
-                                    {{ $contrato->nombre ?? ('Contrato #'.$contrato->id) }}
+                                <th>Estado</th>
 
-                                </td>
+                                <th class="text-center">
 
-                                <td>
+                                    Acciones
 
-                                    {{ ucfirst($contrato->estado) }}
-
-                                </td>
-
-                                <td>
-
-                                   <button
-                                        class="btn btn-secondary btn-sm"
-                                        disabled
-                                    >
-
-                                        Próximamente
-
-                                    </button>
-
-                                </td>
+                                </th>
 
                             </tr>
 
-                        @endforeach
+                        </thead>
 
-                    </tbody>
+                        <tbody>
 
-                </table>
+                            @foreach(
+                                $cliente->contratos
+                                as $contrato
+                            )
 
-            @else
+                                <tr>
 
-                <div
-                    class="alert alert-secondary mb-0"
-                >
+                                    <td>
 
-                    Este cliente aún no tiene contratos registrados.
+                                        <span class="text-light fw-semibold">
+
+                                            {{
+                                                $contrato->nombre
+                                                ??
+                                                (
+                                                    'Contrato #' .
+                                                    $contrato->id
+                                                )
+                                            }}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        @if($contrato->estado === 'activo')
+
+                                            <span class="badge bg-success">
+
+                                                Activo
+
+                                            </span>
+
+                                        @elseif($contrato->estado === 'inactivo')
+
+                                            <span class="badge bg-danger">
+
+                                                Inactivo
+
+                                            </span>
+
+                                        @else
+
+                                            <span class="badge bg-secondary">
+
+                                                {{ ucfirst($contrato->estado) }}
+
+                                            </span>
+
+                                        @endif
+
+                                    </td>
+
+
+                                    <td class="text-center">
+
+                                        <button
+                                            type="button"
+                                            class="btn gtri-btn-secondary btn-sm"
+                                            disabled
+                                        >
+
+                                            <i class="bi bi-hourglass-split me-1"></i>
+
+                                            Próximamente
+
+                                        </button>
+
+                                    </td>
+
+                                </tr>
+
+                            @endforeach
+
+                        </tbody>
+
+                    </table>
 
                 </div>
 
-            @endif
+            </div>
 
-        </div>
+        @else
+
+            <div
+                class="
+                    p-5
+                    rounded-3
+                    text-center
+                "
+                style="
+                    background:#111827;
+                    border:1px solid rgba(255,255,255,.08);
+                "
+            >
+
+                <i
+                    class="
+                        bi
+                        bi-file-earmark-x
+                        fs-1
+                        text-secondary
+                        d-block
+                        mb-3
+                    "
+                ></i>
+
+                <h5 class="text-light">
+
+                    Sin contratos registrados
+
+                </h5>
+
+                <p class="text-secondary mb-0">
+
+                    Este cliente aún no tiene contratos asociados.
+
+                </p>
+
+            </div>
+
+        @endif
 
     </div>
 

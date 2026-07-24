@@ -2,11 +2,13 @@
 
 @section('contenido')
 
-<div class="container">
+<div class="container-fluid">
 
     @if(session('success'))
 
         <div class="alert alert-success">
+
+            <i class="bi bi-check-circle me-1"></i>
 
             {{ session('success') }}
 
@@ -14,9 +16,12 @@
 
     @endif
 
+
     @if(session('error'))
 
         <div class="alert alert-danger">
+
+            <i class="bi bi-exclamation-circle me-1"></i>
 
             {{ session('error') }}
 
@@ -24,123 +29,206 @@
 
     @endif
 
-    <div
-        class="d-flex justify-content-between align-items-center mb-4"
-    >
 
-        <h1>
+    <div class="gtri-page-header">
 
-            Contratos
+        <div>
 
-        </h1>
+            <h2 class="gtri-page-title">
+
+                <i class="bi bi-file-earmark-text me-2"></i>
+
+                Contratos
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Consulta y administra los contratos de los clientes.
+
+            </p>
+
+        </div>
+
 
         <a
             href="{{ route(
                 'operaciones.contratos.create'
             ) }}"
-            class="btn btn-primary"
+            class="btn gtri-btn-primary"
         >
 
-            Nuevo Contrato
+            <i class="bi bi-file-earmark-plus me-1"></i>
+
+            Nuevo contrato
 
         </a>
 
     </div>
 
-    <form
-        method="GET"
-        action="{{ route(
-            'operaciones.contratos.index'
-        ) }}"
-        class="row mb-4"
-    >
 
-        <div class="col-md-6">
+    <div class="gtri-section">
 
-            <input
-                type="text"
-                name="buscar"
-                class="form-control"
-                placeholder="Buscar por cliente o número de contrato..."
-                value="{{ $buscar }}"
-            >
+        <div class="gtri-section-title">
+
+            <span>01</span>
+
+            Buscar contratos
 
         </div>
 
-        <div class="col-md-2">
 
-            <button
-                class="btn btn-dark w-100"
-            >
+        <form
+            method="GET"
+            action="{{ route(
+                'operaciones.contratos.index'
+            ) }}"
+        >
 
-                Buscar
+            <div class="row g-3 align-items-end">
 
-            </button>
+                <div class="col-lg-7">
+
+                    <label
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Buscar
+
+                    </label>
+
+
+                    <input
+                        type="text"
+                        name="buscar"
+                        class="form-control gtri-input"
+                        placeholder="Buscar por cliente o número de contrato..."
+                        value="{{ $buscar }}"
+                    >
+
+                </div>
+
+
+                <div class="col-lg-2 col-md-6">
+
+                    <button
+                        type="submit"
+                        class="btn gtri-btn-primary w-100"
+                    >
+
+                        <i class="bi bi-search me-1"></i>
+
+                        Buscar
+
+                    </button>
+
+                </div>
+
+
+                <div class="col-lg-2 col-md-6">
+
+                    <a
+                        href="{{ route(
+                            'operaciones.contratos.index'
+                        ) }}"
+                        class="btn gtri-btn-secondary w-100"
+                    >
+
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>
+
+                        Limpiar
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <div class="gtri-section mb-0">
+
+        <div
+            class="
+                d-flex
+                justify-content-between
+                align-items-center
+                flex-wrap
+                gap-2
+                mb-4
+            "
+        >
+
+            <div class="gtri-section-title mb-0">
+
+                <span>02</span>
+
+                Lista de contratos
+
+            </div>
+
+
+            <div>
+
+                <span class="text-secondary">
+
+                    Registros en esta página:
+
+                </span>
+
+                <span class="text-warning fw-bold">
+
+                    {{ $contratos->count() }}
+
+                </span>
+
+            </div>
 
         </div>
 
-        <div class="col-md-2">
 
-            <a
-                href="{{ route(
-                    'operaciones.contratos.index'
-                ) }}"
-                class="btn btn-secondary w-100"
-            >
-
-                Limpiar
-
-            </a>
-
-        </div>
-
-    </form>
-
-    <div class="card shadow-sm">
-
-        <div class="card-body">
+        <div class="gtri-table-wrapper">
 
             <div class="table-responsive">
 
-                <table
-                    class="table table-hover align-middle"
-                >
+                <table class="table gtri-table align-middle mb-0">
+
+                    <colgroup>
+
+                        <col style="width:24%">
+
+                        <col style="width:18%">
+
+                        <col style="width:13%">
+
+                        <col style="width:13%">
+
+                        <col style="width:12%">
+
+                        <col style="width:20%">
+
+                    </colgroup>
+
 
                     <thead>
 
                         <tr>
 
-                            <th>
+                            <th>Cliente</th>
 
-                                Cliente
+                            <th>Contrato</th>
 
-                            </th>
+                            <th>Inicio</th>
 
-                            <th>
+                            <th>Fin</th>
 
-                                Contrato
+                            <th>Estado</th>
 
-                            </th>
-
-                            <th>
-
-                                Inicio
-
-                            </th>
-
-                            <th>
-
-                                Fin
-
-                            </th>
-
-                            <th>
-
-                                Estado
-
-                            </th>
-
-                            <th width="220">
+                            <th class="text-center">
 
                                 Acciones
 
@@ -150,38 +238,48 @@
 
                     </thead>
 
+
                     <tbody>
 
-                        @forelse(
-                            $contratos
-                            as $contrato
-                        )
+                        @forelse($contratos as $contrato)
 
                             <tr>
 
                                 <td>
 
-                                    {{ $contrato->cliente->razon_social }}
+                                    <span class="text-light fw-semibold">
+
+                                        {{ $contrato->cliente->razon_social }}
+
+                                    </span>
 
                                 </td>
 
+
                                 <td>
 
-                                    {{ $contrato->numero_contrato }}
+                                    <span class="text-warning fw-semibold">
+
+                                        {{ $contrato->numero_contrato }}
+
+                                    </span>
 
                                 </td>
 
-                                <td>
+
+                                <td class="text-secondary">
 
                                     {{ $contrato->fecha_inicio }}
 
                                 </td>
 
-                                <td>
+
+                                <td class="text-secondary">
 
                                     {{ $contrato->fecha_fin ?: 'Sin definir' }}
 
                                 </td>
+
 
                                 <td>
 
@@ -197,6 +295,7 @@
 
                                             @break
 
+
                                         @case('vencido')
 
                                             <span class="badge bg-warning text-dark">
@@ -207,6 +306,7 @@
 
                                             @break
 
+
                                         @case('cancelado')
 
                                             <span class="badge bg-danger">
@@ -216,6 +316,7 @@
                                             </span>
 
                                             @break
+
 
                                         @default
 
@@ -229,57 +330,59 @@
 
                                 </td>
 
-                                <td>
 
-                                    <a
-                                        href="{{ route(
-                                            'operaciones.contratos.show',
-                                            $contrato
-                                        ) }}"
-                                        class="btn btn-primary btn-sm"
+                                <td class="text-center">
+
+                                    <div
+                                        class="
+                                            d-flex
+                                            justify-content-center
+                                            gap-2
+                                            flex-nowrap
+                                        "
                                     >
 
-                                        Ver
-
-                                    </a>
-
-                                    <a
-                                        href="{{ route(
-                                            'operaciones.contratos.edit',
-                                            $contrato
-                                        ) }}"
-                                        class="btn btn-warning btn-sm"
-                                    >
-
-                                        Editar
-
-                                    </a>
-
-                                    <form
-                                        action="{{ route(
-                                            'operaciones.contratos.destroy',
-                                            $contrato
-                                        ) }}"
-                                        method="POST"
-                                        class="d-inline"
-                                        onsubmit="return confirm(
-                                            '¿Desea eliminar este contrato?'
-                                        )"
-                                    >
-
-                                        @csrf
-
-                                        @method('DELETE')
-
-                                        <button
-                                            class="btn btn-danger btn-sm"
+                                        <a
+                                            href="{{ route(
+                                                'operaciones.contratos.show',
+                                                $contrato
+                                            ) }}"
+                                            class="btn btn-primary btn-sm"
+                                            title="Ver contrato"
                                         >
 
-                                            Eliminar
+                                            <i class="bi bi-eye"></i>
 
-                                        </button>
+                                        </a>
+                                        
+                                        <form
+                                            action="{{ route(
+                                                'operaciones.contratos.destroy',
+                                                $contrato
+                                            ) }}"
+                                            method="POST"
+                                            onsubmit="return confirm(
+                                                '¿Desea eliminar este contrato?'
+                                            )"
+                                        >
 
-                                    </form>
+                                            @csrf
+                                            @method('DELETE')
+
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-danger btn-sm"
+                                                title="Eliminar contrato"
+                                            >
+
+                                                <i class="bi bi-trash"></i>
+
+                                            </button>
+
+                                        </form>
+
+                                    </div>
 
                                 </td>
 
@@ -291,10 +394,31 @@
 
                                 <td
                                     colspan="6"
-                                    class="text-center"
+                                    class="text-center py-5"
                                 >
 
-                                    No existen contratos registrados.
+                                    <i
+                                        class="
+                                            bi
+                                            bi-file-earmark-x
+                                            d-block
+                                            fs-1
+                                            text-secondary
+                                            mb-3
+                                        "
+                                    ></i>
+
+                                    <h5 class="text-light">
+
+                                        No existen contratos registrados
+
+                                    </h5>
+
+                                    <p class="text-secondary mb-0">
+
+                                        Registra un nuevo contrato para comenzar.
+
+                                    </p>
 
                                 </td>
 
@@ -308,15 +432,18 @@
 
             </div>
 
-            <div
-                class="mt-3"
-            >
+        </div>
 
-                {{ $contratos->links() }}
+
+        @if($contratos->hasPages())
+
+            <div class="d-flex justify-content-center mt-4">
+
+                {{ $contratos->withQueryString()->links() }}
 
             </div>
 
-        </div>
+        @endif
 
     </div>
 

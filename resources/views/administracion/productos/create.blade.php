@@ -2,24 +2,49 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <div class="mb-3">
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-        <a
-            href="{{ route('administracion.productos.index') }}"
-            class="btn btn-secondary"
-        >
+        <div class="d-flex justify-content-between align-items-center">
 
-            <i class="bi bi-arrow-left"></i>
+            <div>
 
-            Volver
+                <h2 class="gtri-page-title">
 
-        </a>
+                    <i class="bi bi-box-seam me-2"></i>
+
+                    Nuevo producto
+
+                </h2>
+
+                <p class="gtri-page-subtitle">
+
+                    Registre un nuevo producto dentro del inventario de GTRI.
+
+                </p>
+
+            </div>
+
+            <a
+                href="{{ route('administracion.productos.index') }}"
+                class="btn gtri-btn-secondary"
+            >
+
+                <i class="bi bi-arrow-left me-1"></i>
+
+                Volver
+
+            </a>
+
+        </div>
 
     </div>
 
-    <x-rh.card-rh titulo="Nuevo producto">
+
+    {{-- FORMULARIO --}}
+    <div class="gtri-card">
 
         <form
             action="{{ route('administracion.productos.store') }}"
@@ -32,7 +57,7 @@
 
         </form>
 
-    </x-rh.card-rh>
+    </div>
 
 </div>
 

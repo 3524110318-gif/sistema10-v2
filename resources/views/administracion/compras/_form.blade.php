@@ -1,146 +1,273 @@
-<div class="row">
+<div class="gtri-form">
 
-    <div class="col-md-6">
+    {{-- 01 DATOS DE LA COMPRA --}}
+    <div class="gtri-section">
 
-        <label class="form-label">
+        <div class="gtri-section-title">
 
-            Proveedor
+            <span>01</span>
 
-        </label>
+            Datos de la compra
 
-        <select
-            name="proveedor_id"
-            class="form-select"
-            required
-        >
+        </div>
 
-            <option value="">
+        <div class="row g-4">
 
-                Seleccione un proveedor
+            {{-- PROVEEDOR --}}
+            <div class="col-md-6">
 
-            </option>
-
-            @foreach($proveedores as $proveedor)
-
-                <option
-                    value="{{ $proveedor->id }}"
-                    @selected(
-                        old(
-                            'proveedor_id',
-                            $compra->proveedor_id ?? ''
-                        ) == $proveedor->id
-                    )
+                <label
+                    for="proveedor_id"
+                    class="gtri-label mb-2"
                 >
 
-                    {{ $proveedor->razon_social }}
+                    Proveedor
 
-                </option>
+                    <span class="text-danger">*</span>
 
-            @endforeach
+                </label>
 
-        </select>
+                <select
+                    name="proveedor_id"
+                    id="proveedor_id"
+                    class="form-select gtri-select"
+                    required
+                >
+
+                    <option value="">
+
+                        Seleccione un proveedor
+
+                    </option>
+
+                    @foreach($proveedores as $proveedor)
+
+                        <option
+                            value="{{ $proveedor->id }}"
+                            @selected(
+                                old(
+                                    'proveedor_id',
+                                    $compra->proveedor_id ?? ''
+                                ) == $proveedor->id
+                            )
+                        >
+
+                            {{ $proveedor->razon_social }}
+
+                        </option>
+
+                    @endforeach
+
+                </select>
+
+                @error('proveedor_id')
+
+                    <small class="text-danger d-block mt-1">
+
+                        {{ $message }}
+
+                    </small>
+
+                @enderror
+
+            </div>
+
+
+            {{-- FECHA --}}
+            <div class="col-md-3">
+
+                <label
+                    for="fecha_compra"
+                    class="gtri-label mb-2"
+                >
+
+                    Fecha de compra
+
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                <input
+                    type="date"
+                    name="fecha_compra"
+                    id="fecha_compra"
+                    class="form-control gtri-input"
+                    value="{{ old(
+                        'fecha_compra',
+                        isset($compra)
+                            ? $compra->fecha_compra->format('Y-m-d')
+                            : date('Y-m-d')
+                    ) }}"
+                    required
+                >
+
+                @error('fecha_compra')
+
+                    <small class="text-danger d-block mt-1">
+
+                        {{ $message }}
+
+                    </small>
+
+                @enderror
+
+            </div>
+
+
+            {{-- ESTADO --}}
+            <div class="col-md-3">
+
+                <label
+                    for="estado"
+                    class="gtri-label mb-2"
+                >
+
+                    Estado
+
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                <select
+                    name="estado"
+                    id="estado"
+                    class="form-select gtri-select"
+                    required
+                >
+
+                    <option
+                        value="pendiente"
+                        @selected(
+                            old(
+                                'estado',
+                                $compra->estado ?? 'pendiente'
+                            ) == 'pendiente'
+                        )
+                    >
+
+                        Pendiente
+
+                    </option>
+
+                    <option
+                        value="recibida"
+                        @selected(
+                            old(
+                                'estado',
+                                $compra->estado ?? ''
+                            ) == 'recibida'
+                        )
+                    >
+
+                        Recibida
+
+                    </option>
+
+                    <option
+                        value="cancelada"
+                        @selected(
+                            old(
+                                'estado',
+                                $compra->estado ?? ''
+                            ) == 'cancelada'
+                        )
+                    >
+
+                        Cancelada
+
+                    </option>
+
+                </select>
+
+                @error('estado')
+
+                    <small class="text-danger d-block mt-1">
+
+                        {{ $message }}
+
+                    </small>
+
+                @enderror
+
+            </div>
+
+        </div>
 
     </div>
 
-    <div class="col-md-3">
 
-        <label class="form-label">
+    {{-- 02 INFORMACIÓN COMPLEMENTARIA --}}
+    <div class="gtri-section">
 
-            Fecha de compra
+        <div class="gtri-section-title">
+
+            <span>02</span>
+
+            Información complementaria
+
+        </div>
+
+        <label
+            for="observaciones"
+            class="gtri-label mb-2"
+        >
+
+            Observaciones
 
         </label>
 
-        <input
-            type="date"
-            name="fecha_compra"
-            class="form-control"
-            value="{{ old('fecha_compra', isset($compra) ? $compra->fecha_compra->format('Y-m-d') : date('Y-m-d')) }}"
-            required
-        >
+        <textarea
+            name="observaciones"
+            id="observaciones"
+            rows="4"
+            class="form-control gtri-textarea"
+            placeholder="Ingrese observaciones relacionadas con la compra..."
+        >{{ old(
+            'observaciones',
+            $compra->observaciones ?? ''
+        ) }}</textarea>
+
+        @error('observaciones')
+
+            <small class="text-danger d-block mt-1">
+
+                {{ $message }}
+
+            </small>
+
+        @enderror
 
     </div>
 
-    <div class="col-md-3">
 
-        <label class="form-label">
+    {{-- ACCIONES --}}
+    <div class="d-flex justify-content-end gap-3 mt-4">
 
-            Estado
-
-        </label>
-
-        <select
-            name="estado"
-            class="form-select"
-            required
+        <a
+            href="{{ route('administracion.compras.index') }}"
+            class="btn gtri-btn-secondary"
         >
 
-            <option
-                value="pendiente"
-                @selected(old('estado', $compra->estado ?? 'pendiente') == 'pendiente')
-            >
+            <i class="bi bi-x-circle me-1"></i>
 
-                Pendiente
+            Cancelar
 
-            </option>
+        </a>
 
-            <option
-                value="recibida"
-                @selected(old('estado', $compra->estado ?? '') == 'recibida')
-            >
+        <button
+            type="submit"
+            class="btn gtri-btn-primary"
+        >
 
-                Recibida
+            <i class="bi bi-check-circle me-1"></i>
 
-            </option>
+            {{ isset($compra)
+                ? 'Actualizar compra'
+                : 'Guardar compra'
+            }}
 
-            <option
-                value="cancelada"
-                @selected(old('estado', $compra->estado ?? '') == 'cancelada')
-            >
-
-                Cancelada
-
-            </option>
-
-        </select>
+        </button>
 
     </div>
-
-</div>
-
-<div class="mt-3">
-
-    <label class="form-label">
-
-        Observaciones
-
-    </label>
-
-    <textarea
-        name="observaciones"
-        rows="4"
-        class="form-control"
-    >{{ old('observaciones', $compra->observaciones ?? '') }}</textarea>
-
-</div>
-
-<div class="mt-4">
-
-    <button
-        type="submit"
-        class="btn btn-primary"
-    >
-
-        Guardar
-
-    </button>
-
-    <a
-        href="{{ route('administracion.compras.index') }}"
-        class="btn btn-secondary"
-    >
-
-        Cancelar
-
-    </a>
 
 </div>

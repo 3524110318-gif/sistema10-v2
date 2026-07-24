@@ -2,100 +2,301 @@
 
 @section('contenido')
 
-<div class="container">
+<div class="container-fluid">
 
-    <div
-        class="d-flex justify-content-between mb-4"
-    >
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-        <h1>
+        <div>
 
-            Asignaciones
+            <h2 class="gtri-page-title">
 
-        </h1>
+                <i class="bi bi-person-check me-2"></i>
+
+                Asignaciones
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Consulta las asignaciones activas del personal a plazas operativas.
+
+            </p>
+
+        </div>
+
 
         <a
             href="{{ route(
                 'operaciones.asignaciones.create'
             ) }}"
-            class="btn btn-primary"
+            class="btn gtri-btn-primary"
         >
 
-            Nueva Asignación
+            <i class="bi bi-plus-circle me-1"></i>
+
+            Nueva asignación
 
         </a>
 
     </div>
 
-    <table class="table">
 
-        <thead>
+    {{-- LISTADO --}}
+    <div class="gtri-section mb-0">
 
-            <tr>
+        <div
+            class="
+                d-flex
+                flex-wrap
+                justify-content-between
+                align-items-center
+                gap-2
+                mb-4
+            "
+        >
 
-                <th>Empleado</th>
-                <th>Plaza</th>
-                <th>Fecha Inicio</th>
-                <th>Estado</th>
+            <div class="gtri-section-title mb-0">
 
-            </tr>
+                <span>01</span>
 
-        </thead>
+                Lista de asignaciones
 
-        <tbody>
+            </div>
 
-            @forelse(
-                $asignaciones as $asignacion
-            )
 
-                <tr>
+            <div>
 
-                    <td>
+                <span class="text-secondary">
 
-                        {{ $asignacion->empleado->nombre }}
-                        {{ $asignacion->empleado->apellido_paterno }}
+                    Registros:
 
-                    </td>
+                </span>
 
-                    <td>
+                <span class="text-warning fw-bold">
 
-                        {{ $asignacion->plaza->nombre_plaza }}
+                    {{ $asignaciones->count() }}
 
-                    </td>
+                </span>
 
-                    <td>
+            </div>
 
-                        {{ $asignacion->fecha_inicio }}
+        </div>
 
-                    </td>
 
-                    <td>
+        <div class="gtri-table-wrapper">
 
-                        {{ ucfirst(
-                            $asignacion->estado
-                        ) }}
+            <div class="table-responsive">
 
-                    </td>
+                <table class="table gtri-table align-middle mb-0">
 
-                </tr>
+                    <colgroup>
 
-            @empty
+                        <col style="width:32%">
 
-                <tr>
+                        <col style="width:28%">
 
-                    <td colspan="4">
+                        <col style="width:20%">
 
-                        Sin asignaciones
+                        <col style="width:20%">
 
-                    </td>
+                    </colgroup>
 
-                </tr>
 
-            @endforelse
+                    <thead>
 
-        </tbody>
+                        <tr>
 
-    </table>
+                            <th>Empleado</th>
+
+                            <th>Plaza</th>
+
+                            <th>Fecha de inicio</th>
+
+                            <th>Estado</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @forelse(
+                            $asignaciones
+                            as $asignacion
+                        )
+
+                            <tr>
+
+                                {{-- EMPLEADO --}}
+                                <td>
+
+                                    <div>
+
+                                        <span class="text-light fw-semibold d-block">
+
+                                            {{ $asignacion->empleado->nombre }}
+
+                                            {{ $asignacion->empleado->apellido_paterno }}
+
+                                        </span>
+
+                                        <small class="text-secondary">
+
+                                            {{ $asignacion->empleado->numero_control }}
+
+                                        </small>
+
+                                    </div>
+
+                                </td>
+
+
+                                {{-- PLAZA --}}
+                                <td>
+
+                                    <span class="text-warning fw-semibold">
+
+                                        {{ $asignacion->plaza->nombre_plaza }}
+
+                                    </span>
+
+                                </td>
+
+
+                                {{-- FECHA --}}
+                                <td>
+
+                                    <span class="text-light">
+
+                                        <i class="bi bi-calendar3 me-1 text-warning"></i>
+
+                                        {{ $asignacion->fecha_inicio }}
+
+                                    </span>
+
+                                </td>
+
+
+                                {{-- ESTADO --}}
+                                <td>
+
+                                    @if($asignacion->estado === 'activo')
+
+                                        <span class="badge bg-success">
+
+                                            <i class="bi bi-check-circle me-1"></i>
+
+                                            Activo
+
+                                        </span>
+
+                                    @elseif($asignacion->estado === 'finalizado')
+
+                                        <span class="badge bg-secondary">
+
+                                            <i class="bi bi-check2-square me-1"></i>
+
+                                            Finalizado
+
+                                        </span>
+
+                                    @elseif($asignacion->estado === 'cancelado')
+
+                                        <span class="badge bg-danger">
+
+                                            <i class="bi bi-x-circle me-1"></i>
+
+                                            Cancelado
+
+                                        </span>
+
+                                    @else
+
+                                        <span class="badge bg-secondary">
+
+                                            {{ ucfirst(
+                                                $asignacion->estado
+                                            ) }}
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="4"
+                                    class="text-center py-5"
+                                >
+
+                                    <i
+                                        class="
+                                            bi
+                                            bi-person-x
+                                            d-block
+                                            fs-1
+                                            text-secondary
+                                            mb-3
+                                        "
+                                    ></i>
+
+                                    <h5 class="text-light">
+
+                                        Sin asignaciones registradas
+
+                                    </h5>
+
+                                    <p class="text-secondary mb-0">
+
+                                        Registra una nueva asignación para comenzar.
+
+                                    </p>
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        {{-- PAGINACIÓN --}}
+        @if(
+            method_exists($asignaciones, 'hasPages')
+            &&
+            $asignaciones->hasPages()
+        )
+
+            <div
+                class="
+                    d-flex
+                    justify-content-center
+                    mt-4
+                "
+            >
+
+                {{ $asignaciones->withQueryString()->links() }}
+
+            </div>
+
+        @endif
+
+    </div>
 
 </div>
 

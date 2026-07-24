@@ -2,207 +2,372 @@
 
 @section('contenido')
 
-<div class="container">
+<div class="container-fluid">
 
-    <div
-        class="d-flex justify-content-between mb-4"
-    >
+    <div class="gtri-page-header">
 
-        <h1>
+        <div>
 
-            Supervisiones
+            <h2 class="gtri-page-title">
 
-        </h1>
+                <i class="bi bi-clipboard-check me-2"></i>
+
+                Supervisiones
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Consulta las supervisiones realizadas al personal operativo.
+
+            </p>
+
+        </div>
 
         <a
             href="{{ route(
                 'operaciones.supervisiones.create'
             ) }}"
-            class="btn btn-primary"
+            class="btn gtri-btn-primary"
         >
 
-            Nueva Supervisión
+            <i class="bi bi-plus-circle me-1"></i>
+
+            Nueva supervisión
 
         </a>
 
     </div>
 
-    <table class="table">
 
-        <thead>
+    <div class="gtri-section mb-0">
 
-            <tr>
-                <th>Guardia</th>
+        <div
+            class="
+                d-flex
+                justify-content-between
+                align-items-center
+                flex-wrap
+                gap-2
+                mb-4
+            "
+        >
 
-                <th>Servicio</th>
+            <div class="gtri-section-title mb-0">
 
-                <th>Plaza</th>
+                <span>01</span>
 
-                <th>Turno</th>
+                Lista de supervisiones
 
-                <th>Fecha</th>
+            </div>
 
-                <th>Resultado</th>
+            <div>
 
-                <th>Acciones</th>
-            </tr>
+                <span class="text-secondary">
 
-        </thead>
+                    Registros:
 
-        <tbody>
+                </span>
 
-            @forelse(
-                $supervisiones
-                as $supervision
-            )
+                <span class="text-warning fw-bold">
 
-                <tr>
+                    {{ $supervisiones->count() }}
 
-                    <td>
+                </span>
 
-                        {{ $supervision->asignacion->empleado->nombre }}
-                        {{ $supervision->asignacion->empleado->apellido_paterno }}
+            </div>
 
-                    </td>
+        </div>
 
-                    <td>
 
-                        {{ $supervision->asignacion->plaza->servicio->nombre }}
+        <div class="gtri-table-wrapper">
 
-                    </td>
+            <div class="table-responsive">
 
-                    <td>
+                <table class="table gtri-table align-middle mb-0">
 
-                        {{ $supervision->asignacion->plaza->nombre_plaza }}
+                    <thead>
 
-                    </td>
+                        <tr>
 
-                    <td>
+                            <th>Guardia</th>
 
-                        {{ ucfirst($supervision->asignacion->plaza->turno) }}
+                            <th>Servicio</th>
 
-                    </td>
+                            <th>Plaza</th>
 
-                    <td>
+                            <th>Turno</th>
 
-                        {{ $supervision->fecha_supervision }}
+                            <th>Fecha</th>
 
-                    </td>
+                            <th>Resultado</th>
 
-                    <td>
+                            <th class="text-center">
 
-                        @if($supervision->resultado == 'correcto')
+                                Acciones
 
-                            <span class="badge bg-success">
+                            </th>
 
-                                Correcto
+                        </tr>
 
-                            </span>
+                    </thead>
 
-                        @elseif($supervision->resultado == 'incidencia')
+                    <tbody>
 
-                            <span class="badge bg-warning text-dark">
+                        @forelse(
+                            $supervisiones
+                            as $supervision
+                        )
 
-                                Incidencia
+                            <tr>
 
-                            </span>
+                                <td>
 
-                        @else
+                                    <div>
 
-                            <span class="badge bg-danger">
+                                        <span class="text-light fw-semibold d-block">
 
-                                Ausente
+                                            {{
+                                                $supervision
+                                                    ->asignacion
+                                                    ->empleado
+                                                    ->nombre
+                                            }}
 
-                            </span>
+                                            {{
+                                                $supervision
+                                                    ->asignacion
+                                                    ->empleado
+                                                    ->apellido_paterno
+                                            }}
 
-                        @endif
+                                        </span>
 
-                    </td>
+                                        <small class="text-secondary">
 
-                    <td>
+                                            {{
+                                                $supervision
+                                                    ->asignacion
+                                                    ->empleado
+                                                    ->numero_control
+                                            }}
 
-                        <a
-                            href="{{ route(
-                                'operaciones.supervisiones.show',
-                                $supervision
-                            ) }}"
-                            class="btn btn-info btn-sm"
-                        >
+                                        </small>
 
-                            Ver
+                                    </div>
 
-                        </a>
+                                </td>
 
-                          <a
-                                href="{{ route(
-                                    'operaciones.supervisiones.edit',
-                                    $supervision
-                                ) }}"
-                                class="btn btn-warning btn-sm"
-                            >
+                                <td>
 
-                                Editar
+                                    {{
+                                        $supervision
+                                            ->asignacion
+                                            ->plaza
+                                            ->servicio
+                                            ->nombre
+                                    }}
 
-                            </a>
+                                </td>
 
-                            @if(
-                                $supervision->resultado != 'correcto'
-                            )
+                                <td>
 
-                                @if(
-                                    $supervision->incidencia
-                                )
+                                    <span class="text-warning fw-semibold">
 
-                                    <a
-                                        href="{{ route(
-                                            'operaciones.incidencias.index'
-                                        ) }}"
-                                        class="btn btn-info btn-sm"
-                                    >
-
-                                        Ver Incidencia
-
-                                    </a>
-
-                                @else
-
-                                    <a
-                                        href="{{ route(
-                                            'operaciones.incidencias.create.supervision',
+                                        {{
                                             $supervision
-                                        ) }}"
-                                        class="btn btn-danger btn-sm"
+                                                ->asignacion
+                                                ->plaza
+                                                ->nombre_plaza
+                                        }}
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    {{
+                                        ucfirst(
+                                            $supervision
+                                                ->asignacion
+                                                ->plaza
+                                                ->turno
+                                        )
+                                    }}
+
+                                </td>
+
+                                <td>
+
+                                    {{ $supervision->fecha_supervision }}
+
+                                </td>
+
+                                <td>
+
+                                    @if($supervision->resultado === 'correcto')
+
+                                        <span class="badge bg-success">
+
+                                            Correcto
+
+                                        </span>
+
+                                    @elseif($supervision->resultado === 'incidencia')
+
+                                        <span class="badge bg-warning text-dark">
+
+                                            Incidencia
+
+                                        </span>
+
+                                    @else
+
+                                        <span class="badge bg-danger">
+
+                                            Ausente
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+                                <td class="text-center">
+
+                                    <div
+                                        class="
+                                            d-flex
+                                            justify-content-center
+                                            gap-2
+                                            flex-wrap
+                                        "
                                     >
 
-                                        Generar Incidencia
+                                        <a
+                                            href="{{ route(
+                                                'operaciones.supervisiones.show',
+                                                $supervision
+                                            ) }}"
+                                            class="btn btn-primary btn-sm"
+                                            title="Ver supervisión"
+                                        >
 
-                                    </a>
+                                            <i class="bi bi-eye"></i>
 
-                                @endif
+                                        </a>
 
-                            @endif
 
-                    </td>
+                                        @if(
+                                            $supervision->resultado
+                                            !=
+                                            'correcto'
+                                        )
 
-                </tr>
+                                            @if($supervision->incidencia)
 
-            @empty
+                                                <a
+                                                    href="{{ route(
+                                                        'operaciones.incidencias.index'
+                                                    ) }}"
+                                                    class="btn btn-info btn-sm"
+                                                >
 
-                <tr>
+                                                    <i class="bi bi-eye me-1"></i>
 
-                    <td colspan="7">
+                                                    Incidencia
 
-                        Sin supervisiones
+                                                </a>
 
-                    </td>
+                                            @else
 
-                </tr>
+                                                <a
+                                                    href="{{ route(
+                                                        'operaciones.incidencias.create.supervision',
+                                                        $supervision
+                                                    ) }}"
+                                                    class="btn btn-danger btn-sm"
+                                                >
 
-            @endforelse
+                                                    <i class="bi bi-exclamation-triangle me-1"></i>
 
-        </tbody>
+                                                    Generar
 
-    </table>
+                                                </a>
+
+                                            @endif
+
+                                        @endif
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="7"
+                                    class="text-center py-5"
+                                >
+
+                                    <i
+                                        class="
+                                            bi
+                                            bi-clipboard-x
+                                            d-block
+                                            fs-1
+                                            text-secondary
+                                            mb-3
+                                        "
+                                    ></i>
+
+                                    <h5 class="text-light">
+
+                                        Sin supervisiones registradas
+
+                                    </h5>
+
+                                    <p class="text-secondary mb-0">
+
+                                        Registra una supervisión para comenzar.
+
+                                    </p>
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        @if(
+            method_exists($supervisiones, 'hasPages')
+            &&
+            $supervisiones->hasPages()
+        )
+
+            <div class="d-flex justify-content-center mt-4">
+
+                {{ $supervisiones->withQueryString()->links() }}
+
+            </div>
+
+        @endif
+
+    </div>
 
 </div>
 

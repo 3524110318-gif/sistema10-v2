@@ -2,49 +2,90 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
     <x-rh.alert-success />
 
-    <h1 class="mb-4">
 
-        ASIGNACIÓN DE ACTIVOS
+    <div class="gtri-page-header">
 
-    </h1>
+        <div class="d-flex justify-content-between align-items-center">
 
-    <div class="d-flex gap-2 mb-4">
+            <div>
 
-        <a
-            href="{{ route('administracion.asignaciones-activos.create') }}"
-            class="btn btn-primary"
-        >
+                <h2 class="gtri-page-title">
 
-            Nueva asignación
+                    <i class="bi bi-person-check me-2"></i>
 
-        </a>
+                    Asignación de activos
+
+                </h2>
+
+                <p class="gtri-page-subtitle">
+
+                    Control de activos entregados a empleados y servicios.
+
+                </p>
+
+            </div>
+
+            <a
+                href="{{ route('administracion.asignaciones-activos.create') }}"
+                class="btn gtri-btn-primary"
+            >
+
+                <i class="bi bi-plus-circle me-1"></i>
+
+                Nueva asignación
+
+            </a>
+
+        </div>
 
     </div>
 
-    <x-rh.card-rh titulo="Buscar asignación">
+
+    {{-- BUSCADOR --}}
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>01</span>
+
+            Filtros de búsqueda
+
+        </div>
 
         <form method="GET">
 
-            <div class="row align-items-end">
+            <div class="row g-3 align-items-end">
 
-                <div class="col-md-4">
+                <div class="col-md-5">
 
-                    <x-rh.input-rh
-                        label="Código del activo"
-                        name="buscar"
+                    <label class="gtri-label mb-2">
+
+                        Código del activo
+
+                    </label>
+
+                    <input
                         type="text"
-                        :value="request('buscar')"
-                    />
+                        name="buscar"
+                        value="{{ request('buscar') }}"
+                        class="form-control gtri-input"
+                        placeholder="Buscar por código..."
+                    >
 
                 </div>
 
                 <div class="col-auto">
 
-                    <button class="btn btn-primary">
+                    <button
+                        type="submit"
+                        class="btn gtri-btn-primary"
+                    >
+
+                        <i class="bi bi-search me-1"></i>
 
                         Buscar
 
@@ -52,173 +93,257 @@
 
                 </div>
 
+                @if(request('buscar'))
+
+                    <div class="col-auto">
+
+                        <a
+                            href="{{ route('administracion.asignaciones-activos.index') }}"
+                            class="btn gtri-btn-secondary"
+                        >
+
+                            <i class="bi bi-arrow-clockwise me-1"></i>
+
+                            Limpiar
+
+                        </a>
+
+                    </div>
+
+                @endif
+
             </div>
 
         </form>
 
-    </x-rh.card-rh>
+    </div>
 
-    <x-rh.card-rh titulo="Listado de asignaciones">
 
-        <div class="table-responsive">
+    {{-- LISTADO --}}
+    <div class="gtri-section">
 
-            <table class="table table-bordered table-hover align-middle">
+        <div class="gtri-section-title">
 
-                <thead class="table-dark">
+            <span>02</span>
 
-                    <tr>
+            Listado de asignaciones
 
-                        <th>Activo</th>
+        </div>
 
-                        <th>Empleado</th>
+        <div class="gtri-table-wrapper">
 
-                        <th>Servicio</th>
+            <div class="table-responsive">
 
-                        <th>Fecha entrega</th>
+                <table class="table gtri-table align-middle">
 
-                        <th>Estado</th>
-
-                        <th>Acciones</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @forelse($asignaciones as $asignacion)
+                    <thead>
 
                         <tr>
 
-                            <td>
+                            <th>Activo</th>
 
-                                {{ $asignacion->activo->codigo_activo }}
+                            <th>Empleado</th>
 
-                            </td>
+                            <th>Servicio</th>
 
-                            <td>
+                            <th>Fecha entrega</th>
 
-                                {{ $asignacion->empleado->nombre }}
+                            <th class="text-center">
+                                Estado
+                            </th>
 
-                                {{ $asignacion->empleado->apellido_paterno }}
+                            <th class="text-center">
+                                Acciones
+                            </th>
 
-                            </td>
+                        </tr>
 
-                            <td>
+                    </thead>
 
-                                {{ $asignacion->servicio->nombre ?? 'Sin servicio' }}
+                    <tbody>
 
-                            </td>
+                        @forelse($asignaciones as $asignacion)
 
-                            <td>
+                            <tr>
 
-                                {{ $asignacion->fecha_entrega->format('d/m/Y') }}
+                                <td>
 
-                            </td>
+                                    <span class="text-warning fw-semibold">
 
-                            <td>
-
-                                @if($asignacion->estado == 'activa')
-
-                                    <span class="badge bg-success">
-
-                                        Activa
+                                        {{ $asignacion->activo->codigo_activo }}
 
                                     </span>
 
-                                @else
+                                </td>
 
-                                    <span class="badge bg-secondary">
+                                <td>
 
-                                        Devuelta
+                                    <div class="fw-semibold text-light">
+
+                                        {{ $asignacion->empleado->nombre }}
+                                        {{ $asignacion->empleado->apellido_paterno }}
+
+                                    </div>
+
+                                </td>
+
+                                <td>
+
+                                    <span class="text-secondary">
+
+                                        {{ $asignacion->servicio->nombre ?? 'Sin servicio' }}
 
                                     </span>
 
-                                @endif
+                                </td>
 
-                            </td>
+                                <td>
 
-                            <td>
+                                    <span class="text-secondary">
 
-                                <div class="d-flex gap-2">
+                                        {{ $asignacion->fecha_entrega->format('d/m/Y') }}
 
-                                    <a
-                                        href="{{ route('administracion.asignaciones-activos.show', $asignacion) }}"
-                                        class="btn btn-info btn-sm"
-                                    >
+                                    </span>
 
-                                        Ver
+                                </td>
 
-                                    </a>
-
-                                    <a
-                                        href="{{ route('administracion.asignaciones-activos.edit', $asignacion) }}"
-                                        class="btn btn-warning btn-sm"
-                                    >
-
-                                        Editar
-
-                                    </a>
+                                <td class="text-center">
 
                                     @if($asignacion->estado == 'activa')
 
-                                        <form
-                                            action="{{ route('administracion.asignaciones-activos.destroy', $asignacion) }}"
-                                            method="POST"
-                                        >
+                                        <span class="badge gtri-badge-success">
 
-                                            @csrf
-                                            @method('DELETE')
+                                            <i class="bi bi-check-circle me-1"></i>
 
-                                            <button
-                                                class="btn btn-danger btn-sm"
-                                                onclick="return confirm('¿Registrar devolución del activo?')"
-                                            >
+                                            Activa
 
-                                                Devolver
+                                        </span>
 
-                                            </button>
+                                    @else
 
-                                        </form>
+                                        <span class="badge gtri-badge-warning">
+
+                                            <i class="bi bi-arrow-return-left me-1"></i>
+
+                                            Devuelta
+
+                                        </span>
 
                                     @endif
 
-                                </div>
+                                </td>
 
-                            </td>
+                                <td>
 
-                        </tr>
+                                    <div class="d-flex justify-content-center gap-2">
 
-                    @empty
+                                        <a
+                                            href="{{ route(
+                                                'administracion.asignaciones-activos.show',
+                                                $asignacion
+                                            ) }}"
+                                            class="btn btn-sm gtri-btn-secondary"
+                                            title="Ver detalle"
+                                        >
 
-                        <tr>
+                                            <i class="bi bi-eye"></i>
 
-                            <td
-                                colspan="6"
-                                class="text-center"
-                            >
+                                        </a>
 
-                                No hay asignaciones registradas.
+                                        <a
+                                            href="{{ route(
+                                                'administracion.asignaciones-activos.edit',
+                                                $asignacion
+                                            ) }}"
+                                            class="btn btn-sm gtri-btn-secondary"
+                                            title="Editar asignación"
+                                        >
 
-                            </td>
+                                            <i class="bi bi-pencil"></i>
 
-                        </tr>
+                                        </a>
 
-                    @endforelse
+                                        @if($asignacion->estado == 'activa')
 
-                </tbody>
+                                            <form
+                                                action="{{ route(
+                                                    'administracion.asignaciones-activos.destroy',
+                                                    $asignacion
+                                                ) }}"
+                                                method="POST"
+                                            >
 
-            </table>
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm(
+                                                        '¿Registrar devolución del activo?'
+                                                    )"
+                                                    title="Registrar devolución"
+                                                >
+
+                                                    <i class="bi bi-arrow-return-left"></i>
+
+                                                </button>
+
+                                            </form>
+
+                                        @endif
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="6"
+                                    class="text-center py-5"
+                                >
+
+                                    <div class="text-secondary">
+
+                                        <i
+                                            class="bi bi-person-check fs-1 d-block mb-3"
+                                        ></i>
+
+                                        No hay asignaciones registradas.
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
-        <div class="d-flex justify-content-center mt-4">
 
-            {{ $asignaciones->links() }}
+        @if($asignaciones->hasPages())
 
-        </div>
+            <div class="d-flex justify-content-center mt-4">
 
-    </x-rh.card-rh>
+                {{ $asignaciones->links() }}
+
+            </div>
+
+        @endif
+
+    </div>
 
 </div>
 

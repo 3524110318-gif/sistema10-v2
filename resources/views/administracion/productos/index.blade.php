@@ -2,57 +2,134 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
     <x-rh.alert-success />
 
-    <h1 class="mb-2">
 
-        ADMINISTRACIÓN DE PRODUCTOS
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-    </h1>
+        <div class="d-flex justify-content-between align-items-center">
 
-    <p class="text-muted">
+            <div>
 
-        Total de productos registrados:
+                <h2 class="gtri-page-title">
 
-        <strong>{{ $totalProductos }}</strong>
+                    <i class="bi bi-box-seam me-2"></i>
 
-    </p>
+                    Productos
 
-    <div class="d-flex gap-2 mb-4">
+                </h2>
 
-        <a
-            href="{{ route('administracion.productos.create') }}"
-            class="btn btn-primary"
-        >
+                <p class="gtri-page-subtitle">
 
-            Nuevo producto
+                    Administración y control general de productos.
 
-        </a>
+                </p>
+
+            </div>
+
+
+            <a
+                href="{{ route('administracion.productos.create') }}"
+                class="btn gtri-btn-primary"
+            >
+
+                <i class="bi bi-plus-circle me-1"></i>
+
+                Nuevo producto
+
+            </a>
+
+        </div>
 
     </div>
 
-    <x-rh.card-rh titulo="Buscar producto">
 
-        <form method="GET">
+    {{-- RESUMEN --}}
+    <div class="row g-3 mb-4">
 
-            <div class="row align-items-end">
+        <div class="col-md-4">
 
-                <div class="col-md-4">
+            <div class="gtri-card">
 
-                    <x-rh.input-rh
-                        label="Nombre"
-                        name="buscar"
-                        type="text"
-                        :value="request('buscar')"
-                    />
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <small class="text-secondary">
+
+                            Total de productos
+
+                        </small>
+
+                        <h2 class="mt-2 mb-0 text-warning fw-bold">
+
+                            {{ $totalProductos }}
+
+                        </h2>
+
+                    </div>
+
+                    <div class="fs-1 text-warning">
+
+                        <i class="bi bi-box-seam"></i>
+
+                    </div>
 
                 </div>
 
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {{-- BUSCADOR --}}
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>01</span>
+
+            Filtros de búsqueda
+
+        </div>
+
+
+        <form method="GET">
+
+            <div class="row g-3 align-items-end">
+
+                <div class="col-md-5">
+
+                    <label class="gtri-label mb-2">
+
+                        Nombre del producto
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="buscar"
+                        value="{{ request('buscar') }}"
+                        class="form-control gtri-input"
+                        placeholder="Buscar por nombre..."
+                    >
+
+                </div>
+
+
                 <div class="col-auto">
 
-                    <button class="btn btn-primary">
+                    <button
+                        type="submit"
+                        class="btn gtri-btn-primary"
+                    >
+
+                        <i class="bi bi-search me-1"></i>
 
                         Buscar
 
@@ -60,171 +137,293 @@
 
                 </div>
 
+
+                @if(request('buscar'))
+
+                    <div class="col-auto">
+
+                        <a
+                            href="{{ route('administracion.productos.index') }}"
+                            class="btn gtri-btn-secondary"
+                        >
+
+                            <i class="bi bi-arrow-clockwise me-1"></i>
+
+                            Limpiar
+
+                        </a>
+
+                    </div>
+
+                @endif
+
             </div>
 
         </form>
 
-    </x-rh.card-rh>
+    </div>
 
-    <x-rh.card-rh titulo="Listado de productos">
 
-        <div class="table-responsive">
+    {{-- LISTADO --}}
+    <div class="gtri-section">
 
-            <table class="table table-bordered table-hover align-middle">
+        <div class="gtri-section-title">
 
-                <thead class="table-dark">
+            <span>02</span>
 
-                    <tr>
+            Listado de productos
 
-                        <th>Código</th>
+        </div>
 
-                        <th>Producto</th>
 
-                        <th>Categoría</th>
+        <div class="gtri-table-wrapper">
 
-                        <th class="text-center">
+            <div class="table-responsive">
 
-                            Stock
+                <table class="table gtri-table align-middle">
 
-                        </th>
-
-                        <th class="text-center">
-
-                            Estado
-
-                        </th>
-
-                        <th class="text-center">
-
-                            Acciones
-
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @forelse($productos as $producto)
+                    <thead>
 
                         <tr>
 
-                            <td>
+                            <th>
+                                Código
+                            </th>
 
-                                {{ $producto->codigo }}
+                            <th>
+                                Producto
+                            </th>
 
-                            </td>
+                            <th>
+                                Categoría
+                            </th>
 
-                            <td>
+                            <th class="text-center">
+                                Stock
+                            </th>
 
-                                {{ $producto->nombre }}
+                            <th class="text-center">
+                                Estado
+                            </th>
 
-                            </td>
+                            <th class="text-center">
+                                Acciones
+                            </th>
 
-                            <td>
+                        </tr>
 
-                                {{ $producto->categoria->nombre }}
+                    </thead>
 
-                            </td>
 
-                            <td class="text-center">
+                    <tbody>
 
-                                {{ $producto->stock_actual }}
+                        @forelse($productos as $producto)
 
-                            </td>
+                            <tr>
 
-                            <td class="text-center">
+                                <td>
 
-                                @if($producto->estado == 'activo')
+                                    <span class="text-warning fw-semibold">
 
-                                    <span class="badge bg-success">
-
-                                        Activo
+                                        {{ $producto->codigo }}
 
                                     </span>
 
-                                @else
+                                </td>
 
-                                    <span class="badge bg-danger">
 
-                                        Inactivo
+                                <td>
+
+                                    <div class="fw-semibold text-light">
+
+                                        {{ $producto->nombre }}
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="text-secondary">
+
+                                        {{ $producto->categoria->nombre }}
 
                                     </span>
 
-                                @endif
+                                </td>
 
-                            </td>
 
-                            <td>
+                                <td class="text-center">
 
-                                <div class="d-flex justify-content-center gap-2">
+                                    @if(
+                                        $producto->stock_actual
+                                        <=
+                                        $producto->stock_minimo
+                                    )
 
-                                    <a
-                                        href="{{ route('administracion.productos.edit', $producto) }}"
-                                        class="btn btn-warning btn-sm"
-                                    >
+                                        <span class="badge gtri-badge-danger">
 
-                                        Editar
+                                            {{ $producto->stock_actual }}
 
-                                    </a>
+                                        </span>
 
-                                    <form
-                                        action="{{ route('administracion.productos.destroy', $producto) }}"
-                                        method="POST"
-                                    >
+                                    @else
 
-                                        @csrf
+                                        <span class="badge gtri-badge-success">
 
-                                        @method('DELETE')
+                                            {{ $producto->stock_actual }}
 
-                                        <button
-                                            class="btn btn-sm {{ $producto->estado == 'activo' ? 'btn-danger' : 'btn-success' }}"
-                                            onclick="return confirm('¿Desea {{ $producto->estado == 'activo' ? 'desactivar' : 'activar' }} este producto?')"
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                <td class="text-center">
+
+                                    @if($producto->estado == 'activo')
+
+                                        <span class="badge gtri-badge-success">
+
+                                            <i class="bi bi-check-circle me-1"></i>
+
+                                            Activo
+
+                                        </span>
+
+                                    @else
+
+                                        <span class="badge gtri-badge-danger">
+
+                                            <i class="bi bi-x-circle me-1"></i>
+
+                                            Inactivo
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                <td>
+
+                                    <div class="d-flex justify-content-center gap-2">
+
+                                        <a
+                                            href="{{ route(
+                                                'administracion.productos.edit',
+                                                $producto
+                                            ) }}"
+                                            class="btn btn-sm gtri-btn-secondary"
+                                            title="Editar producto"
                                         >
 
-                                            {{ $producto->estado == 'activo' ? 'Desactivar' : 'Activar' }}
+                                            <i class="bi bi-pencil"></i>
 
-                                        </button>
+                                        </a>
 
-                                    </form>
 
-                                </div>
+                                        <form
+                                            action="{{ route(
+                                                'administracion.productos.destroy',
+                                                $producto
+                                            ) }}"
+                                            method="POST"
+                                        >
 
-                            </td>
+                                            @csrf
+                                            @method('DELETE')
 
-                        </tr>
 
-                    @empty
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm
+                                                {{ $producto->estado == 'activo'
+                                                    ? 'btn-outline-danger'
+                                                    : 'btn-outline-success'
+                                                }}"
+                                                onclick="return confirm(
+                                                    '¿Desea {{ $producto->estado == 'activo'
+                                                        ? 'desactivar'
+                                                        : 'activar'
+                                                    }} este producto?'
+                                                )"
+                                                title="{{ $producto->estado == 'activo'
+                                                    ? 'Desactivar'
+                                                    : 'Activar'
+                                                }}"
+                                            >
 
-                        <tr>
+                                                @if($producto->estado == 'activo')
 
-                            <td
-                                colspan="6"
-                                class="text-center"
-                            >
+                                                    <i class="bi bi-power"></i>
 
-                                No hay productos registrados.
+                                                @else
 
-                            </td>
+                                                    <i class="bi bi-check-lg"></i>
 
-                        </tr>
+                                                @endif
 
-                    @endforelse
+                                            </button>
 
-                </tbody>
+                                        </form>
 
-            </table>
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="6"
+                                    class="text-center py-5"
+                                >
+
+                                    <div class="text-secondary">
+
+                                        <i
+                                            class="bi bi-box-seam fs-1 d-block mb-3"
+                                        ></i>
+
+                                        No hay productos registrados.
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
-        <div class="d-flex justify-content-center mt-4">
 
-            {{ $productos->links() }}
+        {{-- PAGINACIÓN --}}
+        @if($productos->hasPages())
 
-        </div>
+            <div class="d-flex justify-content-center mt-4">
 
-    </x-rh.card-rh>
+                {{ $productos->links() }}
+
+            </div>
+
+        @endif
+
+    </div>
 
 </div>
 

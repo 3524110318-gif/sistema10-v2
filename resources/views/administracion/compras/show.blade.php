@@ -2,30 +2,63 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <div class="mb-3">
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-        <a
-            href="{{ route('administracion.compras.index') }}"
-            class="btn btn-secondary"
-        >
+        <div class="d-flex justify-content-between align-items-center">
 
-            <i class="bi bi-arrow-left"></i>
+            <div>
 
-            Volver
+                <h2 class="gtri-page-title">
 
-        </a>
+                    <i class="bi bi-receipt me-2"></i>
+
+                    Detalle de la compra
+
+                </h2>
+
+                <p class="gtri-page-subtitle">
+
+                    Información general de la compra seleccionada.
+
+                </p>
+
+            </div>
+
+            <a
+                href="{{ route('administracion.compras.index') }}"
+                class="btn gtri-btn-secondary"
+            >
+
+                <i class="bi bi-arrow-left me-1"></i>
+
+                Volver
+
+            </a>
+
+        </div>
 
     </div>
 
-    <x-rh.card-rh titulo="Detalle de la compra">
 
-        <div class="row">
+    {{-- IDENTIFICACIÓN --}}
+    <div class="gtri-section">
 
-            <div class="col-md-6 mb-3">
+        <div class="gtri-section-title">
 
-                <label class="form-label fw-bold">
+            <span>01</span>
+
+            Información de la compra
+
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-6">
+
+                <label class="gtri-label mb-2">
 
                     Folio
 
@@ -33,16 +66,16 @@
 
                 <input
                     type="text"
-                    class="form-control"
+                    class="form-control gtri-input"
                     value="{{ $compra->folio }}"
                     readonly
                 >
 
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6">
 
-                <label class="form-label fw-bold">
+                <label class="gtri-label mb-2">
 
                     Proveedor
 
@@ -50,16 +83,16 @@
 
                 <input
                     type="text"
-                    class="form-control"
+                    class="form-control gtri-input"
                     value="{{ $compra->proveedor->razon_social }}"
                     readonly
                 >
 
             </div>
 
-            <div class="col-md-4 mb-3">
+            <div class="col-md-4">
 
-                <label class="form-label fw-bold">
+                <label class="gtri-label mb-2">
 
                     Fecha de compra
 
@@ -67,33 +100,62 @@
 
                 <input
                     type="text"
-                    class="form-control"
+                    class="form-control gtri-input"
                     value="{{ $compra->fecha_compra->format('d/m/Y') }}"
                     readonly
                 >
 
             </div>
 
-            <div class="col-md-4 mb-3">
+            <div class="col-md-4">
 
-                <label class="form-label fw-bold">
+                <label class="gtri-label mb-2">
 
                     Estado
 
                 </label>
 
-                <input
-                    type="text"
-                    class="form-control"
-                    value="{{ ucfirst($compra->estado) }}"
-                    readonly
-                >
+                <div class="pt-2">
+
+                    @if($compra->estado == 'pendiente')
+
+                        <span class="badge gtri-badge-warning">
+
+                            <i class="bi bi-clock me-1"></i>
+
+                            Pendiente
+
+                        </span>
+
+                    @elseif($compra->estado == 'recibida')
+
+                        <span class="badge gtri-badge-success">
+
+                            <i class="bi bi-check-circle me-1"></i>
+
+                            Recibida
+
+                        </span>
+
+                    @else
+
+                        <span class="badge gtri-badge-danger">
+
+                            <i class="bi bi-x-circle me-1"></i>
+
+                            Cancelada
+
+                        </span>
+
+                    @endif
+
+                </div>
 
             </div>
 
-            <div class="col-md-4 mb-3">
+            <div class="col-md-4">
 
-                <label class="form-label fw-bold">
+                <label class="gtri-label mb-2">
 
                     Registró
 
@@ -101,7 +163,7 @@
 
                 <input
                     type="text"
-                    class="form-control"
+                    class="form-control gtri-input"
                     value="{{ $compra->usuario->name ?? 'Sin usuario' }}"
                     readonly
                 >
@@ -110,36 +172,43 @@
 
         </div>
 
-        <div class="mb-3">
+    </div>
 
-            <label class="form-label fw-bold">
 
-                Observaciones
+    {{-- OBSERVACIONES --}}
+    <div class="gtri-section">
 
-            </label>
+        <div class="gtri-section-title">
 
-            <textarea
-                class="form-control"
-                rows="4"
-                readonly
-            >{{ $compra->observaciones }}</textarea>
+            <span>02</span>
+
+            Observaciones
 
         </div>
 
-        <div class="text-end">
+        <textarea
+            class="form-control gtri-textarea"
+            rows="4"
+            readonly
+        >{{ $compra->observaciones ?: 'Sin observaciones registradas.' }}</textarea>
 
-            <a
-                href="{{ route('administracion.compras.index') }}"
-                class="btn btn-secondary"
-            >
+    </div>
 
-                Regresar
 
-            </a>
+    <div class="d-flex justify-content-end">
 
-        </div>
+        <a
+            href="{{ route('administracion.compras.index') }}"
+            class="btn gtri-btn-secondary"
+        >
 
-    </x-rh.card-rh>
+            <i class="bi bi-arrow-left me-1"></i>
+
+            Regresar
+
+        </a>
+
+    </div>
 
 </div>
 

@@ -2,255 +2,368 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
     <x-rh.alert-success />
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <h2>
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-            Prenóminas
+        <div class="d-flex justify-content-between align-items-center">
 
-        </h2>
+            <div>
 
-        <a
-            href="{{ route('administracion.prenominas.create') }}"
-            class="btn btn-primary"
-        >
+                <h2 class="gtri-page-title">
 
-            <i class="bi bi-plus-circle"></i>
+                    <i class="bi bi-calculator me-2"></i>
 
-            Nueva Prenómina
+                    Prenóminas
 
-        </a>
+                </h2>
+
+                <p class="gtri-page-subtitle">
+
+                    Gestión de periodos, empleados, ajustes y cálculo
+                    de prenómina.
+
+                </p>
+
+            </div>
+
+            <a
+                href="{{ route('administracion.prenominas.create') }}"
+                class="btn gtri-btn-primary"
+            >
+
+                <i class="bi bi-plus-circle me-1"></i>
+
+                Nueva Prenómina
+
+            </a>
+
+        </div>
 
     </div>
 
-    <form
-        method="GET"
-        class="row g-2 mb-4"
-    >
 
-        <div class="col-md-4">
+    {{-- FILTROS --}}
+    <div class="gtri-section">
 
-            <input
-                type="text"
-                name="buscar"
-                class="form-control"
-                placeholder="Buscar por estatus..."
-                value="{{ request('buscar') }}"
-            >
+        <div class="gtri-section-title">
+
+            <span>01</span>
+
+            Filtros de búsqueda
 
         </div>
 
-        <div class="col-auto">
+        <form method="GET">
 
-            <button
-                class="btn btn-outline-primary"
-            >
+            <div class="row g-3 align-items-end">
 
-                Buscar
+                <div class="col-md-5">
 
-            </button>
+                    <label class="gtri-label mb-2">
+
+                        Estatus
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="buscar"
+                        class="form-control gtri-input"
+                        placeholder="Buscar por estatus..."
+                        value="{{ request('buscar') }}"
+                    >
+
+                </div>
+
+                <div class="col-auto">
+
+                    <button
+                        type="submit"
+                        class="btn gtri-btn-primary"
+                    >
+
+                        <i class="bi bi-search me-1"></i>
+
+                        Buscar
+
+                    </button>
+
+                </div>
+
+                @if(request('buscar'))
+
+                    <div class="col-auto">
+
+                        <a
+                            href="{{ route('administracion.prenominas.index') }}"
+                            class="btn gtri-btn-secondary"
+                        >
+
+                            <i class="bi bi-arrow-clockwise me-1"></i>
+
+                            Limpiar
+
+                        </a>
+
+                    </div>
+
+                @endif
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    {{-- LISTADO --}}
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>02</span>
+
+            Listado de Prenóminas
 
         </div>
 
-    </form>
+        <div class="gtri-table-wrapper">
 
-    <x-rh.card-rh titulo="Listado de Prenóminas">
+            <div class="table-responsive">
 
-        <div class="table-responsive">
+                <table class="table gtri-table align-middle">
 
-            <table
-                class="table table-bordered table-hover align-middle"
-            >
-
-                <thead class="table-dark">
-
-                    <tr>
-
-                        <th>
-
-                            Periodo
-
-                        </th>
-
-                        <th>
-
-                            Empleados
-
-                        </th>
-
-                        <th>
-
-                            Total Nómina
-
-                        </th>
-
-                        <th>
-
-                            Estatus
-
-                        </th>
-
-                        <th width="180">
-
-                            Acciones
-
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @forelse($prenominas as $prenomina)
+                    <thead>
 
                         <tr>
 
-                            <td>
+                            <th>Periodo</th>
 
-                                {{ $prenomina->periodo_inicio->format('d/m/Y') }}
+                            <th class="text-center">
+                                Empleados
+                            </th>
 
-                                -
+                            <th>Total Nómina</th>
 
-                                {{ $prenomina->periodo_fin->format('d/m/Y') }}
+                            <th class="text-center">
+                                Estatus
+                            </th>
 
-                            </td>
+                            <th class="text-center">
+                                Acciones
+                            </th>
 
-                            <td>
+                        </tr>
 
-                                {{ $prenomina->total_empleados }}
+                    </thead>
 
-                            </td>
+                    <tbody>
 
-                            <td>
+                        @forelse($prenominas as $prenomina)
 
-                                $
+                            <tr>
 
-                                {{ number_format($prenomina->total_nomina,2) }}
+                                <td>
 
-                            </td>
+                                    <div class="fw-semibold text-light">
 
-                            <td>
+                                        {{ $prenomina->periodo_inicio->format('d/m/Y') }}
 
-                                @switch($prenomina->estatus)
+                                        -
 
-                                    @case('abierta')
+                                        {{ $prenomina->periodo_fin->format('d/m/Y') }}
 
-                                        <span class="badge bg-primary">
+                                    </div>
 
-                                            Abierta
+                                </td>
 
-                                        </span>
 
-                                    @break
+                                <td class="text-center">
 
-                                    @case('cerrada')
+                                    <span class="text-secondary">
 
-                                        <span class="badge bg-warning text-dark">
+                                        {{ $prenomina->total_empleados }}
 
-                                            Cerrada
+                                    </span>
 
-                                        </span>
+                                </td>
 
-                                    @break
 
-                                    @case('autorizada')
+                                <td>
 
-                                        <span class="badge bg-success">
+                                    <span class="text-warning fw-bold">
 
-                                            Autorizada
+                                        ${{ number_format(
+                                            $prenomina->total_nomina,
+                                            2
+                                        ) }}
 
-                                        </span>
+                                    </span>
 
-                                    @break
+                                </td>
 
-                                @endswitch
 
-                            </td>
+                                <td class="text-center">
 
-                            <td>
+                                    @switch($prenomina->estatus)
 
-                                <div class="d-flex gap-2">
+                                        @case('abierta')
 
-                                    <a
-                                        href="{{ route('administracion.prenominas.show',$prenomina) }}"
-                                        class="btn btn-info btn-sm"
-                                    >
+                                            <span class="badge bg-primary">
 
-                                        <i class="bi bi-eye"></i>
+                                                <i class="bi bi-folder2-open me-1"></i>
 
-                                    </a>
+                                                Abierta
 
-                                    <a
-                                        href="{{ route('administracion.prenominas.edit',$prenomina) }}"
-                                        class="btn btn-warning btn-sm"
-                                    >
+                                            </span>
 
-                                        <i class="bi bi-pencil"></i>
+                                            @break
 
-                                    </a>
 
-                                    <form
-                                        action="{{ route('administracion.prenominas.destroy',$prenomina) }}"
-                                        method="POST"
-                                    >
+                                        @case('cerrada')
 
-                                        @csrf
+                                            <span class="badge gtri-badge-warning">
 
-                                        @method('DELETE')
+                                                <i class="bi bi-lock me-1"></i>
 
-                                        <button
-                                            type="submit"
-                                            class="btn btn-danger btn-sm"
-                                            onclick="return confirm('¿Eliminar esta prenómina?')"
+                                                Cerrada
+
+                                            </span>
+
+                                            @break
+
+
+                                        @case('autorizada')
+
+                                            <span class="badge gtri-badge-success">
+
+                                                <i class="bi bi-check-circle me-1"></i>
+
+                                                Autorizada
+
+                                            </span>
+
+                                            @break
+
+                                    @endswitch
+
+                                </td>
+
+
+                                <td>
+
+                                    <div class="d-flex justify-content-center gap-2">
+
+                                        <a
+                                            href="{{ route(
+                                                'administracion.prenominas.show',
+                                                $prenomina
+                                            ) }}"
+                                            class="btn btn-sm gtri-btn-secondary"
+                                            title="Ver detalle"
                                         >
 
-                                            <i class="bi bi-trash"></i>
+                                            <i class="bi bi-eye"></i>
 
-                                        </button>
+                                        </a>
 
-                                    </form>
 
-                                </div>
+                                        <a
+                                            href="{{ route(
+                                                'administracion.prenominas.edit',
+                                                $prenomina
+                                            ) }}"
+                                            class="btn btn-sm gtri-btn-secondary"
+                                            title="Editar Prenómina"
+                                        >
 
-                            </td>
+                                            <i class="bi bi-pencil"></i>
 
-                        </tr>
+                                        </a>
 
-                    @empty
 
-                        <tr>
+                                        <form
+                                            action="{{ route(
+                                                'administracion.prenominas.destroy',
+                                                $prenomina
+                                            ) }}"
+                                            method="POST"
+                                        >
 
-                            <td
-                                colspan="5"
-                                class="text-center"
-                            >
+                                            @csrf
+                                            @method('DELETE')
 
-                                No existen prenóminas registradas.
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm btn-outline-danger"
+                                                onclick="return confirm(
+                                                    '¿Eliminar esta prenómina?'
+                                                )"
+                                                title="Eliminar Prenómina"
+                                            >
 
-                            </td>
+                                                <i class="bi bi-trash"></i>
 
-                        </tr>
+                                            </button>
 
-                    @endforelse
+                                        </form>
 
-                </tbody>
+                                    </div>
 
-            </table>
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    class="text-center py-5"
+                                >
+
+                                    <div class="text-secondary">
+
+                                        <i
+                                            class="bi bi-calculator fs-1 d-block mb-3"
+                                        ></i>
+
+                                        No existen prenóminas registradas.
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
-        <div class="mt-3">
 
-            {{ $prenominas->links() }}
+        @if($prenominas->hasPages())
 
-        </div>
+            <div class="d-flex justify-content-center mt-4">
 
-    </x-rh.card-rh>
+                {{ $prenominas->links() }}
+
+            </div>
+
+        @endif
+
+    </div>
 
 </div>
 

@@ -2,202 +2,261 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    {{-- CARD PRINCIPAL --}}
-    <x-rh.card-rh titulo="Nueva asignación">
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-        {{-- ERRORES GENERALES --}}
-        @if ($errors->any())
+        <div>
 
-            <div class="alert alert-danger">
+            <h2 class="gtri-page-title">
 
-                <strong>
-                    Se encontraron algunos errores:
-                </strong>
+                <i class="bi bi-person-plus me-2"></i>
 
-                <ul class="mb-0 mt-2">
+                Nueva asignación
 
-                    @foreach ($errors->all() as $error)
+            </h2>
 
-                        <li>
-                            {{ $error }}
-                        </li>
+            <p class="gtri-page-subtitle">
 
-                    @endforeach
+                Asigna un empleado disponible a una plaza operativa.
 
-                </ul>
+            </p>
 
-            </div>
+        </div>
 
-        @endif
-
-
-        <form
-            method="POST"
-            action="{{ route('operaciones.asignaciones.store') }}"
+        <a
+            href="{{ route(
+                'operaciones.asignaciones.index'
+            ) }}"
+            class="btn gtri-btn-secondary"
         >
 
-            @csrf
+            <i class="bi bi-arrow-left me-1"></i>
+
+            Regresar
+
+        </a>
+
+    </div>
 
 
-            {{-- ========================================= --}}
-            {{-- INFORMACIÓN DEL EMPLEADO --}}
-            {{-- ========================================= --}}
+    {{-- ERRORES GENERALES --}}
+    @if ($errors->any())
 
-            <div class="mb-4">
+        <div class="alert alert-danger">
 
-                <h5 class="fw-bold">
+            <div class="fw-bold mb-2">
 
-                    <i class="bi bi-person-badge me-2"></i>
+                <i class="bi bi-exclamation-triangle me-1"></i>
 
-                    Empleado
-
-                </h5>
-
-                <p class="text-muted mb-2">
-
-                    Seleccione al empleado que será asignado a una plaza operativa.
-
-                </p>
-
-                <hr>
+                Se encontraron algunos errores:
 
             </div>
 
+            <ul class="mb-0">
 
-            <div class="mb-4">
+                @foreach ($errors->all() as $error)
 
-                <label
-                    for="empleado_id"
-                    class="form-label fw-semibold"
-                >
+                    <li>
 
-                    Empleado disponible
+                        {{ $error }}
 
-                    <span class="text-danger">
-                        *
-                    </span>
+                    </li>
 
-                </label>
+                @endforeach
 
-                <select
-                    name="empleado_id"
-                    id="empleado_id"
-                    class="form-select"
-                    required
-                >
+            </ul>
 
-                    <option value="">
+        </div>
 
-                        Seleccione un empleado
+    @endif
 
-                    </option>
 
-                    @foreach($empleados as $empleado)
+    <form
+        method="POST"
+        action="{{ route(
+            'operaciones.asignaciones.store'
+        ) }}"
+    >
 
-                        <option
-                            value="{{ $empleado->id }}"
-                            {{ old('empleado_id') == $empleado->id ? 'selected' : '' }}
-                            @disabled(!$empleado->repse_apto)
-                        >
+        @csrf
 
-                            {{ $empleado->numero_control }}
 
-                            -
+        {{-- EMPLEADO --}}
+        <div class="gtri-section">
 
-                            {{ $empleado->nombre }}
+            <div class="gtri-section-title">
 
-                            {{ $empleado->apellido_paterno }}
+                <span>01</span>
 
-                            @if($empleado->repse_apto)
+                Selección del empleado
 
-                                - APTO REPSE
+            </div>
 
-                            @else
+            <p class="text-secondary mb-4">
 
-                                - BLOQUEADO REPSE
+                Seleccione al empleado que será asignado a una plaza operativa.
 
-                            @endif
+            </p>
+
+
+            <div class="row">
+
+                <div class="col-lg-8">
+
+                    <label
+                        for="empleado_id"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Empleado disponible
+
+                        <span class="text-danger">
+
+                            *
+
+                        </span>
+
+                    </label>
+
+                    <select
+                        name="empleado_id"
+                        id="empleado_id"
+                        class="form-select gtri-input"
+                        required
+                    >
+
+                        <option value="">
+
+                            Seleccione un empleado
 
                         </option>
 
-                    @endforeach
+                        @foreach($empleados as $empleado)
 
-                </select>
+                            <option
+                                value="{{ $empleado->id }}"
+                                {{
+                                    old('empleado_id')
+                                    ==
+                                    $empleado->id
+                                    ? 'selected'
+                                    : ''
+                                }}
+                                @disabled(!$empleado->repse_apto)
+                            >
 
-                <div class="form-text">
+                                {{ $empleado->numero_control }}
 
-                    Los empleados bloqueados por REPSE no pueden ser seleccionados.
+                                -
+
+                                {{ $empleado->nombre }}
+
+                                {{ $empleado->apellido_paterno }}
+
+                                @if($empleado->repse_apto)
+
+                                    - APTO REPSE
+
+                                @else
+
+                                    - BLOQUEADO REPSE
+
+                                @endif
+
+                            </option>
+
+                        @endforeach
+
+                    </select>
+
+                    <div
+                        class="form-text mt-2"
+                        style="color:#94A3B8;"
+                    >
+
+                        <i class="bi bi-info-circle me-1"></i>
+
+                        Los empleados bloqueados por REPSE no pueden ser seleccionados.
+
+                    </div>
 
                 </div>
 
             </div>
 
+        </div>
 
-            {{-- ========================================= --}}
-            {{-- ESTADO REPSE --}}
-            {{-- ========================================= --}}
 
-            <div class="mb-4">
+        {{-- ESTADO REPSE --}}
+        <div class="gtri-section">
 
-                <h5 class="fw-bold">
+            <div class="gtri-section-title">
 
-                    <i class="bi bi-shield-check me-2"></i>
+                <span>02</span>
 
-                    Estado de cumplimiento REPSE
-
-                </h5>
-
-                <hr>
+                Estado de cumplimiento REPSE
 
             </div>
 
+            <p class="text-secondary mb-4">
 
-            <div class="row g-3 mb-4">
+                Verifica el cumplimiento de cada empleado antes de realizar la asignación.
+
+            </p>
+
+
+            <div class="row g-3">
 
                 @forelse($empleados as $empleado)
 
-                    <div class="col-md-6">
+                    <div class="col-xl-4 col-lg-6">
 
                         <div
-                            class="border rounded p-3 h-100
-                            {{ $empleado->repse_apto ? 'border-success' : 'border-danger' }}"
+                            class="h-100 rounded-3 p-4"
+                            style="
+                                background:#111827;
+                                border:1px solid
+                                {{
+                                    $empleado->repse_apto
+                                    ? '#198754'
+                                    : '#DC3545'
+                                }};
+                            "
                         >
 
-                            <div class="d-flex justify-content-between align-items-start gap-3">
+                            <div
+                                class="
+                                    d-flex
+                                    justify-content-between
+                                    align-items-start
+                                    gap-3
+                                "
+                            >
 
                                 <div>
 
-                                    <div class="fw-bold">
+                                    <div
+                                        class="fw-bold"
+                                        style="color:#F8FAFC;"
+                                    >
 
                                         {{ $empleado->numero_control }}
 
-                                        -
+                                    </div>
+
+                                    <div
+                                        class="mt-1"
+                                        style="color:#CBD5E1;"
+                                    >
 
                                         {{ $empleado->nombre }}
 
                                         {{ $empleado->apellido_paterno }}
 
                                     </div>
-
-                                    @if($empleado->repse_apto)
-
-                                        <small class="text-success">
-
-                                            Cumple con los requisitos REPSE.
-
-                                        </small>
-
-                                    @else
-
-                                        <small class="text-danger">
-
-                                            No cumple con los requisitos REPSE.
-
-                                        </small>
-
-                                    @endif
 
                                 </div>
 
@@ -231,21 +290,64 @@
                             </div>
 
 
-                            @if(!$empleado->repse_apto)
+                            <div class="mt-3">
 
-                                <div class="mt-3">
+                                @if($empleado->repse_apto)
 
-                                    <small class="fw-semibold">
+                                    <small class="text-success">
 
-                                        Motivo:
+                                        <i class="bi bi-shield-check me-1"></i>
+
+                                        Cumple con los requisitos REPSE.
 
                                     </small>
 
-                                    <ul class="mb-0 mt-1 ps-3">
+                                @else
 
-                                        @foreach($empleado->repse_faltantes as $faltante)
+                                    <small class="text-danger">
 
-                                            <li class="text-muted">
+                                        <i class="bi bi-shield-x me-1"></i>
+
+                                        No cumple con los requisitos REPSE.
+
+                                    </small>
+
+                                @endif
+
+                            </div>
+
+
+                            @if(!$empleado->repse_apto)
+
+                                <div
+                                    class="mt-3 pt-3"
+                                    style="
+                                        border-top:
+                                        1px solid
+                                        rgba(255,255,255,.08);
+                                    "
+                                >
+
+                                    <small
+                                        class="fw-semibold"
+                                        style="color:#CBD5E1;"
+                                    >
+
+                                        Motivo del bloqueo:
+
+                                    </small>
+
+                                    <ul class="mb-0 mt-2 ps-3">
+
+                                        @foreach(
+                                            $empleado->repse_faltantes
+                                            as $faltante
+                                        )
+
+                                            <li
+                                                class="small mb-1"
+                                                style="color:#94A3B8;"
+                                            >
 
                                                 {{ $faltante }}
 
@@ -267,11 +369,37 @@
 
                     <div class="col-12">
 
-                        <div class="alert alert-info mb-0">
+                        <div
+                            class="text-center py-5 rounded-3"
+                            style="
+                                background:#111827;
+                                border:1px solid
+                                rgba(255,255,255,.08);
+                            "
+                        >
 
-                            <i class="bi bi-info-circle me-1"></i>
+                            <i
+                                class="
+                                    bi
+                                    bi-person-x
+                                    d-block
+                                    fs-1
+                                    text-secondary
+                                    mb-3
+                                "
+                            ></i>
 
-                            No hay empleados disponibles para asignación.
+                            <h5 class="text-light">
+
+                                No hay empleados disponibles
+
+                            </h5>
+
+                            <p class="text-secondary mb-0">
+
+                                Actualmente no existen empleados disponibles para asignación.
+
+                            </p>
 
                         </div>
 
@@ -281,45 +409,43 @@
 
             </div>
 
+        </div>
 
-            {{-- ========================================= --}}
-            {{-- INFORMACIÓN DE LA PLAZA --}}
-            {{-- ========================================= --}}
 
-            <div class="mb-4">
+        {{-- PLAZA OPERATIVA --}}
+        <div class="gtri-section">
 
-                <h5 class="fw-bold">
+            <div class="gtri-section-title">
 
-                    <i class="bi bi-geo-alt me-2"></i>
+                <span>03</span>
 
-                    Plaza operativa
-
-                </h5>
-
-                <p class="text-muted mb-2">
-
-                    Seleccione la plaza vacante que será cubierta.
-
-                </p>
-
-                <hr>
+                Plaza operativa
 
             </div>
 
+            <p class="text-secondary mb-4">
 
-            <div class="row">
+                Seleccione la plaza vacante que será cubierta por el empleado.
 
-                <div class="col-md-8 mb-4">
+            </p>
+
+
+            <div class="row g-3">
+
+                <div class="col-lg-8">
 
                     <label
                         for="plaza_operativa_id"
                         class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
                     >
 
                         Plaza operativa
 
                         <span class="text-danger">
+
                             *
+
                         </span>
 
                     </label>
@@ -327,7 +453,7 @@
                     <select
                         name="plaza_operativa_id"
                         id="plaza_operativa_id"
-                        class="form-select"
+                        class="form-select gtri-input"
                         required
                     >
 
@@ -341,7 +467,13 @@
 
                             <option
                                 value="{{ $plaza->id }}"
-                                {{ old('plaza_operativa_id') == $plaza->id ? 'selected' : '' }}
+                                {{
+                                    old('plaza_operativa_id')
+                                    ==
+                                    $plaza->id
+                                    ? 'selected'
+                                    : ''
+                                }}
                             >
 
                                 {{ $plaza->nombre_plaza }}
@@ -359,17 +491,20 @@
                 </div>
 
 
-                <div class="col-md-4 mb-4">
+                <div class="col-lg-4">
 
                     <label
                         for="fecha_inicio"
                         class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
                     >
 
                         Fecha de inicio
 
                         <span class="text-danger">
+
                             *
+
                         </span>
 
                     </label>
@@ -379,7 +514,7 @@
                         name="fecha_inicio"
                         id="fecha_inicio"
                         value="{{ old('fecha_inicio') }}"
-                        class="form-control"
+                        class="form-control gtri-input"
                         required
                     >
 
@@ -387,16 +522,43 @@
 
             </div>
 
+        </div>
 
-            {{-- ========================================= --}}
-            {{-- AVISO DE BLOQUEO --}}
-            {{-- ========================================= --}}
 
-            <div class="alert alert-light border mb-4">
+        {{-- VALIDACIÓN REPSE --}}
+        <div class="gtri-section">
 
-                <div class="d-flex align-items-start gap-3">
+            <div class="gtri-section-title">
 
-                    <div class="text-primary fs-4">
+                <span>04</span>
+
+                Validación de seguridad
+
+            </div>
+
+
+            <div
+                class="rounded-3 p-4"
+                style="
+                    background:#111827;
+                    border:1px solid #D4AF37;
+                "
+            >
+
+                <div
+                    class="
+                        d-flex
+                        align-items-start
+                        gap-3
+                    "
+                >
+
+                    <div
+                        style="
+                            color:#D4AF37;
+                            font-size:2rem;
+                        "
+                    >
 
                         <i class="bi bi-shield-lock"></i>
 
@@ -404,19 +566,28 @@
 
                     <div>
 
-                        <strong>
+                        <div
+                            class="fw-bold mb-2"
+                            style="color:#F8FAFC;"
+                        >
 
                             Validación automática REPSE
 
-                        </strong>
+                        </div>
 
-                        <div class="text-muted mt-1">
+                        <div
+                            style="
+                                color:#94A3B8;
+                                line-height:1.7;
+                            "
+                        >
 
-                            El sistema verificará nuevamente el cumplimiento REPSE
-                            antes de guardar la asignación.
+                            El sistema verificará nuevamente el cumplimiento
+                            REPSE antes de guardar la asignación.
 
-                            Si el empleado no cumple con los requisitos obligatorios,
-                            la operación será bloqueada automáticamente.
+                            Si el empleado no cumple con los requisitos
+                            obligatorios, la operación será bloqueada
+                            automáticamente.
 
                         </div>
 
@@ -426,19 +597,29 @@
 
             </div>
 
+        </div>
 
-            {{-- ========================================= --}}
-            {{-- BOTONES --}}
-            {{-- ========================================= --}}
 
-            <div class="d-flex justify-content-end gap-2">
+        {{-- BOTONES --}}
+        <div class="gtri-section mb-0">
+
+            <div
+                class="
+                    d-flex
+                    flex-wrap
+                    justify-content-end
+                    gap-2
+                "
+            >
 
                 <a
-                    href="{{ route('operaciones.asignaciones.index') }}"
-                    class="btn btn-secondary"
+                    href="{{ route(
+                        'operaciones.asignaciones.index'
+                    ) }}"
+                    class="btn gtri-btn-secondary"
                 >
 
-                    <i class="bi bi-x-circle"></i>
+                    <i class="bi bi-x-circle me-1"></i>
 
                     Cancelar
 
@@ -446,10 +627,10 @@
 
                 <button
                     type="submit"
-                    class="btn btn-success"
+                    class="btn gtri-btn-primary"
                 >
 
-                    <i class="bi bi-check-circle"></i>
+                    <i class="bi bi-check-circle me-1"></i>
 
                     Guardar asignación
 
@@ -457,9 +638,9 @@
 
             </div>
 
-        </form>
+        </div>
 
-    </x-rh.card-rh>
+    </form>
 
 </div>
 

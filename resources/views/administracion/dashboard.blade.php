@@ -2,203 +2,426 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <div class="row g-3 mb-4">
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-        <div class="col-md-4">
+        <div>
 
-            <x-rh.card-rh titulo="Productos">
+            <h2 class="gtri-page-title">
 
-                <h2 class="text-center">
+                <i class="bi bi-speedometer2 me-2"></i>
 
-                    {{ $totalProductos }}
+                Dashboard de Administración
 
-                </h2>
+            </h2>
 
-            </x-rh.card-rh>
+            <p class="gtri-page-subtitle">
 
-        </div>
+                Resumen general de inventario, compras, facturación,
+                cobranza, activos y prenómina.
 
-        <div class="col-md-4">
-
-            <x-rh.card-rh titulo="Compras">
-
-                <h2 class="text-center">
-
-                    {{ $totalCompras }}
-
-                </h2>
-
-            </x-rh.card-rh>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <x-rh.card-rh titulo="Facturas">
-
-                <h2 class="text-center">
-
-                    {{ $totalFacturas }}
-
-                </h2>
-
-            </x-rh.card-rh>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <x-rh.card-rh titulo="Cobranzas">
-
-                <h2 class="text-center">
-
-                    {{ $totalCobranzas }}
-
-                </h2>
-
-            </x-rh.card-rh>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <x-rh.card-rh titulo="Activos">
-
-                <h2 class="text-center">
-
-                    {{ $totalActivos }}
-
-                </h2>
-
-            </x-rh.card-rh>
-
-        </div>
-
-        <div class="col-md-4">
-
-            <x-rh.card-rh titulo="Prenóminas">
-
-                <h2 class="text-center">
-
-                    {{ $totalPrenominas }}
-
-                </h2>
-
-            </x-rh.card-rh>
+            </p>
 
         </div>
 
     </div>
 
-    <x-rh.card-rh titulo="Alertas Operativas">
 
-        <table class="table table-bordered align-middle mb-0">
+    {{-- INDICADORES --}}
+    <div class="row g-3 mb-4">
 
-            <tbody>
+        {{-- PRODUCTOS --}}
+        <div class="col-md-4 col-xl-2">
 
-                <tr>
+            <div class="gtri-card h-100">
 
-                    <th width="60%">
+                <div class="d-flex justify-content-between align-items-center">
 
-                        Productos con stock crítico
+                    <div>
 
-                    </th>
+                        <small class="text-secondary">
 
-                    <td class="text-center">
+                            Productos
 
-                        @if($stockCritico > 0)
+                        </small>
 
-                            <span class="badge bg-danger">
+                        <h2 class="fw-bold text-warning mt-2 mb-0">
 
-                                {{ $stockCritico }}
+                            {{ $totalProductos }}
 
-                            </span>
+                        </h2>
 
-                        @else
+                    </div>
 
-                            <span class="badge bg-success">
+                    <div class="fs-1 text-warning">
 
-                                Sin alertas
+                        <i class="bi bi-box-seam"></i>
 
-                            </span>
+                    </div>
 
-                        @endif
+                </div>
 
-                    </td>
+            </div>
 
-                </tr>
+        </div>
 
-                <tr>
 
-                    <th>
+        {{-- COMPRAS --}}
+        <div class="col-md-4 col-xl-2">
 
-                        Cobranzas vencidas
+            <div class="gtri-card h-100">
 
-                    </th>
+                <div class="d-flex justify-content-between align-items-center">
 
-                    <td class="text-center">
+                    <div>
 
-                        @if($cobranzasVencidas > 0)
+                        <small class="text-secondary">
 
-                            <span class="badge bg-danger">
+                            Compras
 
-                                {{ $cobranzasVencidas }}
+                        </small>
 
-                            </span>
+                        <h2 class="fw-bold text-light mt-2 mb-0">
 
-                        @else
+                            {{ $totalCompras }}
 
-                            <span class="badge bg-success">
+                        </h2>
 
-                                Sin alertas
+                    </div>
 
-                            </span>
+                    <div class="fs-1 text-primary">
 
-                        @endif
+                        <i class="bi bi-cart-check"></i>
 
-                    </td>
+                    </div>
 
-                </tr>
+                </div>
 
-                <tr>
+            </div>
 
-                    <th>
+        </div>
 
-                        Prenóminas abiertas
 
-                    </th>
+        {{-- FACTURAS --}}
+        <div class="col-md-4 col-xl-2">
 
-                    <td class="text-center">
+            <div class="gtri-card h-100">
 
-                        @if($prenominasAbiertas > 0)
+                <div class="d-flex justify-content-between align-items-center">
 
-                            <span class="badge bg-warning text-dark">
+                    <div>
 
-                                {{ $prenominasAbiertas }}
+                        <small class="text-secondary">
 
-                            </span>
+                            Facturas
 
-                        @else
+                        </small>
 
-                            <span class="badge bg-success">
+                        <h2 class="fw-bold text-light mt-2 mb-0">
 
-                                Sin alertas
+                            {{ $totalFacturas }}
 
-                            </span>
+                        </h2>
 
-                        @endif
+                    </div>
 
-                    </td>
+                    <div class="fs-1 text-primary">
 
-                </tr>
+                        <i class="bi bi-receipt"></i>
 
-            </tbody>
+                    </div>
 
-        </table>
+                </div>
 
-    </x-rh.card-rh>
+            </div>
+
+        </div>
+
+
+        {{-- COBRANZAS --}}
+        <div class="col-md-4 col-xl-2">
+
+            <div class="gtri-card h-100">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <small class="text-secondary">
+
+                            Cobranzas
+
+                        </small>
+
+                        <h2 class="fw-bold text-light mt-2 mb-0">
+
+                            {{ $totalCobranzas }}
+
+                        </h2>
+
+                    </div>
+
+                    <div class="fs-1 text-success">
+
+                        <i class="bi bi-cash-stack"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {{-- ACTIVOS --}}
+        <div class="col-md-4 col-xl-2">
+
+            <div class="gtri-card h-100">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <small class="text-secondary">
+
+                            Activos
+
+                        </small>
+
+                        <h2 class="fw-bold text-light mt-2 mb-0">
+
+                            {{ $totalActivos }}
+
+                        </h2>
+
+                    </div>
+
+                    <div class="fs-1 text-info">
+
+                        <i class="bi bi-pc-display"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {{-- PRENÓMINAS --}}
+        <div class="col-md-4 col-xl-2">
+
+            <div class="gtri-card h-100">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <small class="text-secondary">
+
+                            Prenóminas
+
+                        </small>
+
+                        <h2 class="fw-bold text-light mt-2 mb-0">
+
+                            {{ $totalPrenominas }}
+
+                        </h2>
+
+                    </div>
+
+                    <div class="fs-1 text-warning">
+
+                        <i class="bi bi-calculator"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {{-- ALERTAS --}}
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>01</span>
+
+            Alertas operativas
+
+        </div>
+
+
+        <div class="row g-3">
+
+            {{-- STOCK CRÍTICO --}}
+            <div class="col-md-4">
+
+                <div class="gtri-card h-100">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="fs-2 text-danger">
+
+                            <i class="bi bi-exclamation-triangle"></i>
+
+                        </div>
+
+                        <div>
+
+                            <small class="text-secondary">
+
+                                Productos con stock crítico
+
+                            </small>
+
+                            <div class="mt-2">
+
+                                @if($stockCritico > 0)
+
+                                    <span class="badge gtri-badge-danger">
+
+                                        {{ $stockCritico }} alerta(s)
+
+                                    </span>
+
+                                @else
+
+                                    <span class="badge gtri-badge-success">
+
+                                        Sin alertas
+
+                                    </span>
+
+                                @endif
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- COBRANZAS VENCIDAS --}}
+            <div class="col-md-4">
+
+                <div class="gtri-card h-100">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="fs-2 text-danger">
+
+                            <i class="bi bi-calendar-x"></i>
+
+                        </div>
+
+                        <div>
+
+                            <small class="text-secondary">
+
+                                Cobranzas vencidas
+
+                            </small>
+
+                            <div class="mt-2">
+
+                                @if($cobranzasVencidas > 0)
+
+                                    <span class="badge gtri-badge-danger">
+
+                                        {{ $cobranzasVencidas }} vencida(s)
+
+                                    </span>
+
+                                @else
+
+                                    <span class="badge gtri-badge-success">
+
+                                        Sin alertas
+
+                                    </span>
+
+                                @endif
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- PRENÓMINAS ABIERTAS --}}
+            <div class="col-md-4">
+
+                <div class="gtri-card h-100">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="fs-2 text-warning">
+
+                            <i class="bi bi-clock-history"></i>
+
+                        </div>
+
+                        <div>
+
+                            <small class="text-secondary">
+
+                                Prenóminas abiertas
+
+                            </small>
+
+                            <div class="mt-2">
+
+                                @if($prenominasAbiertas > 0)
+
+                                    <span class="badge gtri-badge-warning">
+
+                                        {{ $prenominasAbiertas }} abierta(s)
+
+                                    </span>
+
+                                @else
+
+                                    <span class="badge gtri-badge-success">
+
+                                        Sin alertas
+
+                                    </span>
+
+                                @endif
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 

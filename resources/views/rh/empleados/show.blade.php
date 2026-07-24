@@ -2,390 +2,996 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <!-- EXPEDIENTE -->
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-    <x-rh.card-rh titulo="Expediente empleado">
+        <div>
 
-        <div class="row">
+            <h2 class="gtri-page-title">
 
-            <!-- FOTO -->
+                <i class="bi bi-person-vcard me-2"></i>
 
-            <div class="col-md-3 text-center">
+                Expediente del empleado
 
-                @if ($empleado->foto)
+            </h2>
 
-                    <img
+            <p class="gtri-page-subtitle">
 
-                        src="{{ asset(
+                Información personal, laboral y documental del empleado.
 
-                            'fotos_empleados/' .
+            </p>
 
-                            $empleado->foto
-
-                        ) }}"
-
-                        alt="Foto empleado"
-
-                        class="img-fluid rounded-circle shadow mb-3"
-
-                        style="
-
-                            width: 220px;
-
-                            height: 220px;
-
-                            object-fit: cover;
-
-                        "
-
-                    >
-
-                @else
-
-                    <div
-
-                        class="bg-secondary rounded-circle mx-auto mb-3"
-
-                        style="
-
-                            width: 220px;
-
-                            height: 220px;
-
-                        "
-
-                    ></div>
-
-                @endif
+        </div>
 
 
-                <h4>
+        <div class="d-flex flex-wrap gap-2">
 
-                    {{ $empleado->nombre }}
+            <a
+                href="{{ route('rh.empleados') }}"
+                class="btn gtri-btn-secondary"
+            >
 
-                </h4>
+                <i class="bi bi-arrow-left me-1"></i>
 
+                Volver
 
-                <p class="text-muted">
-
-                    {{ $empleado->puesto }}
-
-                </p>
-
-
-                @if ($empleado->estado == 'activo')
-
-                    <span class="badge bg-success">
-
-                        Activo
-
-                    </span>
-
-                @else
-
-                    <span class="badge bg-danger">
-
-                        Inactivo
-
-                    </span>
-
-                @endif
-
-            </div>
+            </a>
 
 
-            <!-- INFORMACION -->
+            <a
+                href="{{ route(
+                    'rh.empleados.edit',
+                    $empleado->id
+                ) }}"
+                class="btn gtri-btn-primary"
+            >
 
-            <div class="col-md-9">
+                <i class="bi bi-pencil-square me-1"></i>
+
+                Editar empleado
+
+            </a>
+
+        </div>
+
+    </div>
 
 
-                <!-- GENERAL -->
+    <div class="row g-4">
 
-                <x-rh.card-rh titulo="Información general">
+        {{-- PERFIL DEL EMPLEADO --}}
+        {{-- PERFIL DEL EMPLEADO --}}
+        <div class="col-xl-3 col-lg-4 align-self-start">
 
-                    <div class="row">
+            <div class="gtri-card">
 
-                        <x-rh.info-item
-                            titulo="No. Control"
+                <div class="text-center">
+
+                    @if ($empleado->foto)
+
+                        <img
+                            src="{{ asset(
+                                'fotos_empleados/' .
+                                $empleado->foto
+                            ) }}"
+                            alt="Foto empleado"
+                            class="img-fluid rounded-circle shadow mb-3"
+                            style="
+                                width: 210px;
+                                height: 210px;
+                                object-fit: cover;
+                                border: 4px solid #D4AF37;
+                            "
                         >
 
-                            {{ $empleado->numero_control }}
+                    @else
 
-                        </x-rh.info-item>
-
-
-                        <x-rh.info-item
-                            titulo="Nombre completo"
+                        <div
+                            class="
+                                rounded-circle
+                                mx-auto
+                                mb-3
+                                d-flex
+                                align-items-center
+                                justify-content-center
+                            "
+                            style="
+                                width: 210px;
+                                height: 210px;
+                                background: #111827;
+                                border: 4px solid #D4AF37;
+                            "
                         >
 
-                            {{ $empleado->nombre }}
+                            <i
+                                class="bi bi-person text-secondary"
+                                style="font-size: 6rem;"
+                            ></i>
 
-                            {{ $empleado->apellido_paterno }}
+                        </div>
+
+                    @endif
+
+
+                    <h3 class="text-light fw-bold mb-1">
+
+                        {{ $empleado->nombre }}
+
+                        {{ $empleado->apellido_paterno }}
+
+                    </h3>
+
+
+                    @if ($empleado->apellido_materno)
+
+                        <p class="text-secondary mb-2">
 
                             {{ $empleado->apellido_materno }}
 
-                        </x-rh.info-item>
+                        </p>
+
+                    @endif
+
+
+                    <div class="mb-3">
+
+                        @if ($empleado->estado == 'activo')
+
+                            <span class="gtri-badge-success">
+
+                                <i class="bi bi-check-circle me-1"></i>
+
+                                Activo
+
+                            </span>
+
+                        @else
+
+                            <span class="gtri-badge-danger">
+
+                                <i class="bi bi-x-circle me-1"></i>
+
+                                Inactivo
+
+                            </span>
+
+                        @endif
 
                     </div>
 
-                </x-rh.card-rh>
+
+                    <div
+                        class="rounded-3 p-3 text-start"
+                        style="
+                            background: #111827;
+                            border: 1px solid rgba(255, 255, 255, .08);
+                        "
+                    >
+
+                        <div class="mb-3">
+
+                            <small class="text-secondary d-block">
+
+                                Número de control
+
+                            </small>
+
+                            <span class="text-warning fw-bold">
+
+                                {{ $empleado->numero_control }}
+
+                            </span>
+
+                        </div>
 
 
-                <!-- DOCUMENTOS -->
+                        <div class="mb-3">
 
-                <x-rh.card-rh titulo="Documentos">
+                            <small class="text-secondary d-block">
 
+                                Puesto
 
-                    <div class="row">
+                            </small>
 
-                        <x-rh.info-item
-                            titulo="CURP"
-                            col="4"
-                        >
+                            <span class="text-light">
 
-                            {{ $empleado->curp }}
+                                {{ $empleado->puesto }}
 
-                        </x-rh.info-item>
+                            </span>
 
-
-                        <x-rh.info-item
-                            titulo="RFC"
-                            col="4"
-                        >
-
-                            {{ $empleado->rfc }}
-
-                        </x-rh.info-item>
+                        </div>
 
 
-                        <x-rh.info-item
-                            titulo="NSS"
-                            col="4"
-                        >
+                        <div>
 
-                            {{ $empleado->nss }}
+                            <small class="text-secondary d-block">
 
-                        </x-rh.info-item>
+                                Rango
 
-                    </div>
+                            </small>
 
-                </x-rh.card-rh>
+                            <span class="text-light">
 
+                                {{ $empleado->rango }}
 
-                <!-- CONTACTO -->
+                            </span>
 
-                <x-rh.card-rh titulo="Contacto">
-
-                    <div class="row">
-
-                        <x-rh.info-item
-                            titulo="Teléfono"
-                        >
-
-                            {{ $empleado->telefono }}
-
-                        </x-rh.info-item>
-
-
-                        <x-rh.info-item
-                            titulo="Correo"
-                        >
-
-                            {{ $empleado->correo }}
-
-                        </x-rh.info-item>
-
-
-                        <x-rh.info-item
-                            titulo="Dirección"
-                            col="12"
-                        >
-
-                            {{ $empleado->direccion }}
-
-                        </x-rh.info-item>
+                        </div>
 
                     </div>
 
-                </x-rh.card-rh>
-
-
-                <!-- RH -->
-
-                <x-rh.card-rh titulo="Información RH">
-
-                    <div class="row">
-
-                        <x-rh.info-item
-                            titulo="Puesto"
-                            col="3"
-                        >
-
-                            {{ $empleado->puesto }}
-
-                        </x-rh.info-item>
-
-
-                        <x-rh.info-item
-                            titulo="Rango"
-                            col="3"
-                        >
-
-                            {{ $empleado->rango }}
-
-                        </x-rh.info-item>
-
-
-                        <x-rh.info-item
-                            titulo="Salario"
-                            col="3"
-                        >
-
-                            ${{ number_format($empleado->salario_base, 2) }}
-
-                        </x-rh.info-item>
-
-
-                        <x-rh.info-item
-                            titulo="Tipo sangre"
-                            col="3"
-                        >
-
-                            {{ $empleado->tipo_sangre }}
-
-                        </x-rh.info-item>
-
-
-                        <x-rh.info-item
-                            titulo="Antigüedad"
-                        >
-
-                            {{ $empleado->antiguedad() }}
-
-                        </x-rh.info-item>
-
-
-                        <x-rh.info-item
-                            titulo="Vacaciones disponibles"
-                        >
-
-                            {{ $empleado->vacaciones() }} días
-
-                        </x-rh.info-item>
-
-
-                        <x-rh.info-item
-                            titulo="Vacaciones tomadas"
-                        >
-
-                            {{ $empleado->vacacionesTomadas() }} días
-
-                        </x-rh.info-item>
-
-
-                        <x-rh.info-item
-                            titulo="Vacaciones restantes"
-                        >
-
-                            {{ $empleado->vacacionesRestantes() }} días
-
-                        </x-rh.info-item>
-
-                    </div>
-
-                </x-rh.card-rh>
-
-
-                <!-- FECHAS -->
-
-                <x-rh.card-rh titulo="Fechas">
-
-                    <div class="row">
-
-                        <x-rh.info-item
-                            titulo="Fecha nacimiento"
-                        >
-
-                            {{ $empleado->fecha_nacimiento }}
-
-                        </x-rh.info-item>
-
-
-                        <x-rh.info-item
-                            titulo="Fecha ingreso"
-                        >
-
-                            {{ $empleado->fecha_ingreso }}
-
-                        </x-rh.info-item>
-
-                    </div>
-
-                </x-rh.card-rh>
-
-
-                <!-- EMERGENCIA -->
-
-                <x-rh.card-rh titulo="Contacto emergencia">
-
-                    <div class="row">
-
-                        <x-rh.info-item
-                            titulo="Contacto"
-                        >
-
-                            {{ $empleado->contacto_emergencia }}
-
-                        </x-rh.info-item>
-
-
-                        <x-rh.info-item
-                            titulo="Teléfono"
-                        >
-
-                            {{ $empleado->telefono_emergencia }}
-
-                        </x-rh.info-item>
-
-                    </div>
-
-                </x-rh.card-rh>
+                </div>
 
             </div>
 
         </div>
 
-    </x-rh.card-rh>
+
+        {{-- INFORMACIÓN DEL EMPLEADO --}}
+        <div class="col-xl-9 col-lg-8">
+
+            {{-- INFORMACIÓN GENERAL --}}
+            <div class="gtri-section">
+
+                <div class="gtri-section-title">
+
+                    <span>01</span>
+
+                    Información general
+
+                </div>
 
 
-    <!-- DOCUMENTOS RH -->
+                <div class="row g-3">
 
-    <x-rh.card-rh titulo="Documentos RH">
+                    <div class="col-md-4">
 
-        <div class="mb-4">
+                        <div
+                            class="rounded-3 p-3 h-100"
+                            style="
+                                background: #111827;
+                                border: 1px solid rgba(255, 255, 255, .08);
+                            "
+                        >
 
-            <div class="d-flex justify-content-between">
+                            <small class="text-secondary d-block mb-1">
 
-                <strong>
-                    Expediente RH
-                </strong>
+                                No. de control
 
-                <span>
-                    {{ $documentos->count() }}
-                    /
-                    {{ count($documentosRH) }}
-                </span>
+                            </small>
+
+                            <span class="text-light fw-semibold">
+
+                                {{ $empleado->numero_control }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-8">
+
+                        <div
+                            class="rounded-3 p-3 h-100"
+                            style="
+                                background: #111827;
+                                border: 1px solid rgba(255, 255, 255, .08);
+                            "
+                        >
+
+                            <small class="text-secondary d-block mb-1">
+
+                                Nombre completo
+
+                            </small>
+
+                            <span class="text-light fw-semibold">
+
+                                {{ $empleado->nombre }}
+
+                                {{ $empleado->apellido_paterno }}
+
+                                {{ $empleado->apellido_materno }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
 
             </div>
 
-            <div class="progress mt-2">
+
+            {{-- DOCUMENTOS --}}
+            <div class="gtri-section">
+
+                <div class="gtri-section-title">
+
+                    <span>02</span>
+
+                    Documentos de identidad
+
+                </div>
+
+
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+
+                        <div
+                            class="rounded-3 p-3 h-100"
+                            style="
+                                background: #111827;
+                                border: 1px solid rgba(255, 255, 255, .08);
+                            "
+                        >
+
+                            <small class="text-secondary d-block mb-1">
+
+                                CURP
+
+                            </small>
+
+                            <span class="text-light fw-semibold">
+
+                                {{ $empleado->curp }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <div
+                            class="rounded-3 p-3 h-100"
+                            style="
+                                background: #111827;
+                                border: 1px solid rgba(255, 255, 255, .08);
+                            "
+                        >
+
+                            <small class="text-secondary d-block mb-1">
+
+                                RFC
+
+                            </small>
+
+                            <span class="text-light fw-semibold">
+
+                                {{ $empleado->rfc }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <div
+                            class="rounded-3 p-3 h-100"
+                            style="
+                                background: #111827;
+                                border: 1px solid rgba(255, 255, 255, .08);
+                            "
+                        >
+
+                            <small class="text-secondary d-block mb-1">
+
+                                NSS
+
+                            </small>
+
+                            <span class="text-light fw-semibold">
+
+                                {{ $empleado->nss }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- CONTACTO --}}
+            <div class="gtri-section">
+
+                <div class="gtri-section-title">
+
+                    <span>03</span>
+
+                    Información de contacto
+
+                </div>
+
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+
+                        <div
+                            class="rounded-3 p-3 h-100"
+                            style="
+                                background: #111827;
+                                border: 1px solid rgba(255, 255, 255, .08);
+                            "
+                        >
+
+                            <small class="text-secondary d-block mb-1">
+
+                                <i class="bi bi-telephone me-1"></i>
+
+                                Teléfono
+
+                            </small>
+
+                            <span class="text-light fw-semibold">
+
+                                {{ $empleado->telefono }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <div
+                            class="rounded-3 p-3 h-100"
+                            style="
+                                background: #111827;
+                                border: 1px solid rgba(255, 255, 255, .08);
+                            "
+                        >
+
+                            <small class="text-secondary d-block mb-1">
+
+                                <i class="bi bi-envelope me-1"></i>
+
+                                Correo electrónico
+
+                            </small>
+
+                            <span class="text-light fw-semibold">
+
+                                {{ $empleado->correo }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-12">
+
+                        <div
+                            class="rounded-3 p-3"
+                            style="
+                                background: #111827;
+                                border: 1px solid rgba(255, 255, 255, .08);
+                            "
+                        >
+
+                            <small class="text-secondary d-block mb-1">
+
+                                <i class="bi bi-geo-alt me-1"></i>
+
+                                Dirección
+
+                            </small>
+
+                            <span class="text-light fw-semibold">
+
+                                {{ $empleado->direccion }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- INFORMACIÓN RH --}}
+            <div class="gtri-section">
+
+                <div class="gtri-section-title">
+
+                    <span>04</span>
+
+                    Información de Recursos Humanos
+
+                </div>
+
+
+                <div class="row g-3">
+
+                    <div class="col-md-3 col-sm-6">
+
+                        <div
+                            class="rounded-3 p-3 h-100"
+                            style="
+                                background: #111827;
+                                border: 1px solid rgba(255, 255, 255, .08);
+                            "
+                        >
+
+                            <small class="text-secondary d-block mb-1">
+
+                                Puesto
+
+                            </small>
+
+                            <span class="text-light fw-semibold">
+
+                                {{ $empleado->puesto }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-3 col-sm-6">
+
+                        <div
+                            class="rounded-3 p-3 h-100"
+                            style="
+                                background: #111827;
+                                border: 1px solid rgba(255, 255, 255, .08);
+                            "
+                        >
+
+                            <small class="text-secondary d-block mb-1">
+
+                                Rango
+
+                            </small>
+
+                            <span class="text-light fw-semibold">
+
+                                {{ $empleado->rango }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-3 col-sm-6">
+
+                        <div
+                            class="rounded-3 p-3 h-100"
+                            style="
+                                background: #111827;
+                                border: 1px solid rgba(255, 255, 255, .08);
+                            "
+                        >
+
+                            <small class="text-secondary d-block mb-1">
+
+                                Salario base
+
+                            </small>
+
+                            <span class="text-warning fw-bold">
+
+                                ${{ number_format(
+                                    $empleado->salario_base,
+                                    2
+                                ) }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-3 col-sm-6">
+
+                        <div
+                            class="rounded-3 p-3 h-100"
+                            style="
+                                background: #111827;
+                                border: 1px solid rgba(255, 255, 255, .08);
+                            "
+                        >
+
+                            <small class="text-secondary d-block mb-1">
+
+                                Tipo de sangre
+
+                            </small>
+
+                            <span class="text-danger fw-bold">
+
+                                {{ $empleado->tipo_sangre }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-3 col-sm-6">
+
+                        <div
+                            class="rounded-3 p-3 h-100"
+                            style="
+                                background: #111827;
+                                border: 1px solid rgba(255, 255, 255, .08);
+                            "
+                        >
+
+                            <small class="text-secondary d-block mb-1">
+
+                                Antigüedad
+
+                            </small>
+
+                            <span class="text-light fw-semibold">
+
+                                {{ $empleado->antiguedad() }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-3 col-sm-6">
+
+                        <div
+                            class="rounded-3 p-3 h-100"
+                            style="
+                                background: #111827;
+                                border: 1px solid rgba(255, 255, 255, .08);
+                            "
+                        >
+
+                            <small class="text-secondary d-block mb-1">
+
+                                Vacaciones disponibles
+
+                            </small>
+
+                            <span class="text-info fw-bold">
+
+                                {{ $empleado->vacaciones() }} días
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-3 col-sm-6">
+
+                        <div
+                            class="rounded-3 p-3 h-100"
+                            style="
+                                background: #111827;
+                                border: 1px solid rgba(255, 255, 255, .08);
+                            "
+                        >
+
+                            <small class="text-secondary d-block mb-1">
+
+                                Vacaciones tomadas
+
+                            </small>
+
+                            <span class="text-warning fw-bold">
+
+                                {{ $empleado->vacacionesTomadas() }} días
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-3 col-sm-6">
+
+                        <div
+                            class="rounded-3 p-3 h-100"
+                            style="
+                                background: #111827;
+                                border: 1px solid rgba(255, 255, 255, .08);
+                            "
+                        >
+
+                            <small class="text-secondary d-block mb-1">
+
+                                Vacaciones restantes
+
+                            </small>
+
+                            <span class="text-success fw-bold">
+
+                                {{ $empleado->vacacionesRestantes() }} días
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- FECHAS --}}
+            <div class="gtri-section">
+
+                <div class="gtri-section-title">
+
+                    <span>05</span>
+
+                    Fechas importantes
+
+                </div>
+
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+
+                        <div
+                            class="rounded-3 p-3 h-100"
+                            style="
+                                background: #111827;
+                                border: 1px solid rgba(255, 255, 255, .08);
+                            "
+                        >
+
+                            <small class="text-secondary d-block mb-1">
+
+                                <i class="bi bi-calendar-heart me-1"></i>
+
+                                Fecha de nacimiento
+
+                            </small>
+
+                            <span class="text-light fw-semibold">
+
+                                {{ $empleado->fecha_nacimiento }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <div
+                            class="rounded-3 p-3 h-100"
+                            style="
+                                background: #111827;
+                                border: 1px solid rgba(255, 255, 255, .08);
+                            "
+                        >
+
+                            <small class="text-secondary d-block mb-1">
+
+                                <i class="bi bi-calendar-check me-1"></i>
+
+                                Fecha de ingreso
+
+                            </small>
+
+                            <span class="text-light fw-semibold">
+
+                                {{ $empleado->fecha_ingreso }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- CONTACTO DE EMERGENCIA --}}
+            <div class="gtri-section mb-0">
+
+                <div class="gtri-section-title">
+
+                    <span>06</span>
+
+                    Contacto de emergencia
+
+                </div>
+
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+
+                        <div
+                            class="rounded-3 p-3 h-100"
+                            style="
+                                background: #111827;
+                                border: 1px solid rgba(255, 255, 255, .08);
+                            "
+                        >
+
+                            <small class="text-secondary d-block mb-1">
+
+                                <i class="bi bi-person-exclamation me-1"></i>
+
+                                Nombre del contacto
+
+                            </small>
+
+                            <span class="text-light fw-semibold">
+
+                                {{ $empleado->contacto_emergencia }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <div
+                            class="rounded-3 p-3 h-100"
+                            style="
+                                background: #111827;
+                                border: 1px solid rgba(255, 255, 255, .08);
+                            "
+                        >
+
+                            <small class="text-secondary d-block mb-1">
+
+                                <i class="bi bi-telephone-outbound me-1"></i>
+
+                                Teléfono de emergencia
+
+                            </small>
+
+                            <span class="text-light fw-semibold">
+
+                                {{ $empleado->telefono_emergencia }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        {{-- DOCUMENTOS RH --}}
+    <div class="gtri-section mt-4">
+
+        <div class="gtri-section-title">
+
+            <span>07</span>
+
+            Documentos RH
+
+        </div>
+
+
+        {{-- PROGRESO DEL EXPEDIENTE --}}
+        <div
+            class="rounded-3 p-4 mb-4"
+            style="
+                background: #111827;
+                border: 1px solid rgba(255, 255, 255, .08);
+            "
+        >
+
+            <div
+                class="
+                    d-flex
+                    flex-wrap
+                    justify-content-between
+                    align-items-center
+                    gap-2
+                "
+            >
+
+                <div>
+
+                    <h5 class="text-light fw-bold mb-1">
+
+                        <i class="bi bi-folder-check me-2 text-warning"></i>
+
+                        Progreso del expediente
+
+                    </h5>
+
+                    <small class="text-secondary">
+
+                        Documentos entregados por el empleado
+
+                    </small>
+
+                </div>
+
+
+                <div class="text-end">
+
+                    <span class="text-warning fw-bold fs-5">
+
+                        {{ $documentos->count() }}
+
+                        /
+
+                        {{ count($documentosRH) }}
+
+                    </span>
+
+                    <small class="text-secondary d-block">
+
+                        documentos
+
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="progress mt-3"
+                style="
+                    height: 16px;
+                    background: #1F2937;
+                "
+            >
 
                 <div
-                    class="progress-bar bg-success"
+                    class="progress-bar bg-success fw-semibold"
                     role="progressbar"
                     style="width: {{ $porcentajeDocumentos }}%;"
+                    aria-valuenow="{{ $porcentajeDocumentos }}"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
                 >
 
                     {{ $porcentajeDocumentos }}%
@@ -396,52 +1002,87 @@
 
         </div>
 
-        <div class="row">
+
+        {{-- LISTADO DE DOCUMENTOS --}}
+        <div class="row g-3">
 
             @foreach ($documentosRH as $documentoRH)
 
                 @php
 
-                    $documentoSubido =
-
-                        $documentos
-
+                    $documentoSubido = $documentos
                         ->where(
-
                             'nombre',
-
                             $documentoRH
-
                         )
-
                         ->first();
 
                 @endphp
 
 
-                <div class="col-md-6 mb-3">
+                <div class="col-xl-4 col-md-6">
 
                     <div
-
-                        class="border rounded-3 p-3 h-100"
-
+                        class="rounded-3 p-3 h-100"
+                        style="
+                            background: #111827;
+                            border: 1px solid rgba(255, 255, 255, .08);
+                        "
                     >
 
-                        <h5>
+                        <div
+                            class="
+                                d-flex
+                                justify-content-between
+                                align-items-start
+                                gap-3
+                                mb-3
+                            "
+                        >
 
-                            {{ $documentoRH }}
+                            <div>
 
-                        </h5>
+                                <small class="text-secondary d-block mb-1">
+
+                                    Documento
+
+                                </small>
+
+                                <h6 class="text-light fw-bold mb-0">
+
+                                    {{ $documentoRH }}
+
+                                </h6>
+
+                            </div>
+
+
+                            @if ($documentoSubido)
+
+                                <span class="gtri-badge-success">
+
+                                    <i class="bi bi-check-circle me-1"></i>
+
+                                    Entregado
+
+                                </span>
+
+                            @else
+
+                                <span class="gtri-badge-warning">
+
+                                    <i class="bi bi-clock me-1"></i>
+
+                                    Pendiente
+
+                                </span>
+
+                            @endif
+
+                        </div>
+
 
                         @if ($documentoSubido)
-
-                            <span class="badge bg-success mb-3">
-
-                                Entregado
-
-                            </span>
-
-                            <br>
 
                             <form
                                 method="POST"
@@ -449,10 +1090,11 @@
                                     'rh.documentos.pendiente',
                                     $empleado->id
                                 ) }}"
-                                class="mt-2"
                             >
+
                                 @csrf
                                 @method('PATCH')
+
 
                                 <input
                                     type="hidden"
@@ -460,28 +1102,35 @@
                                     value="{{ $documentoRH }}"
                                 >
 
+
                                 <button
-                                    class="btn btn-outline-danger btn-sm"
+                                    type="submit"
+                                    class="btn gtri-btn-secondary btn-sm w-100"
+                                    onclick="return confirm(
+                                        '¿Deseas marcar este documento como pendiente?'
+                                    )"
                                 >
+
+                                    <i class="bi bi-arrow-counterclockwise me-1"></i>
+
                                     Marcar pendiente
+
                                 </button>
 
                             </form>
 
                         @else
 
-                            <span class="badge bg-warning text-dark">
-
-                                Pendiente
-
-                            </span>
-
                             <form
                                 method="POST"
-                                action="{{ route('rh.documentos.store', $empleado->id) }}"
-                                class="mt-2"
+                                action="{{ route(
+                                    'rh.documentos.store',
+                                    $empleado->id
+                                ) }}"
                             >
+
                                 @csrf
+
 
                                 <input
                                     type="hidden"
@@ -489,10 +1138,16 @@
                                     value="{{ $documentoRH }}"
                                 >
 
+
                                 <button
-                                    class="btn btn-success btn-sm"
+                                    type="submit"
+                                    class="btn gtri-btn-primary btn-sm w-100"
                                 >
+
+                                    <i class="bi bi-check2-circle me-1"></i>
+
                                     Marcar como entregado
+
                                 </button>
 
                             </form>
@@ -507,508 +1162,803 @@
 
         </div>
 
-    </x-rh.card-rh>
+    </div>
 
-    <x-rh.card-rh titulo="Historial de vacaciones">
 
-        <div class="table-responsive">
+    {{-- HISTORIAL DE VACACIONES --}}
+    <div class="gtri-section">
 
-            <table class="table align-middle">
+        <div class="gtri-section-title">
 
-                <thead>
+            <span>08</span>
 
-                    <tr>
-
-                        <th>Inicio</th>
-
-                        <th>Fin</th>
-
-                        <th>Días</th>
-
-                        <th>Estado</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @forelse ($vacaciones as $vacacion)
-
-                        <tr>
-
-                            <td>
-
-                                {{ $vacacion->fecha_inicio }}
-
-                            </td>
-
-                            <td>
-
-                                {{ $vacacion->fecha_fin }}
-
-                            </td>
-
-                            <td>
-
-                                {{ $vacacion->dias }}
-
-                            </td>
-
-                            <td>
-
-                                {{ ucfirst($vacacion->estado) }}
-
-                            </td>
-
-                        </tr>
-
-                    @empty
-
-                        <tr>
-
-                            <td colspan="4">
-
-                                Sin vacaciones registradas
-
-                            </td>
-
-                        </tr>
-
-                    @endforelse
-
-                </tbody>
-
-            </table>
+            Historial de vacaciones
 
         </div>
 
-    </x-rh.card-rh>
 
-    <x-rh.card-rh titulo="Historial de incidencias">
+        <div class="gtri-table-wrapper">
 
-        <div class="table-responsive">
+            <div class="table-responsive">
 
-            <table class="table align-middle">
+                <table class="table gtri-table align-middle mb-0">
 
-                <thead>
-
-                    <tr>
-
-                        <th>Tipo</th>
-
-                        <th>Fecha</th>
-
-                        <th>Descripción</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @forelse ($incidencias as $incidencia)
+                    <thead>
 
                         <tr>
 
-                            <td>
+                            <th>Fecha de inicio</th>
 
-                                {{ ucfirst($incidencia->tipo) }}
+                            <th>Fecha de término</th>
 
-                            </td>
+                            <th>Días</th>
 
-                            <td>
-
-                                {{ $incidencia->fecha }}
-
-                            </td>
-
-                            <td>
-
-                                {{ $incidencia->descripcion }}
-
-                            </td>
+                            <th>Estado</th>
 
                         </tr>
 
-                    @empty
+                    </thead>
 
-                        <tr>
 
-                            <td colspan="3">
+                    <tbody>
 
-                                Sin incidencias registradas
+                        @forelse ($vacaciones as $vacacion)
 
-                            </td>
+                            <tr>
 
-                        </tr>
+                                <td>
 
-                    @endforelse
+                                    <i class="bi bi-calendar-event me-2 text-warning"></i>
 
-                </tbody>
+                                    {{ $vacacion->fecha_inicio }}
 
-            </table>
+                                </td>
+
+
+                                <td>
+
+                                    {{ $vacacion->fecha_fin }}
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="text-light fw-semibold">
+
+                                        {{ $vacacion->dias }}
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    @if ($vacacion->estado == 'aprobada')
+
+                                        <span class="gtri-badge-success">
+
+                                            Aprobada
+
+                                        </span>
+
+                                    @elseif ($vacacion->estado == 'rechazada')
+
+                                        <span class="gtri-badge-danger">
+
+                                            Rechazada
+
+                                        </span>
+
+                                    @else
+
+                                        <span class="gtri-badge-warning">
+
+                                            {{ ucfirst($vacacion->estado) }}
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="4"
+                                    class="text-center py-5"
+                                >
+
+                                    <i
+                                        class="
+                                            bi
+                                            bi-calendar-x
+                                            d-block
+                                            fs-1
+                                            text-secondary
+                                            mb-2
+                                        "
+                                    ></i>
+
+                                    <span class="text-secondary">
+
+                                        Sin vacaciones registradas
+
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
-    </x-rh.card-rh>
+    </div>
 
-    <x-rh.card-rh titulo="Uniformes entregados">
 
-        <div class="table-responsive">
+    {{-- HISTORIAL DE INCIDENCIAS --}}
+    <div class="gtri-section">
 
-            <table class="table align-middle">
+        <div class="gtri-section-title">
 
-                <thead>
+            <span>09</span>
 
-                    <tr>
+            Historial de incidencias
 
-                        <th>Artículo</th>
+        </div>
 
-                        <th>Tipo</th>
 
-                        <th>Fecha</th>
+        <div class="gtri-table-wrapper">
 
-                        <th>Observaciones</th>
+            <div class="table-responsive">
 
-                    </tr>
+                <table class="table gtri-table align-middle mb-0">
 
-                </thead>
-
-                <tbody>
-
-                    @forelse ($uniformes as $uniforme)
+                    <thead>
 
                         <tr>
 
-                            <td>
+                            <th>Tipo</th>
 
-                                {{ $uniforme->articulo }}
+                            <th>Fecha</th>
 
-                            </td>
+                            <th>Descripción</th>
 
-                            <td>
+                        </tr>
 
-                                {{ ucfirst(
-                                    str_replace(
-                                        '_',
-                                        ' ',
-                                        $uniforme->tipo
+                    </thead>
+
+
+                    <tbody>
+
+                        @forelse ($incidencias as $incidencia)
+
+                            <tr>
+
+                                <td>
+
+                                    <span class="gtri-badge-warning">
+
+                                        {{ ucfirst($incidencia->tipo) }}
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <i class="bi bi-calendar3 me-2 text-warning"></i>
+
+                                    {{ $incidencia->fecha }}
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ $incidencia->descripcion }}
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="3"
+                                    class="text-center py-5"
+                                >
+
+                                    <i
+                                        class="
+                                            bi
+                                            bi-shield-check
+                                            d-block
+                                            fs-1
+                                            text-secondary
+                                            mb-2
+                                        "
+                                    ></i>
+
+                                    <span class="text-secondary">
+
+                                        Sin incidencias registradas
+
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {{-- UNIFORMES ENTREGADOS --}}
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>10</span>
+
+            Uniformes entregados
+
+        </div>
+
+
+        <div class="gtri-table-wrapper">
+
+            <div class="table-responsive">
+
+                <table class="table gtri-table align-middle mb-0">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Artículo</th>
+
+                            <th>Tipo</th>
+
+                            <th>Fecha de entrega</th>
+
+                            <th>Observaciones</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @forelse ($uniformes as $uniforme)
+
+                            <tr>
+
+                                <td>
+
+                                    <i class="bi bi-box-seam me-2 text-warning"></i>
+
+                                    <span class="text-light fw-semibold">
+
+                                        {{ $uniforme->articulo }}
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ ucfirst(
+                                        str_replace(
+                                            '_',
+                                            ' ',
+                                            $uniforme->tipo
+                                        )
+                                    ) }}
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ $uniforme->fecha_entrega }}
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ $uniforme->observaciones }}
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="4"
+                                    class="text-center py-5"
+                                >
+
+                                    <i
+                                        class="
+                                            bi
+                                            bi-box
+                                            d-block
+                                            fs-1
+                                            text-secondary
+                                            mb-2
+                                        "
+                                    ></i>
+
+                                    <span class="text-secondary">
+
+                                        Sin uniformes registrados
+
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {{-- SEMÁFORO DE VIGENCIAS --}}
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>11</span>
+
+            Semáforo de vigencias
+
+        </div>
+
+
+        <div class="gtri-table-wrapper">
+
+            <div class="table-responsive">
+
+                <table class="table gtri-table align-middle mb-0">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Documento</th>
+
+                            <th>Fecha de vencimiento</th>
+
+                            <th>Estado</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @forelse ($vigencias as $vigencia)
+
+                            @php
+
+                                $dias = now()->diffInDays(
+                                    $vigencia->fecha_vencimiento,
+                                    false
+                                );
+
+                            @endphp
+
+
+                            <tr>
+
+                                <td>
+
+                                    <i class="bi bi-file-earmark-text me-2 text-warning"></i>
+
+                                    <span class="text-light fw-semibold">
+
+                                        {{ $vigencia->documento }}
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    {{ $vigencia->fecha_vencimiento }}
+
+                                </td>
+
+
+                                <td>
+
+                                    @if ($dias < 0)
+
+                                        <span class="gtri-badge-danger">
+
+                                            <i class="bi bi-x-circle me-1"></i>
+
+                                            Vencido
+
+                                        </span>
+
+                                    @elseif ($dias <= 30)
+
+                                        <span class="gtri-badge-warning">
+
+                                            <i class="bi bi-exclamation-triangle me-1"></i>
+
+                                            Próximo a vencer
+
+                                        </span>
+
+                                    @else
+
+                                        <span class="gtri-badge-success">
+
+                                            <i class="bi bi-check-circle me-1"></i>
+
+                                            Vigente
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="3"
+                                    class="text-center py-5"
+                                >
+
+                                    <i
+                                        class="
+                                            bi
+                                            bi-calendar2-x
+                                            d-block
+                                            fs-1
+                                            text-secondary
+                                            mb-2
+                                        "
+                                    ></i>
+
+                                    <span class="text-secondary">
+
+                                        Sin vigencias registradas
+
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {{-- CAPACITACIONES --}}
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>12</span>
+
+            Capacitaciones
+
+        </div>
+
+
+        <div class="gtri-table-wrapper">
+
+            <div class="table-responsive">
+
+                <table class="table gtri-table align-middle mb-0">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Curso</th>
+
+                            <th>Calificación</th>
+
+                            <th>Vigencia</th>
+
+                            <th>Estado</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @forelse ($capacitaciones as $capacitacion)
+
+                            @php
+
+                                $dias = $capacitacion->vigencia_hasta
+                                    ? now()->diffInDays(
+                                        $capacitacion->vigencia_hasta,
+                                        false
                                     )
-                                ) }}
+                                    : null;
 
-                            </td>
+                            @endphp
 
-                            <td>
 
-                                {{ $uniforme->fecha_entrega }}
+                            <tr>
 
-                            </td>
+                                <td>
 
-                            <td>
+                                    <i class="bi bi-mortarboard me-2 text-warning"></i>
 
-                                {{ $uniforme->observaciones }}
+                                    <span class="text-light fw-semibold">
 
-                            </td>
+                                        {{ $capacitacion->curso }}
 
-                        </tr>
+                                    </span>
 
-                    @empty
+                                </td>
 
-                        <tr>
 
-                            <td colspan="4">
+                                <td>
 
-                                Sin uniformes registrados
+                                    {{ $capacitacion->calificacion }}
 
-                            </td>
+                                </td>
 
-                        </tr>
 
-                    @endforelse
+                                <td>
 
-                </tbody>
+                                    {{ $capacitacion->vigencia_hasta }}
 
-            </table>
+                                </td>
+
+
+                                <td>
+
+                                    @if (!$capacitacion->vigencia_hasta)
+
+                                        <span
+                                            class="
+                                                badge
+                                                rounded-pill
+                                                bg-secondary
+                                            "
+                                        >
+
+                                            Sin vigencia
+
+                                        </span>
+
+                                    @elseif ($dias < 0)
+
+                                        <span class="gtri-badge-danger">
+
+                                            <i class="bi bi-x-circle me-1"></i>
+
+                                            Vencida
+
+                                        </span>
+
+                                    @elseif ($dias <= 30)
+
+                                        <span class="gtri-badge-warning">
+
+                                            <i class="bi bi-exclamation-triangle me-1"></i>
+
+                                            Próxima a vencer
+
+                                        </span>
+
+                                    @else
+
+                                        <span class="gtri-badge-success">
+
+                                            <i class="bi bi-check-circle me-1"></i>
+
+                                            Vigente
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="4"
+                                    class="text-center py-5"
+                                >
+
+                                    <i
+                                        class="
+                                            bi
+                                            bi-mortarboard
+                                            d-block
+                                            fs-1
+                                            text-secondary
+                                            mb-2
+                                        "
+                                    ></i>
+
+                                    <span class="text-secondary">
+
+                                        Sin capacitaciones registradas
+
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
-    </x-rh.card-rh>
+    </div>
 
-    <x-rh.card-rh titulo="Semáforo de vigencias">
 
-        <table class="table">
+    {{-- ACCIONES DEL EXPEDIENTE --}}
+    <div class="gtri-section mb-0">
 
-            <thead>
+        <div class="gtri-section-title">
 
-                <tr>
+            <span>13</span>
 
-                    <th>Documento</th>
+            Acciones del expediente
 
-                    <th>Vence</th>
+        </div>
 
-                    <th>Estado</th>
 
-                </tr>
+        <div class="d-flex flex-wrap gap-3">
 
-            </thead>
+            <a
+                href="{{ route(
+                    'rh.empleados.ficha',
+                    $empleado->id
+                ) }}"
+                class="btn gtri-btn-secondary"
+                target="_blank"
+            >
 
-            <tbody>
+                <i class="bi bi-file-earmark-pdf me-1"></i>
 
-                @forelse($vigencias as $vigencia)
+                Ficha técnica
 
-                    @php
+            </a>
 
-                        $dias = now()->diffInDays(
-                            $vigencia->fecha_vencimiento,
-                            false
-                        );
 
-                    @endphp
+            <a
+                href="{{ route(
+                    'rh.empleados.credencial',
+                    $empleado->id
+                ) }}"
+                class="btn gtri-btn-primary"
+                target="_blank"
+            >
 
-                    <tr>
+                <i class="bi bi-person-badge me-1"></i>
 
-                        <td>
+                Credencial
 
-                            {{ $vigencia->documento }}
+            </a>
 
-                        </td>
 
-                        <td>
+            <a
+                href="{{ route(
+                    'rh.uniformes.create',
+                    $empleado->id
+                ) }}"
+                class="btn btn-success"
+            >
 
-                            {{ $vigencia->fecha_vencimiento }}
+                <i class="bi bi-box-seam me-1"></i>
 
-                        </td>
+                Registrar uniforme
 
-                        <td>
+            </a>
 
-                            @if($dias < 0)
 
-                                <span
-                                    class="badge bg-danger"
-                                >
-                                    Vencido
-                                </span>
+            <a
+                href="{{ route(
+                    'rh.vigencias.create',
+                    $empleado->id
+                ) }}"
+                class="btn btn-warning"
+            >
 
-                            @elseif($dias <= 30)
+                <i class="bi bi-calendar-check me-1"></i>
 
-                                <span
-                                    class="badge bg-warning text-dark"
-                                >
-                                    Próximo a vencer
-                                </span>
+                Registrar vigencia
 
-                            @else
+            </a>
 
-                                <span
-                                    class="badge bg-success"
-                                >
-                                    Vigente
-                                </span>
 
-                            @endif
+            <a
+                href="{{ route(
+                    'rh.capacitaciones.create',
+                    $empleado->id
+                ) }}"
+                class="btn btn-info"
+            >
 
-                        </td>
+                <i class="bi bi-mortarboard me-1"></i>
 
-                    </tr>
+                Registrar capacitación
 
-                @empty
+            </a>
 
-                    <tr>
-
-                        <td colspan="3">
-
-                            Sin vigencias registradas
-
-                        </td>
-
-                    </tr>
-
-                @endforelse
-
-            </tbody>
-
-        </table>
-
-    </x-rh.card-rh>
-
-    <x-rh.card-rh titulo="Capacitaciones">
-
-        <table class="table">
-
-            <thead>
-
-                <tr>
-
-                    <th>Curso</th>
-
-                    <th>Calificación</th>
-
-                    <th>Vigencia</th>
-
-                    <th>Estado</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                @forelse($capacitaciones as $capacitacion)
-
-                    @php
-
-                        $dias = $capacitacion->vigencia_hasta
-                            ? now()->diffInDays(
-                                $capacitacion->vigencia_hasta,
-                                false
-                            )
-                            : null;
-
-                    @endphp
-
-                    <tr>
-
-                        <td>
-                            {{ $capacitacion->curso }}
-                        </td>
-
-                        <td>
-                            {{ $capacitacion->calificacion }}
-                        </td>
-
-                        <td>
-                            {{ $capacitacion->vigencia_hasta }}
-                        </td>
-
-                        <td>
-
-                            @if(!$capacitacion->vigencia_hasta)
-
-                                <span class="badge bg-secondary">
-                                    Sin vigencia
-                                </span>
-
-                            @elseif($dias < 0)
-
-                                <span class="badge bg-danger">
-                                    Vencida
-                                </span>
-
-                            @elseif($dias <= 30)
-
-                                <span class="badge bg-warning text-dark">
-                                    Próxima a vencer
-                                </span>
-
-                            @else
-
-                                <span class="badge bg-success">
-                                    Vigente
-                                </span>
-
-                            @endif
-
-                        </td>
-
-                    </tr>
-
-                @empty
-
-                    <tr>
-
-                        <td colspan="4">
-
-                            Sin capacitaciones
-
-                        </td>
-
-                    </tr>
-
-                @endforelse
-
-            </tbody>
-
-        </table>
-
-    </x-rh.card-rh>
-
-    <div class="d-flex gap-2 mb-4">
-
-        <a
-            href="{{ route(
-                'rh.empleados.ficha',
-                $empleado->id
-            ) }}"
-            class="btn btn-danger"
-            target="_blank"
-        >
-            <i class="bi bi-file-earmark-pdf"></i>
-
-            Ficha Técnica
-        </a>
-
-        <a
-            href="{{ route(
-                'rh.empleados.credencial',
-                $empleado->id
-            ) }}"
-            class="btn btn-primary"
-            target="_blank"
-        >
-            <i class="bi bi-person-badge"></i>
-
-            Credencial
-        </a>
-
-        <a
-
-            href="{{ route(
-                'rh.uniformes.create',
-                $empleado->id
-            ) }}"
-
-            class="btn btn-success"
-
-        >
-
-            <i class="bi bi-box-seam"></i>
-
-            Uniformes
-
-        </a>
-        <a
-
-            href="{{ route(
-                'rh.vigencias.create',
-                $empleado->id
-            ) }}"
-
-            class="btn btn-warning"
-
-        >
-
-            <i class="bi bi-calendar-check"></i>
-
-            Vigencias
-
-        </a>
-        <a
-
-            href="{{ route(
-                'rh.capacitaciones.create',
-                $empleado->id
-            ) }}"
-
-            class="btn btn-info"
-
-        >
-
-            <i class="bi bi-mortarboard"></i>
-
-            Capacitación
-
-        </a>
+        </div>
 
     </div>
 

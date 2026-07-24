@@ -2,282 +2,450 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
     <x-rh.alert-success />
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <h2>
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-            Cobranza
+        <div class="d-flex justify-content-between align-items-center">
 
-        </h2>
+            <div>
 
-        <a
-            href="{{ route('administracion.cobranzas.create') }}"
-            class="btn btn-primary"
-        >
+                <h2 class="gtri-page-title">
 
-            <i class="bi bi-plus-circle"></i>
+                    <i class="bi bi-cash-stack me-2"></i>
 
-            Nueva cobranza
+                    Cobranza
 
-        </a>
+                </h2>
+
+                <p class="gtri-page-subtitle">
+
+                    Seguimiento de pagos, vencimientos y estado de cobranzas.
+
+                </p>
+
+            </div>
+
+            <a
+                href="{{ route('administracion.cobranzas.create') }}"
+                class="btn gtri-btn-primary"
+            >
+
+                <i class="bi bi-plus-circle me-1"></i>
+
+                Nueva cobranza
+
+            </a>
+
+        </div>
 
     </div>
 
-    <form
-        method="GET"
-        class="row g-2 mb-4"
-    >
 
-        <div class="col-md-4">
+    {{-- FILTROS --}}
+    <div class="gtri-section">
 
-            <input
-                type="text"
-                name="buscar"
-                class="form-control"
-                placeholder="Buscar por folio..."
-                value="{{ request('buscar') }}"
-            >
+        <div class="gtri-section-title">
+
+            <span>01</span>
+
+            Filtros de búsqueda
 
         </div>
 
-        <div class="col-auto">
+        <form method="GET">
 
-            <button
-                class="btn btn-outline-primary"
-            >
+            <div class="row g-3 align-items-end">
 
-                Buscar
+                <div class="col-md-5">
 
-            </button>
+                    <label class="gtri-label mb-2">
+
+                        Folio de factura
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="buscar"
+                        class="form-control gtri-input"
+                        placeholder="Buscar por folio..."
+                        value="{{ request('buscar') }}"
+                    >
+
+                </div>
+
+                <div class="col-auto">
+
+                    <button
+                        type="submit"
+                        class="btn gtri-btn-primary"
+                    >
+
+                        <i class="bi bi-search me-1"></i>
+
+                        Buscar
+
+                    </button>
+
+                </div>
+
+                @if(request('buscar'))
+
+                    <div class="col-auto">
+
+                        <a
+                            href="{{ route('administracion.cobranzas.index') }}"
+                            class="btn gtri-btn-secondary"
+                        >
+
+                            <i class="bi bi-arrow-clockwise me-1"></i>
+
+                            Limpiar
+
+                        </a>
+
+                    </div>
+
+                @endif
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    {{-- LISTADO --}}
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>02</span>
+
+            Listado de cobranzas
 
         </div>
 
-    </form>
+        <div class="gtri-table-wrapper">
 
-    <x-rh.card-rh titulo="Listado de cobranzas">
+            <div class="table-responsive">
 
-        <div class="table-responsive">
+                <table class="table gtri-table align-middle">
 
-            <table
-                class="table table-bordered table-hover align-middle"
-            >
-
-                <thead class="table-dark">
-
-                    <tr>
-
-                        <th>
-
-                            Factura
-
-                        </th>
-
-                        <th>
-
-                            Cliente
-
-                        </th>
-
-                        <th>
-
-                            Vencimiento
-
-                        </th>
-
-                        <th>
-
-                            Monto
-
-                        </th>
-
-                        <th>
-
-                            Estado
-
-                        </th>
-
-                        <th>
-
-                            Semáforo
-
-                        </th>
-
-                        <th width="180">
-
-                            Acciones
-
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @forelse($cobranzas as $cobranza)
+                    <thead>
 
                         <tr>
 
-                            <td>
+                            <th>Factura</th>
 
-                                {{ $cobranza->factura->folio }}
+                            <th>Cliente</th>
 
-                            </td>
+                            <th>Vencimiento</th>
 
-                            <td>
+                            <th>Monto</th>
 
-                                {{ $cobranza->factura->cliente->razon_social }}
+                            <th class="text-center">
+                                Estado
+                            </th>
 
-                            </td>
+                            <th class="text-center">
+                                Semáforo
+                            </th>
 
-                            <td>
+                            <th class="text-center">
+                                Acciones
+                            </th>
 
-                                {{ $cobranza->fecha_vencimiento->format('d/m/Y') }}
+                        </tr>
 
-                            </td>
+                    </thead>
 
-                            <td>
+                    <tbody>
 
-                                $ {{ number_format($cobranza->monto,2) }}
+                        @forelse($cobranzas as $cobranza)
 
-                            </td>
+                            <tr>
 
-                            <td>
+                                <td>
 
-                                {{ ucfirst($cobranza->estado) }}
+                                    <span class="text-warning fw-semibold">
 
-                            </td>
+                                        {{ $cobranza->factura->folio }}
 
-                            <td>
+                                    </span>
 
-                                @switch($cobranza->semaforo)
+                                </td>
 
-                                    @case('azul')
+                                <td>
 
-                                        <span class="badge bg-primary">
+                                    <div class="fw-semibold text-light">
 
-                                            Azul
+                                        {{ $cobranza->factura->cliente->razon_social }}
 
-                                        </span>
+                                    </div>
 
-                                    @break
+                                </td>
 
-                                    @case('amarillo')
+                                <td>
 
-                                        <span class="badge bg-warning text-dark">
+                                    <span class="text-secondary">
 
-                                            Amarillo
+                                        {{ $cobranza->fecha_vencimiento->format('d/m/Y') }}
 
-                                        </span>
+                                    </span>
 
-                                    @break
+                                </td>
 
-                                    @case('rojo')
+                                <td>
 
-                                        <span class="badge bg-danger">
+                                    <span class="fw-semibold text-light">
 
-                                            Rojo
+                                        ${{ number_format(
+                                            $cobranza->monto,
+                                            2
+                                        ) }}
 
-                                        </span>
+                                    </span>
 
-                                    @break
+                                </td>
 
-                                    @case('verde')
+                                {{-- ESTADO --}}
+                                <td class="text-center">
 
-                                        <span class="badge bg-success">
+                                    @switch($cobranza->estado)
 
-                                            Verde
+                                        @case('pendiente')
 
-                                        </span>
+                                            <span class="badge gtri-badge-warning">
 
-                                    @break
+                                                <i class="bi bi-clock me-1"></i>
 
-                                @endswitch
+                                                Pendiente
 
-                            </td>
+                                            </span>
 
-                            <td>
+                                            @break
 
-                                <div class="d-flex gap-2">
 
-                                    <a
-                                        href="{{ route('administracion.cobranzas.show',$cobranza) }}"
-                                        class="btn btn-info btn-sm"
-                                    >
+                                        @case('revision')
 
-                                        <i class="bi bi-eye"></i>
+                                            <span class="badge bg-primary">
 
-                                    </a>
+                                                <i class="bi bi-search me-1"></i>
 
-                                    <a
-                                        href="{{ route('administracion.cobranzas.edit',$cobranza) }}"
-                                        class="btn btn-warning btn-sm"
-                                    >
+                                                En revisión
 
-                                        <i class="bi bi-pencil"></i>
+                                            </span>
 
-                                    </a>
+                                            @break
 
-                                    <form
-                                        action="{{ route('administracion.cobranzas.destroy',$cobranza) }}"
-                                        method="POST"
-                                    >
 
-                                        @csrf
+                                        @case('pagada')
 
-                                        @method('DELETE')
+                                            <span class="badge gtri-badge-success">
 
-                                        <button
-                                            class="btn btn-danger btn-sm"
-                                            onclick="return confirm('¿Eliminar esta cobranza?')"
+                                                <i class="bi bi-check-circle me-1"></i>
+
+                                                Pagada
+
+                                            </span>
+
+                                            @break
+
+
+                                        @case('vencida')
+
+                                            <span class="badge gtri-badge-danger">
+
+                                                <i class="bi bi-exclamation-circle me-1"></i>
+
+                                                Vencida
+
+                                            </span>
+
+                                            @break
+
+                                    @endswitch
+
+                                </td>
+
+
+                                {{-- SEMÁFORO --}}
+                                <td class="text-center">
+
+                                    @switch($cobranza->semaforo)
+
+                                        @case('azul')
+
+                                            <span class="badge bg-primary">
+
+                                                <i class="bi bi-circle-fill me-1"></i>
+
+                                                Azul
+
+                                            </span>
+
+                                            @break
+
+
+                                        @case('amarillo')
+
+                                            <span class="badge gtri-badge-warning">
+
+                                                <i class="bi bi-circle-fill me-1"></i>
+
+                                                Amarillo
+
+                                            </span>
+
+                                            @break
+
+
+                                        @case('rojo')
+
+                                            <span class="badge gtri-badge-danger">
+
+                                                <i class="bi bi-circle-fill me-1"></i>
+
+                                                Rojo
+
+                                            </span>
+
+                                            @break
+
+
+                                        @case('verde')
+
+                                            <span class="badge gtri-badge-success">
+
+                                                <i class="bi bi-circle-fill me-1"></i>
+
+                                                Verde
+
+                                            </span>
+
+                                            @break
+
+                                    @endswitch
+
+                                </td>
+
+
+                                {{-- ACCIONES --}}
+                                <td>
+
+                                    <div class="d-flex justify-content-center gap-2">
+
+                                        <a
+                                            href="{{ route(
+                                                'administracion.cobranzas.show',
+                                                $cobranza
+                                            ) }}"
+                                            class="btn btn-sm gtri-btn-secondary"
+                                            title="Ver detalle"
                                         >
 
-                                            <i class="bi bi-trash"></i>
+                                            <i class="bi bi-eye"></i>
 
-                                        </button>
+                                        </a>
 
-                                    </form>
 
-                                </div>
+                                        <a
+                                            href="{{ route(
+                                                'administracion.cobranzas.edit',
+                                                $cobranza
+                                            ) }}"
+                                            class="btn btn-sm gtri-btn-secondary"
+                                            title="Editar cobranza"
+                                        >
 
-                            </td>
+                                            <i class="bi bi-pencil"></i>
 
-                        </tr>
+                                        </a>
 
-                    @empty
 
-                        <tr>
+                                        <form
+                                            action="{{ route(
+                                                'administracion.cobranzas.destroy',
+                                                $cobranza
+                                            ) }}"
+                                            method="POST"
+                                        >
 
-                            <td
-                                colspan="7"
-                                class="text-center"
-                            >
+                                            @csrf
+                                            @method('DELETE')
 
-                                No existen registros.
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm btn-outline-danger"
+                                                onclick="return confirm(
+                                                    '¿Eliminar esta cobranza?'
+                                                )"
+                                                title="Eliminar"
+                                            >
 
-                            </td>
+                                                <i class="bi bi-trash"></i>
 
-                        </tr>
+                                            </button>
 
-                    @endforelse
+                                        </form>
 
-                </tbody>
+                                    </div>
 
-            </table>
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="7"
+                                    class="text-center py-5"
+                                >
+
+                                    <div class="text-secondary">
+
+                                        <i
+                                            class="bi bi-cash-stack fs-1 d-block mb-3"
+                                        ></i>
+
+                                        No existen cobranzas registradas.
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
-        <div class="mt-3">
 
-            {{ $cobranzas->links() }}
+        @if($cobranzas->hasPages())
 
-        </div>
+            <div class="d-flex justify-content-center mt-4">
 
-    </x-rh.card-rh>
+                {{ $cobranzas->links() }}
+
+            </div>
+
+        @endif
+
+    </div>
 
 </div>
 

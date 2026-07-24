@@ -2,38 +2,54 @@
 
 @section('contenido')
 
-<div class="container">
+<div class="container-fluid">
 
-    <div
-        class="d-flex justify-content-between align-items-center mb-4"
-    >
-
-        <h1>
-
-            Detalle del Contrato
-
-        </h1>
+    <div class="gtri-page-header">
 
         <div>
+
+            <h2 class="gtri-page-title">
+
+                <i class="bi bi-file-earmark-text me-2"></i>
+
+                Detalle del contrato
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Consulta la información general y los servicios asociados al contrato.
+
+            </p>
+
+        </div>
+
+
+        <div class="d-flex gap-2">
 
             <a
                 href="{{ route(
                     'operaciones.contratos.edit',
                     $contrato
                 ) }}"
-                class="btn btn-warning"
+                class="btn gtri-btn-primary"
             >
+
+                <i class="bi bi-pencil-square me-1"></i>
 
                 Editar
 
             </a>
 
+
             <a
                 href="{{ route(
                     'operaciones.contratos.index'
                 ) }}"
-                class="btn btn-secondary"
+                class="btn gtri-btn-secondary"
             >
+
+                <i class="bi bi-arrow-left me-1"></i>
 
                 Regresar
 
@@ -43,135 +59,160 @@
 
     </div>
 
-    <div class="card shadow-sm">
 
-        <div class="card-body">
+    <div class="gtri-section">
 
-            <div class="row">
+        <div class="gtri-section-title">
 
-                <div class="col-md-6 mb-3">
+            <span>01</span>
 
-                    <strong>
+            Información general
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <div class="col-md-6">
+
+                <div class="gtri-info-card h-100">
+
+                    <div class="gtri-info-label">
 
                         Cliente
 
-                    </strong>
+                    </div>
 
-                    <br>
+                    <div class="gtri-info-value">
 
-                    {{ $contrato->cliente->razon_social }}
+                        {{ $contrato->cliente->razon_social }}
 
-                </div>
-
-                <div class="col-md-6 mb-3">
-
-                    <strong>
-
-                        Número de Contrato
-
-                    </strong>
-
-                    <br>
-
-                    {{ $contrato->numero_contrato }}
+                    </div>
 
                 </div>
 
-                <div class="col-md-6 mb-3">
+            </div>
 
-                    <strong>
 
-                        Fecha de Inicio
+            <div class="col-md-6">
 
-                    </strong>
+                <div class="gtri-info-card h-100">
 
-                    <br>
+                    <div class="gtri-info-label">
 
-                    {{ $contrato->fecha_inicio }}
+                        Número de contrato
 
-                </div>
+                    </div>
 
-                <div class="col-md-6 mb-3">
+                    <div class="gtri-info-value">
 
-                    <strong>
+                        {{ $contrato->numero_contrato }}
 
-                        Fecha de Fin
-
-                    </strong>
-
-                    <br>
-
-                    {{ $contrato->fecha_fin ?: 'Sin definir' }}
+                    </div>
 
                 </div>
 
-                <div class="col-md-6 mb-3">
+            </div>
 
-                    <strong>
+
+            <div class="col-md-4">
+
+                <div class="gtri-info-card h-100">
+
+                    <div class="gtri-info-label">
+
+                        Fecha de inicio
+
+                    </div>
+
+                    <div class="gtri-info-value">
+
+                        {{ $contrato->fecha_inicio }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="gtri-info-card h-100">
+
+                    <div class="gtri-info-label">
+
+                        Fecha de fin
+
+                    </div>
+
+                    <div class="gtri-info-value">
+
+                        {{ $contrato->fecha_fin ?: 'Sin definir' }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="gtri-info-card h-100">
+
+                    <div class="gtri-info-label">
 
                         Estado
 
-                    </strong>
+                    </div>
 
-                    <br>
+                    <div class="mt-2">
 
-                    @switch($contrato->estado)
+                        @switch($contrato->estado)
 
-                        @case('activo')
+                            @case('activo')
 
-                            <span class="badge bg-success">
+                                <span class="badge bg-success">
 
-                                Activo
+                                    Activo
 
-                            </span>
+                                </span>
 
-                            @break
+                                @break
 
-                        @case('vencido')
 
-                            <span class="badge bg-warning text-dark">
+                            @case('vencido')
 
-                                Vencido
+                                <span class="badge bg-warning text-dark">
 
-                            </span>
+                                    Vencido
 
-                            @break
+                                </span>
 
-                        @case('cancelado')
+                                @break
 
-                            <span class="badge bg-danger">
 
-                                Cancelado
+                            @case('cancelado')
 
-                            </span>
+                                <span class="badge bg-danger">
 
-                            @break
+                                    Cancelado
 
-                        @default
+                                </span>
 
-                            <span class="badge bg-secondary">
+                                @break
 
-                                Borrador
 
-                            </span>
+                            @default
 
-                    @endswitch
+                                <span class="badge bg-secondary">
 
-                </div>
+                                    Borrador
 
-                <div class="col-12">
+                                </span>
 
-                    <strong>
-
-                        Observaciones
-
-                    </strong>
-
-                    <div
-                        class="border rounded p-3 mt-2"
-                    >
-
-                        {{ $contrato->observaciones ?: 'Sin observaciones.' }}
+                        @endswitch
 
                     </div>
 
@@ -183,81 +224,191 @@
 
     </div>
 
-    <div class="card shadow-sm mt-4">
 
-        <div class="card-header">
+    <div class="gtri-section">
 
-            <strong>
+        <div class="gtri-section-title">
 
-                Servicios del Contrato
+            <span>02</span>
 
-            </strong>
+            Observaciones
 
         </div>
 
-        <div class="card-body">
 
-            @if($contrato->servicios->count())
+        <div class="gtri-info-card">
 
-                <table class="table table-hover">
+            <div class="gtri-info-value">
 
-                    <thead>
+                {{ $contrato->observaciones ?: 'Sin observaciones.' }}
 
-                        <tr>
+            </div>
 
-                            <th>
+        </div>
 
-                                Servicio
+    </div>
 
-                            </th>
 
-                            <th>
+    <div class="gtri-section mb-0">
 
-                                Estado
+        <div
+            class="
+                d-flex
+                justify-content-between
+                align-items-center
+                flex-wrap
+                gap-2
+                mb-4
+            "
+        >
 
-                            </th>
+            <div class="gtri-section-title mb-0">
 
-                        </tr>
+                <span>03</span>
 
-                    </thead>
+                Servicios del contrato
 
-                    <tbody>
+            </div>
 
-                        @foreach($contrato->servicios as $servicio)
+
+            <div>
+
+                <span class="text-secondary">
+
+                    Registros:
+
+                </span>
+
+                <span class="text-warning fw-bold">
+
+                    {{ $contrato->servicios->count() }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+        @if($contrato->servicios->count())
+
+            <div class="gtri-table-wrapper">
+
+                <div class="table-responsive">
+
+                    <table class="table gtri-table align-middle mb-0">
+
+                        <thead>
 
                             <tr>
 
-                                <td>
+                                <th>Servicio</th>
 
-                                    {{ $servicio->nombre }}
-
-                                </td>
-
-                                <td>
-
-                                    {{ ucfirst($servicio->estado) }}
-
-                                </td>
+                                <th>Estado</th>
 
                             </tr>
 
-                        @endforeach
+                        </thead>
 
-                    </tbody>
 
-                </table>
+                        <tbody>
 
-            @else
+                            @foreach(
+                                $contrato->servicios
+                                as $servicio
+                            )
 
-                <div class="alert alert-secondary mb-0">
+                                <tr>
 
-                    Este contrato todavía no tiene servicios registrados.
+                                    <td>
+
+                                        <span class="text-light fw-semibold">
+
+                                            {{ $servicio->nombre }}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        @if($servicio->estado === 'activo')
+
+                                            <span class="badge bg-success">
+
+                                                Activo
+
+                                            </span>
+
+                                        @elseif($servicio->estado === 'inactivo')
+
+                                            <span class="badge bg-danger">
+
+                                                Inactivo
+
+                                            </span>
+
+                                        @else
+
+                                            <span class="badge bg-secondary">
+
+                                                {{ ucfirst($servicio->estado) }}
+
+                                            </span>
+
+                                        @endif
+
+                                    </td>
+
+                                </tr>
+
+                            @endforeach
+
+                        </tbody>
+
+                    </table>
 
                 </div>
 
-            @endif
+            </div>
 
-        </div>
+        @else
+
+            <div
+                class="text-center py-5 rounded-3"
+                style="
+                    background:#111827;
+                    border:1px solid rgba(255,255,255,.08);
+                "
+            >
+
+                <i
+                    class="
+                        bi
+                        bi-building-x
+                        fs-1
+                        text-secondary
+                        d-block
+                        mb-3
+                    "
+                ></i>
+
+                <h5 class="text-light">
+
+                    Sin servicios registrados
+
+                </h5>
+
+                <p class="text-secondary mb-0">
+
+                    Este contrato todavía no tiene servicios asociados.
+
+                </p>
+
+            </div>
+
+        @endif
 
     </div>
 

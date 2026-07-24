@@ -2,30 +2,63 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <div class="mb-3">
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-        <a
-            href="{{ route('administracion.prenominas.index') }}"
-            class="btn btn-secondary"
-        >
+        <div class="d-flex justify-content-between align-items-center">
 
-            <i class="bi bi-arrow-left"></i>
+            <div>
 
-            Volver
+                <h2 class="gtri-page-title">
 
-        </a>
+                    <i class="bi bi-calculator me-2"></i>
+
+                    Detalle de la Prenómina
+
+                </h2>
+
+                <p class="gtri-page-subtitle">
+
+                    Información del periodo, empleados y totales calculados.
+
+                </p>
+
+            </div>
+
+            <a
+                href="{{ route('administracion.prenominas.index') }}"
+                class="btn gtri-btn-secondary"
+            >
+
+                <i class="bi bi-arrow-left me-1"></i>
+
+                Volver
+
+            </a>
+
+        </div>
 
     </div>
 
-    <x-rh.card-rh titulo="Detalle de la Prenómina">
 
-        <div class="row">
+    {{-- 01 INFORMACIÓN GENERAL --}}
+    <div class="gtri-section">
 
-            <div class="col-md-4 mb-3">
+        <div class="gtri-section-title">
 
-                <label class="form-label fw-bold">
+            <span>01</span>
+
+            Información del periodo
+
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-4">
+
+                <label class="gtri-label mb-2">
 
                     Periodo Inicio
 
@@ -33,16 +66,17 @@
 
                 <input
                     type="text"
-                    class="form-control"
+                    class="form-control gtri-input"
                     value="{{ $prenomina->periodo_inicio->format('d/m/Y') }}"
                     readonly
                 >
 
             </div>
 
-            <div class="col-md-4 mb-3">
 
-                <label class="form-label fw-bold">
+            <div class="col-md-4">
+
+                <label class="gtri-label mb-2">
 
                     Periodo Fin
 
@@ -50,226 +84,282 @@
 
                 <input
                     type="text"
-                    class="form-control"
+                    class="form-control gtri-input"
                     value="{{ $prenomina->periodo_fin->format('d/m/Y') }}"
                     readonly
                 >
 
             </div>
 
-            <div class="col-md-4 mb-3">
 
-                <label class="form-label fw-bold">
+            <div class="col-md-4">
+
+                <label class="gtri-label d-block mb-3">
 
                     Estatus
 
                 </label>
 
-                <input
-                    type="text"
-                    class="form-control"
-                    value="{{ ucfirst($prenomina->estatus) }}"
-                    readonly
-                >
+                @switch($prenomina->estatus)
+
+                    @case('abierta')
+
+                        <span class="badge bg-primary">
+
+                            <i class="bi bi-folder2-open me-1"></i>
+
+                            Abierta
+
+                        </span>
+
+                        @break
+
+
+                    @case('cerrada')
+
+                        <span class="badge gtri-badge-warning">
+
+                            <i class="bi bi-lock me-1"></i>
+
+                            Cerrada
+
+                        </span>
+
+                        @break
+
+
+                    @case('autorizada')
+
+                        <span class="badge gtri-badge-success">
+
+                            <i class="bi bi-check-circle me-1"></i>
+
+                            Autorizada
+
+                        </span>
+
+                        @break
+
+                @endswitch
 
             </div>
 
         </div>
 
-        <div class="mb-3">
 
-            <label class="form-label fw-bold">
+        <div class="mt-4">
+
+            <label class="gtri-label mb-2">
 
                 Observaciones
 
             </label>
 
             <textarea
-                class="form-control"
+                class="form-control gtri-textarea"
                 rows="3"
                 readonly
-            >{{ $prenomina->observaciones }}</textarea>
+            >{{ $prenomina->observaciones ?: 'Sin observaciones registradas.' }}</textarea>
 
         </div>
 
-        <hr>
+    </div>
 
-        <h5>
+
+    {{-- 02 EMPLEADOS --}}
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>02</span>
 
             Empleados incluidos
 
-        </h5>
+        </div>
 
-        <div class="table-responsive">
+        <div class="gtri-table-wrapper">
 
-            <table
-                class="table table-bordered table-hover"
-            >
+            <div class="table-responsive">
 
-                <thead class="table-dark">
+                <table class="table gtri-table align-middle">
 
-                    <tr>
-
-                        <th>
-
-                            Empleado
-
-                        </th>
-
-                        <th>
-
-                            Salario
-
-                        </th>
-
-                        <th>
-
-                            Percepciones
-
-                        </th>
-
-                        <th>
-
-                            Deducciones
-
-                        </th>
-
-                        <th>
-
-                            Ajustes
-
-                        </th>
-
-                        <th>
-
-                            Horas Extra
-
-                        </th>
-
-                        <th>
-
-                            Total Neto
-
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @foreach($prenomina->detalles as $detalle)
+                    <thead>
 
                         <tr>
 
-                            <td>
+                            <th>Empleado</th>
 
-                                {{ $detalle->empleado->numero_control }}
+                            <th>Salario</th>
 
-                                -
+                            <th>Percepciones</th>
 
-                                {{ $detalle->empleado->nombre }}
+                            <th>Deducciones</th>
 
-                                {{ $detalle->empleado->apellido_paterno }}
+                            <th>Ajustes</th>
 
-                            </td>
+                            <th>Horas Extra</th>
 
-                            <td>
-
-                                $
-
-                                {{ number_format($detalle->salario_base,2) }}
-
-                            </td>
-
-                            <td>
-
-                                $
-
-                                {{ number_format($detalle->percepciones,2) }}
-
-                            </td>
-
-                            <td>
-
-                                $
-
-                                {{ number_format($detalle->deducciones,2) }}
-
-                            </td>
-
-                            <td>
-
-                                $
-
-                                {{ number_format($detalle->ajustes,2) }}
-
-                            </td>
-
-                            <td>
-
-                                $
-
-                                {{ number_format($detalle->horas_extra,2) }}
-
-                            </td>
-
-                            <td class="fw-bold">
-
-                                $
-
-                                {{ number_format($detalle->total_neto,2) }}
-
-                            </td>
+                            <th>Total Neto</th>
 
                         </tr>
 
-                    @endforeach
+                    </thead>
 
-                </tbody>
+                    <tbody>
 
-                <tfoot>
+                        @foreach($prenomina->detalles as $detalle)
 
-                    <tr class="table-secondary">
+                            <tr>
 
-                        <th colspan="6" class="text-end">
+                                <td>
 
-                            Total General
+                                    <div class="fw-semibold text-light">
 
-                        </th>
+                                        {{ $detalle->empleado->numero_control }}
 
-                        <th>
+                                        -
 
-                            $
+                                        {{ $detalle->empleado->nombre }}
 
-                            {{ number_format($prenomina->total_nomina,2) }}
+                                        {{ $detalle->empleado->apellido_paterno }}
 
-                        </th>
+                                    </div>
 
-                    </tr>
+                                </td>
 
-                </tfoot>
 
-            </table>
+                                <td>
+
+                                    ${{ number_format(
+                                        $detalle->salario_base,
+                                        2
+                                    ) }}
+
+                                </td>
+
+
+                                <td>
+
+                                    ${{ number_format(
+                                        $detalle->percepciones,
+                                        2
+                                    ) }}
+
+                                </td>
+
+
+                                <td>
+
+                                    ${{ number_format(
+                                        $detalle->deducciones,
+                                        2
+                                    ) }}
+
+                                </td>
+
+
+                                <td>
+
+                                    ${{ number_format(
+                                        $detalle->ajustes,
+                                        2
+                                    ) }}
+
+                                </td>
+
+
+                                <td>
+
+                                    ${{ number_format(
+                                        $detalle->horas_extra,
+                                        2
+                                    ) }}
+
+                                </td>
+
+
+                                <td>
+
+                                    <strong class="text-warning">
+
+                                        ${{ number_format(
+                                            $detalle->total_neto,
+                                            2
+                                        ) }}
+
+                                    </strong>
+
+                                </td>
+
+                            </tr>
+
+                        @endforeach
+
+                    </tbody>
+
+                    <tfoot>
+
+                        <tr>
+
+                            <th
+                                colspan="6"
+                                class="text-end text-secondary"
+                            >
+
+                                Total General
+
+                            </th>
+
+                            <th class="text-warning fs-5">
+
+                                ${{ number_format(
+                                    $prenomina->total_nomina,
+                                    2
+                                ) }}
+
+                            </th>
+
+                        </tr>
+
+                    </tfoot>
+
+                </table>
+
+            </div>
 
         </div>
 
-        <div class="text-end mt-3">
+    </div>
 
-            <a
-                href="{{ route('administracion.prenominas.edit', $prenomina) }}"
-                class="btn btn-warning"
-            >
 
-                <i class="bi bi-pencil"></i>
+    <div class="d-flex justify-content-end gap-3">
 
-                Editar
+        <a
+            href="{{ route('administracion.prenominas.index') }}"
+            class="btn gtri-btn-secondary"
+        >
 
-            </a>
+            <i class="bi bi-arrow-left me-1"></i>
 
-        </div>
+            Regresar
 
-    </x-rh.card-rh>
+        </a>
+
+        <a
+            href="{{ route(
+                'administracion.prenominas.edit',
+                $prenomina
+            ) }}"
+            class="btn gtri-btn-primary"
+        >
+
+            <i class="bi bi-pencil me-1"></i>
+
+            Editar Prenómina
+
+        </a>
+
+    </div>
 
 </div>
 

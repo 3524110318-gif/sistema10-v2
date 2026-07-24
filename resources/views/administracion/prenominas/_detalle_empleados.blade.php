@@ -1,313 +1,307 @@
-<h5 class="mb-3">
+<div class="gtri-section">
 
-    Empleados
+    <div class="gtri-section-title">
 
-</h5>
+        <span>02</span>
 
-<div
-    class="table-responsive"
-    style="overflow-x:auto;"
->
+        Empleados incluidos
 
-    <table
-        class="table table-bordered align-middle"
-        id="tabla-empleados"
-        style="min-width:1700px;"
+    </div>
+
+
+    <div
+        class="table-responsive"
+        style="overflow-x:auto;"
     >
 
-        <thead class="table-dark">
+        <table
+            class="table gtri-table align-middle"
+            id="tabla-empleados"
+            style="min-width:1700px;"
+        >
 
-            <tr>
+            <thead>
 
-                <th style="min-width:220px;">
+                <tr>
 
-                    Empleado
+                    <th style="min-width:220px;">
+                        Empleado
+                    </th>
 
-                </th>
+                    <th style="min-width:130px;" class="text-center">
+                        Salario Base
+                    </th>
 
-                <th style="min-width:130px;" class="text-center">
+                    <th style="min-width:110px;" class="text-center">
+                        Días Laborados
+                    </th>
 
-                    Salario Base
+                    <th style="min-width:110px;" class="text-center">
+                        Incapacidad
+                    </th>
 
-                </th>
+                    <th style="min-width:140px;" class="text-center">
+                        Folio IMSS
+                    </th>
 
-                <th style="min-width:110px;" class="text-center">
+                    <th style="min-width:130px;" class="text-center">
+                        Percepciones
+                    </th>
 
-                    Días Laborados
+                    <th style="min-width:130px;" class="text-center">
+                        Deducciones
+                    </th>
 
-                </th>
+                    <th style="min-width:120px;" class="text-center">
+                        Ajustes
+                    </th>
 
-                <th style="min-width:110px;" class="text-center">
+                    <th style="min-width:220px;" class="text-center">
+                        Justificación
+                    </th>
 
-                    Incapacidad
+                    <th style="min-width:130px;" class="text-center">
+                        Horas Extra
+                    </th>
 
-                </th>
+                    <th style="min-width:150px;" class="text-center">
+                        Total Neto
+                    </th>
 
-                <th style="min-width:140px;" class="text-center">
+                    <th style="min-width:80px;" class="text-center">
+                        Acción
+                    </th>
 
-                    Folio IMSS
+                </tr>
 
-                </th>
+            </thead>
 
-                <th style="min-width:130px;" class="text-center">
+            <tbody id="detalle-body">
 
-                    Percepciones
+                <tr>
 
-                </th>
+                    <td>
 
-                <th style="min-width:130px;" class="text-center">
+                        <select
+                            name="empleado_id[]"
+                            class="form-select gtri-select"
+                            required
+                        >
 
-                    Deducciones
-
-                </th>
-
-                <th style="min-width:120px;" class="text-center">
-
-                    Ajustes
-
-                </th>
-
-                <th style="min-width:220px;" class="text-center">
-
-                    Justificación
-
-                </th>
-
-                <th style="min-width:130px;" class="text-center">
-
-                    Horas Extra
-
-                </th>
-
-                <th style="min-width:150px;" class="text-center">
-
-                    Total Neto
-
-                </th>
-
-                <th style="min-width:80px;" class="text-center">
-
-                    Acción
-
-                </th>
-
-            </tr>
-
-        </thead>
-
-        <tbody id="detalle-body">
-
-            <tr>
-
-                <td>
-
-                    <select
-                        name="empleado_id[]"
-                        class="form-select"
-                        required
-                    >
-
-                        <option value="">
-
-                            Seleccione
-
-                        </option>
-
-                        @foreach($empleados as $empleado)
-
-                            <option
-                                value="{{ $empleado->id }}"
-                            >
-
-                                {{ $empleado->numero_control }}
-
-                                -
-
-                                {{ $empleado->nombre }}
-
-                                {{ $empleado->apellido_paterno }}
-
+                            <option value="">
+                                Seleccione
                             </option>
 
-                        @endforeach
+                            @foreach($empleados as $empleado)
 
-                    </select>
+                                <option value="{{ $empleado->id }}">
 
-                </td>
+                                    {{ $empleado->numero_control }}
+                                    -
+                                    {{ $empleado->nombre }}
+                                    {{ $empleado->apellido_paterno }}
 
-                <td>
+                                </option>
 
-                    <input
-                        type="text"
-                        name="salario_base[]"
-                        class="form-control salario text-end"
-                        value="0"
-                        required
-                    >
+                            @endforeach
 
-                </td>
+                        </select>
 
-                <td>
+                    </td>
 
-                    <input
-                        type="number"
-                        name="dias_laborados[]"
-                        class="form-control dias-laborados text-end"
-                        value="15"
-                        min="0"
-                    >
 
-                </td>
+                    <td>
 
-                <td>
+                        <input
+                            type="text"
+                            name="salario_base[]"
+                            class="form-control gtri-input salario text-end"
+                            value="0"
+                            required
+                        >
 
-                    <input
-                        type="number"
-                        name="dias_incapacidad[]"
-                        class="form-control dias-incapacidad text-end"
-                        value="0"
-                        min="0"
-                    >
+                    </td>
 
-                </td>
 
-                <td>
+                    <td>
 
-                    <input
-                        type="text"
-                        name="folio_imss[]"
-                        class="form-control folio-imss"
-                    >
+                        <input
+                            type="number"
+                            name="dias_laborados[]"
+                            class="form-control gtri-input dias-laborados text-end"
+                            value="15"
+                            min="0"
+                        >
 
-                </td>
+                    </td>
 
-                <td>
 
-                    <input
-                        type="text"
-                        name="percepciones[]"
-                        class="form-control percepciones text-end"
-                        value="0"
-                    >
+                    <td>
 
-                </td>
+                        <input
+                            type="number"
+                            name="dias_incapacidad[]"
+                            class="form-control gtri-input dias-incapacidad text-end"
+                            value="0"
+                            min="0"
+                        >
 
-                <td>
+                    </td>
 
-                    <input
-                        type="text"
-                        name="deducciones[]"
-                        class="form-control deducciones text-end"
-                        value="0"
-                    >
 
-                </td>
+                    <td>
 
-                <td>
+                        <input
+                            type="text"
+                            name="folio_imss[]"
+                            class="form-control gtri-input folio-imss"
+                            placeholder="Folio IMSS"
+                        >
 
-                    <input
-                        type="text"
-                        name="ajustes[]"
-                        class="form-control ajustes text-end"
-                        value="0"
-                    >
+                    </td>
 
-                </td>
 
-                <td>
+                    <td>
 
-                <input
-                    type="text"
-                    name="justificacion[]"
-                    class="form-control justificacion"
-                    placeholder="Obligatoria si hay ajuste"
-                >
+                        <input
+                            type="text"
+                            name="percepciones[]"
+                            class="form-control gtri-input percepciones text-end"
+                            value="0"
+                        >
 
-            </td>
+                    </td>
 
-                <td>
 
-                    <input
-                        type="text"
-                        name="horas_extra[]"
-                        class="form-control horas-extra text-end"
-                        value="0"
-                    >
+                    <td>
 
-                </td>
+                        <input
+                            type="text"
+                            name="deducciones[]"
+                            class="form-control gtri-input deducciones text-end"
+                            value="0"
+                        >
 
-                <td>
+                    </td>
 
-                    <input
-                        type="text"
-                        class="form-control total-neto text-end fw-bold"
-                        value="0.00"
-                        readonly
-                    >
 
-                </td>
+                    <td>
 
-                <td class="text-center">
+                        <input
+                            type="text"
+                            name="ajustes[]"
+                            class="form-control gtri-input ajustes text-end"
+                            value="0"
+                        >
 
-                    <button
-                        type="button"
-                        class="btn btn-danger btn-sm eliminar-fila"
-                    >
+                    </td>
 
-                        <i class="bi bi-trash"></i>
 
-                    </button>
+                    <td>
 
-                </td>
+                        <input
+                            type="text"
+                            name="justificacion[]"
+                            class="form-control gtri-input justificacion"
+                            placeholder="Obligatoria si hay ajuste"
+                        >
 
-            </tr>
+                    </td>
 
-        </tbody>
 
-    </table>
+                    <td>
 
-</div>
+                        <input
+                            type="text"
+                            name="horas_extra[]"
+                            class="form-control gtri-input horas-extra text-end"
+                            value="0"
+                        >
 
-<button
-    type="button"
-    class="btn btn-success"
-    id="agregar-empleado"
->
+                    </td>
 
-    <i class="bi bi-plus-circle"></i>
 
-    Agregar empleado
+                    <td>
 
-</button>
+                        <input
+                            type="text"
+                            class="form-control gtri-input total-neto text-end fw-bold"
+                            value="0.00"
+                            readonly
+                        >
 
-<hr class="my-4">
+                    </td>
 
-<div class="row justify-content-end">
 
-    <div class="col-md-4">
+                    <td class="text-center">
 
-        <table class="table table-bordered">
+                        <button
+                            type="button"
+                            class="btn btn-outline-danger btn-sm eliminar-fila"
+                            title="Eliminar empleado"
+                        >
 
-            <tr>
+                            <i class="bi bi-trash"></i>
 
-                <th>
+                        </button>
 
-                    Total Nómina
+                    </td>
 
-                </th>
+                </tr>
 
-                <td
-                    id="total-nomina"
-                    class="text-end fw-bold fs-5"
-                >
-
-                    $ 0.00
-
-                </td>
-
-            </tr>
+            </tbody>
 
         </table>
+
+    </div>
+
+
+    <div class="mt-3">
+
+        <button
+            type="button"
+            class="btn gtri-btn-secondary"
+            id="agregar-empleado"
+        >
+
+            <i class="bi bi-plus-circle me-1"></i>
+
+            Agregar empleado
+
+        </button>
+
+    </div>
+
+
+    {{-- TOTAL --}}
+    <div class="row justify-content-end mt-4">
+
+        <div class="col-md-4">
+
+            <div class="gtri-card">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <span class="text-secondary">
+
+                        Total Nómina
+
+                    </span>
+
+                    <strong
+                        id="total-nomina"
+                        class="text-warning fs-4"
+                    >
+
+                        $ 0.00
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
 

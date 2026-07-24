@@ -2,33 +2,62 @@
 
 @section('contenido')
 
-<div class="container">
+<div class="container-fluid">
 
-    <h1>
+    <div class="gtri-page-header">
 
-        Editar Supervisión
+        <div>
 
-    </h1>
+            <h2 class="gtri-page-title">
+
+                <i class="bi bi-pencil-square me-2"></i>
+
+                Editar supervisión
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Actualiza los datos y evidencia de la supervisión.
+
+            </p>
+
+        </div>
+
+        <a
+            href="{{ route(
+                'operaciones.supervisiones.show',
+                $supervision
+            ) }}"
+            class="btn gtri-btn-secondary"
+        >
+
+            <i class="bi bi-arrow-left me-1"></i>
+
+            Regresar
+
+        </a>
+
+    </div>
+
 
     @if ($errors->any())
 
         <div class="alert alert-danger">
 
-            <strong>
+            <div class="fw-bold mb-2">
+
+                <i class="bi bi-exclamation-triangle me-1"></i>
 
                 Se encontraron los siguientes errores:
 
-            </strong>
+            </div>
 
-            <ul class="mb-0 mt-2">
+            <ul class="mb-0">
 
                 @foreach ($errors->all() as $error)
 
-                    <li>
-
-                        {{ $error }}
-
-                    </li>
+                    <li>{{ $error }}</li>
 
                 @endforeach
 
@@ -37,6 +66,7 @@
         </div>
 
     @endif
+
 
     <form
         method="POST"
@@ -50,17 +80,31 @@
         @csrf
         @method('PUT')
 
-        <div class="mb-3">
 
-            <label>
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>01</span>
 
                 Asignación
+
+            </div>
+
+            <label
+                for="asignacion_id"
+                class="form-label fw-semibold"
+                style="color:#CBD5E1;"
+            >
+
+                Guardia asignado
 
             </label>
 
             <select
                 name="asignacion_id"
-                class="form-control"
+                id="asignacion_id"
+                class="form-select gtri-input"
                 required
             >
 
@@ -68,11 +112,20 @@
 
                     <option
                         value="{{ $asignacion->id }}"
-                        {{ $supervision->asignacion_id == $asignacion->id ? 'selected' : '' }}
+                        @selected(
+                            old(
+                                'asignacion_id',
+                                $supervision->asignacion_id
+                            )
+                            ==
+                            $asignacion->id
+                        )
                     >
 
                         {{ $asignacion->empleado->nombre }}
+
                         {{ $asignacion->empleado->apellido_paterno }}
+
                         {{ $asignacion->empleado->apellido_materno }}
 
                         -
@@ -87,80 +140,183 @@
 
         </div>
 
-        <div class="mb-3">
 
-            <label>Fecha</label>
+        <div class="gtri-section">
 
-            <input
-                type="date"
-                name="fecha_supervision"
-                class="form-control"
-                value="{{ $supervision->fecha_supervision }}"
-                required
-            >
+            <div class="gtri-section-title">
+
+                <span>02</span>
+
+                Datos de la supervisión
+
+            </div>
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+
+                    <label
+                        for="fecha_supervision"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Fecha
+
+                    </label>
+
+                    <input
+                        type="date"
+                        name="fecha_supervision"
+                        id="fecha_supervision"
+                        class="form-control gtri-input"
+                        value="{{ old(
+                            'fecha_supervision',
+                            $supervision->fecha_supervision
+                        ) }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label
+                        for="resultado"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Resultado
+
+                    </label>
+
+                    <select
+                        name="resultado"
+                        id="resultado"
+                        class="form-select gtri-input"
+                        required
+                    >
+
+                        <option
+                            value="correcto"
+                            @selected(
+                                old(
+                                    'resultado',
+                                    $supervision->resultado
+                                ) === 'correcto'
+                            )
+                        >
+
+                            Correcto
+
+                        </option>
+
+                        <option
+                            value="incidencia"
+                            @selected(
+                                old(
+                                    'resultado',
+                                    $supervision->resultado
+                                ) === 'incidencia'
+                            )
+                        >
+
+                            Incidencia
+
+                        </option>
+
+                        <option
+                            value="ausente"
+                            @selected(
+                                old(
+                                    'resultado',
+                                    $supervision->resultado
+                                ) === 'ausente'
+                            )
+                        >
+
+                            Ausente
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
 
         </div>
 
-        <div class="mb-3">
 
-            <label>
+        <div class="gtri-section">
 
-                Resultado
+            <div class="gtri-section-title">
 
-            </label>
+                <span>03</span>
 
-            <select
-                name="resultado"
-                class="form-control"
-                required
-            >
+                Observaciones
 
-                <option
-                    value="correcto"
-                    {{ $supervision->resultado == 'correcto' ? 'selected' : '' }}
-                >
-
-                    Correcto
-
-                </option>
-
-                <option
-                    value="incidencia"
-                    {{ $supervision->resultado == 'incidencia' ? 'selected' : '' }}
-                >
-
-                    Incidencia
-
-                </option>
-
-                <option
-                    value="ausente"
-                    {{ $supervision->resultado == 'ausente' ? 'selected' : '' }}
-                >
-
-                    Ausente
-
-                </option>
-
-            </select>
-
-        </div>
-
-        <div class="mb-3">
-
-            <label>Observaciones</label>
+            </div>
 
             <textarea
                 name="observaciones"
-                class="form-control"
+                class="form-control gtri-textarea"
                 rows="4"
-            >{{ $supervision->observaciones }}</textarea>
+                placeholder="Describe los hallazgos o detalles de la supervisión..."
+            >{{ old(
+                'observaciones',
+                $supervision->observaciones
+            ) }}</textarea>
 
         </div>
 
-        <div class="mb-3">
 
-            <label>
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>04</span>
+
+                Evidencia fotográfica
+
+            </div>
+
+            @if($supervision->foto)
+
+                <div class="mb-4">
+
+                    <p class="text-secondary mb-2">
+
+                        Evidencia actual
+
+                    </p>
+
+                    <img
+                        src="{{ asset(
+                            'storage/' .
+                            $supervision->foto
+                        ) }}"
+                        class="rounded"
+                        style="
+                            max-width:300px;
+                            max-height:220px;
+                            object-fit:cover;
+                            border:2px solid #D4AF37;
+                        "
+                    >
+
+                </div>
+
+            @endif
+
+
+            <label
+                for="foto"
+                class="form-label fw-semibold"
+                style="color:#CBD5E1;"
+            >
 
                 Cambiar evidencia fotográfica
 
@@ -169,33 +325,52 @@
             <input
                 type="file"
                 name="foto"
-                class="form-control"
+                id="foto"
+                class="form-control gtri-input"
                 accept="image/*"
             >
 
+            <small class="text-secondary d-block mt-2">
+
+                Selecciona una imagen únicamente si deseas reemplazar la actual.
+
+            </small>
+
         </div>
 
-        @if($supervision->foto)
 
-            <div class="mb-3">
+        <div class="gtri-section mb-0">
 
-                <img
-                    src="{{ asset('storage/'.$supervision->foto) }}"
-                    class="img-fluid rounded"
-                    style="max-width:300px;"
+            <div class="d-flex justify-content-end gap-2">
+
+                <a
+                    href="{{ route(
+                        'operaciones.supervisiones.show',
+                        $supervision
+                    ) }}"
+                    class="btn gtri-btn-secondary"
                 >
+
+                    <i class="bi bi-x-circle me-1"></i>
+
+                    Cancelar
+
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn gtri-btn-primary"
+                >
+
+                    <i class="bi bi-floppy me-1"></i>
+
+                    Actualizar supervisión
+
+                </button>
 
             </div>
 
-        @endif
-
-        <button
-            class="btn btn-success"
-        >
-
-            Actualizar
-
-        </button>
+        </div>
 
     </form>
 

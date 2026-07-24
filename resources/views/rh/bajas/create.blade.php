@@ -2,180 +2,466 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <h1 class="mb-4">
+    <div class="gtri-page-header">
 
-        Baja de Empleado
+        <div>
 
-    </h1>
+            <h2 class="gtri-page-title">
 
-    <x-rh.card-rh titulo="Checklist de Baja">
+                <i class="bi bi-person-dash me-2"></i>
 
-        <div class="mb-4">
+                Baja de empleado
 
-            <strong>Empleado:</strong>
+            </h2>
 
-            {{ $empleado->numero_control }}
+            <p class="gtri-page-subtitle">
 
-            -
+                Registra la devolución de equipo y documentación del empleado.
 
-            {{ $empleado->nombre }}
-
-            {{ $empleado->apellido_paterno }}
+            </p>
 
         </div>
 
-        <form
-            method="POST"
-            action="{{ route(
-                'rh.bajas.store',
-                $empleado->id
-            ) }}"
+
+        <a
+            href="{{ route('rh.empleados.show', $empleado->id) }}"
+            class="btn gtri-btn-secondary"
         >
 
-            @csrf
+            <i class="bi bi-arrow-left me-1"></i>
 
-            <div class="mb-3">
+            Volver
 
-                <label class="form-label">
+        </a>
 
-                    Fecha de baja
+    </div>
 
-                </label>
 
-                <input
-                    type="date"
-                    name="fecha_baja"
-                    class="form-control"
-                    required
-                >
+    <form
+        method="POST"
+        action="{{ route(
+            'rh.bajas.store',
+            $empleado->id
+        ) }}"
+    >
 
-            </div>
+        @csrf
 
-            <div class="form-check mb-2">
 
-                <input
-                    class="form-check-input"
-                    type="checkbox"
-                    name="uniforme_devuelto"
-                >
+        <div class="gtri-section">
 
-                <label class="form-check-label">
+            <div class="gtri-section-title">
 
-                    Uniforme devuelto
+                <span>01</span>
 
-                </label>
+                Información del empleado
 
             </div>
 
-            <div class="form-check mb-2">
 
-                <input
-                    class="form-check-input"
-                    type="checkbox"
-                    name="botas_devueltas"
-                >
-
-                <label class="form-check-label">
-
-                    Botas devueltas
-
-                </label>
-
-            </div>
-
-            <div class="form-check mb-2">
-
-                <input
-                    class="form-check-input"
-                    type="checkbox"
-                    name="credencial_devuelta"
-                >
-
-                <label class="form-check-label">
-
-                    Credencial devuelta
-
-                </label>
-
-            </div>
-
-            <div class="form-check mb-2">
-
-                <input
-                    class="form-check-input"
-                    type="checkbox"
-                    name="radio_devuelto"
-                >
-
-                <label class="form-check-label">
-
-                    Radio devuelto
-
-                </label>
-
-            </div>
-
-            <div class="form-check mb-2">
-
-                <input
-                    class="form-check-input"
-                    type="checkbox"
-                    name="carta_renuncia"
-                >
-
-                <label class="form-check-label">
-
-                    Carta renuncia recibida
-
-                </label>
-
-            </div>
-
-            <div class="form-check mb-4">
-
-                <input
-                    class="form-check-input"
-                    type="checkbox"
-                    name="finiquito_entregado"
-                >
-
-                <label class="form-check-label">
-
-                    Finiquito entregado
-
-                </label>
-
-            </div>
-
-            <div class="mb-4">
-
-                <label class="form-label">
-
-                    Observaciones
-
-                </label>
-
-                <textarea
-                    name="observaciones"
-                    class="form-control"
-                    rows="4"
-                ></textarea>
-
-            </div>
-
-            <button
-                class="btn btn-danger"
+            <div
+                class="
+                    d-flex
+                    flex-wrap
+                    align-items-center
+                    gap-3
+                    p-4
+                    rounded-3
+                "
+                style="
+                    background:#111827;
+                    border:1px solid rgba(255,255,255,.08);
+                "
             >
 
-                Dar de baja
+                @if ($empleado->foto)
 
-            </button>
+                    <img
+                        src="{{ asset(
+                            'fotos_empleados/' .
+                            $empleado->foto
+                        ) }}"
+                        alt="Foto del empleado"
+                        class="rounded-circle"
+                        style="
+                            width:70px;
+                            height:70px;
+                            object-fit:cover;
+                            border:3px solid #D4AF37;
+                        "
+                    >
 
-        </form>
+                @else
 
-    </x-rh.card-rh>
+                    <div
+                        class="
+                            rounded-circle
+                            d-flex
+                            align-items-center
+                            justify-content-center
+                        "
+                        style="
+                            width:70px;
+                            height:70px;
+                            background:#1F2937;
+                            border:3px solid #D4AF37;
+                        "
+                    >
+
+                        <i class="bi bi-person fs-3 text-secondary"></i>
+
+                    </div>
+
+                @endif
+
+
+                <div>
+
+                    <h5 class="text-light mb-1">
+
+                        {{ $empleado->nombre }}
+
+                        {{ $empleado->apellido_paterno }}
+
+                        {{ $empleado->apellido_materno }}
+
+                    </h5>
+
+
+                    <div class="text-secondary">
+
+                        No. de control:
+
+                        <span class="text-warning fw-bold">
+
+                            {{ $empleado->numero_control }}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="text-secondary">
+
+                        Puesto:
+
+                        <span class="text-light">
+
+                            {{ $empleado->puesto }}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>02</span>
+
+                Fecha de baja
+
+            </div>
+
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <label
+                        for="fecha_baja"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Fecha de baja
+
+                    </label>
+
+
+                    <input
+                        type="date"
+                        name="fecha_baja"
+                        id="fecha_baja"
+                        class="form-control gtri-input"
+                        value="{{ old('fecha_baja') }}"
+                        required
+                    >
+
+                    @error('fecha_baja')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>03</span>
+
+                Checklist de devolución
+
+            </div>
+
+
+            <div class="row g-3">
+
+                <div class="col-md-6 col-xl-4">
+
+                    <label class="gtri-check-card">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="uniforme_devuelto"
+                            value="1"
+                            @checked(old('uniforme_devuelto'))
+                        >
+
+                        <span>
+
+                            <i class="bi bi-person-standing-dress me-2"></i>
+
+                            Uniforme devuelto
+
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+                <div class="col-md-6 col-xl-4">
+
+                    <label class="gtri-check-card">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="botas_devueltas"
+                            value="1"
+                            @checked(old('botas_devueltas'))
+                        >
+
+                        <span>
+
+                            <i class="bi bi-box-seam me-2"></i>
+
+                            Botas devueltas
+
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+                <div class="col-md-6 col-xl-4">
+
+                    <label class="gtri-check-card">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="credencial_devuelta"
+                            value="1"
+                            @checked(old('credencial_devuelta'))
+                        >
+
+                        <span>
+
+                            <i class="bi bi-person-vcard me-2"></i>
+
+                            Credencial devuelta
+
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+                <div class="col-md-6 col-xl-4">
+
+                    <label class="gtri-check-card">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="radio_devuelto"
+                            value="1"
+                            @checked(old('radio_devuelto'))
+                        >
+
+                        <span>
+
+                            <i class="bi bi-broadcast me-2"></i>
+
+                            Radio devuelto
+
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+                <div class="col-md-6 col-xl-4">
+
+                    <label class="gtri-check-card">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="carta_renuncia"
+                            value="1"
+                            @checked(old('carta_renuncia'))
+                        >
+
+                        <span>
+
+                            <i class="bi bi-file-earmark-text me-2"></i>
+
+                            Carta de renuncia recibida
+
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+                <div class="col-md-6 col-xl-4">
+
+                    <label class="gtri-check-card">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="finiquito_entregado"
+                            value="1"
+                            @checked(old('finiquito_entregado'))
+                        >
+
+                        <span>
+
+                            <i class="bi bi-cash-coin me-2"></i>
+
+                            Finiquito entregado
+
+                        </span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>04</span>
+
+                Observaciones
+
+            </div>
+
+
+            <label
+                for="observaciones"
+                class="form-label fw-semibold"
+                style="color:#CBD5E1;"
+            >
+
+                Observaciones de la baja
+
+            </label>
+
+
+            <textarea
+                name="observaciones"
+                id="observaciones"
+                class="form-control gtri-textarea"
+                rows="5"
+                placeholder="Escribe aquí cualquier información adicional..."
+            >{{ old('observaciones') }}</textarea>
+
+            @error('observaciones')
+
+                <div class="text-danger small mt-1">
+
+                    {{ $message }}
+
+                </div>
+
+            @enderror
+
+        </div>
+
+
+        <div class="gtri-section mb-0">
+
+            <div class="d-flex flex-wrap justify-content-end gap-2">
+
+                <a
+                    href="{{ route(
+                        'rh.empleados.show',
+                        $empleado->id
+                    ) }}"
+                    class="btn gtri-btn-secondary"
+                >
+
+                    <i class="bi bi-x-circle me-1"></i>
+
+                    Cancelar
+
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-danger"
+                    onclick="return confirm(
+                        '¿Seguro que deseas dar de baja a este empleado?'
+                    )"
+                >
+
+                    <i class="bi bi-person-x me-1"></i>
+
+                    Dar de baja
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
 
 </div>
 
