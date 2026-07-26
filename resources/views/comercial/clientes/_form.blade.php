@@ -1,143 +1,223 @@
-<div class="row">
+<!-- 01 · INFORMACIÓN DE LA EMPRESA -->
 
-    <div class="col-md-6">
+<div class="gtri-section">
 
-        <x-rh.input-rh
-            label="Razón Social"
-            name="razon_social"
-            type="text"
-            :value="old('razon_social',$cliente->razon_social ?? '')"
-            required
-        />
+    <div class="gtri-section-title">
+
+        <span>01</span>
+
+        Información de la empresa
 
     </div>
 
-    <div class="col-md-6">
+    <div class="row g-3">
 
-        <x-rh.input-rh
-            label="RFC"
-            name="rfc"
-            type="text"
-            :value="old('rfc',$cliente->rfc ?? '')"
-            required
-        />
+        <div class="col-md-6">
 
-    </div>
+            <x-rh.input-rh
+                label="Razón Social"
+                name="razon_social"
+                type="text"
+                :value="old('razon_social', $cliente->razon_social ?? '')"
+                placeholder="Ej. Seguridad Empresarial del Centro S.A. de C.V."
+                required
+            />
 
-</div>
+        </div>
 
-<div class="row mt-3">
+        <div class="col-md-6">
 
-    <div class="col-md-6">
+            <x-rh.input-rh
+                label="RFC"
+                name="rfc"
+                type="text"
+                :value="old('rfc', $cliente->rfc ?? '')"
+                placeholder="Ej. SEC240101ABC"
+                required
+            />
 
-        <x-rh.input-rh
-            label="Representante Legal"
-            name="representante_legal"
-            type="text"
-            :value="old('representante_legal',$cliente->representante_legal ?? '')"
-            required
-        />
-
-    </div>
-
-    <div class="col-md-3">
-
-        <x-rh.input-rh
-            label="Teléfono"
-            name="telefono"
-            type="text"
-            :value="old('telefono',$cliente->telefono ?? '')"
-            required
-        />
-
-    </div>
-
-    <div class="col-md-3">
-
-        <x-rh.input-rh
-            label="Correo"
-            name="correo"
-            type="email"
-            :value="old('correo',$cliente->correo ?? '')"
-            required
-        />
+        </div>
 
     </div>
 
 </div>
 
-<div class="row mt-3">
 
-    <div class="col-md-8">
+<!-- 02 · INFORMACIÓN DE CONTACTO -->
 
-        <label class="form-label">
+<div class="gtri-section">
 
-            Domicilio Fiscal
+    <div class="gtri-section-title">
 
-        </label>
+        <span>02</span>
 
-        <textarea
-            name="domicilio_fiscal"
-            class="form-control"
-            rows="2"
-        >{{ old('domicilio_fiscal',$cliente->domicilio_fiscal ?? '') }}</textarea>
+        Información de contacto
 
     </div>
 
-    <div class="col-md-4">
+    <div class="row g-3">
 
-        <label class="form-label">
+        <div class="col-md-6">
 
-            Estatus
+            <x-rh.input-rh
+                label="Representante Legal"
+                name="representante_legal"
+                type="text"
+                :value="old('representante_legal', $cliente->representante_legal ?? '')"
+                placeholder="Ej. Carlos Hernández López"
+                required
+            />
 
-        </label>
+        </div>
 
-        <select
-            name="estatus"
-            class="form-select"
+        <div class="col-md-3">
+
+            <x-rh.input-rh
+                label="Teléfono"
+                name="telefono"
+                type="text"
+                :value="old('telefono', $cliente->telefono ?? '')"
+                placeholder="Ej. 222 123 4567"
+                required
+            />
+
+        </div>
+
+        <div class="col-md-3">
+
+            <x-rh.input-rh
+                label="Correo"
+                name="correo"
+                type="email"
+                :value="old('correo', $cliente->correo ?? '')"
+                placeholder="Ej. contacto@empresa.com"
+                required
+            />
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- 03 · INFORMACIÓN FISCAL -->
+
+<div class="gtri-section">
+
+    <div class="gtri-section-title">
+
+        <span>03</span>
+
+        Información fiscal
+
+    </div>
+
+    <div class="row g-3">
+
+        <div class="col-md-8">
+
+            <label
+                for="domicilio_fiscal"
+                class="form-label"
+            >
+
+                Domicilio Fiscal
+
+            </label>
+
+            <textarea
+                name="domicilio_fiscal"
+                id="domicilio_fiscal"
+                class="form-control gtri-textarea"
+                rows="3"
+                placeholder="Ej. Av. Reforma #125, Col. Centro, Puebla, Puebla"
+            >{{ old('domicilio_fiscal', $cliente->domicilio_fiscal ?? '') }}</textarea>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <label
+                for="estatus"
+                class="form-label"
+            >
+
+                Estatus
+
+            </label>
+
+            <select
+                name="estatus"
+                id="estatus"
+                class="form-select gtri-input"
+            >
+
+                <option
+                    value=""
+                    disabled
+                    @selected(old('estatus', $cliente->estatus ?? '') == '')
+                >
+
+                    Seleccione un estatus
+
+                </option>
+
+                <option
+                    value="activo"
+                    @selected(old('estatus', $cliente->estatus ?? '') == 'activo')
+                >
+
+                    Activo
+
+                </option>
+
+                <option
+                    value="inactivo"
+                    @selected(old('estatus', $cliente->estatus ?? '') == 'inactivo')
+                >
+
+                    Inactivo
+
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- 04 · ACCIONES -->
+
+<div class="gtri-section mb-0">
+
+    <div class="d-flex justify-content-end gap-2 flex-wrap">
+
+        <a
+            href="{{ route('comercial.clientes.index') }}"
+            class="btn gtri-btn-secondary"
         >
 
-            <option
-                value="activo"
-                @selected(old('estatus',$cliente->estatus ?? '')=='activo')
-            >
+            <i class="bi bi-x-lg me-1"></i>
 
-                Activo
+            Cancelar
 
-            </option>
+        </a>
 
-            <option
-                value="inactivo"
-                @selected(old('estatus',$cliente->estatus ?? '')=='inactivo')
-            >
+        <button
+            type="submit"
+            class="btn gtri-btn-primary"
+        >
 
-                Inactivo
+            <i class="bi bi-check-circle me-1"></i>
 
-            </option>
+            Guardar cliente
 
-        </select>
+        </button>
 
     </div>
-
-</div>
-
-<div class="mt-4">
-
-    <button
-        class="btn btn-primary"
-    >
-
-        Guardar
-
-    </button>
-
-    <a
-        href="{{ route('comercial.clientes.index') }}"
-        class="btn btn-secondary"
-    >
-
-        Cancelar
-
-    </a>
 
 </div>

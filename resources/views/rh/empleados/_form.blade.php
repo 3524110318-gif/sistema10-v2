@@ -4,41 +4,24 @@
 
 @endphp
 
+{{-- FOTOGRAFÍA Y DATOS PERSONALES --}}
+<div class="row g-4 align-items-start">
 
-{{-- DATOS PERSONALES --}}
-<div class="gtri-section">
+    {{-- FOTOGRAFÍA --}}
+    <div class="col-xl-3 col-lg-4 col-md-5">
 
-    <div class="gtri-section-title">
+        <div class="gtri-section">
 
-        <span>01</span>
+            <div class="gtri-section-title">
 
-        Datos personales
+                <span>01</span>
 
-    </div>
+                Fotografía
+
+            </div>
 
 
-    <div class="row g-4">
-
-        {{-- FOTOGRAFÍA --}}
-        <div class="col-xl-3 col-lg-4">
-
-            <div
-                class="rounded-3 p-4 text-center"
-                style="
-                    background:#111827;
-                    border:1px solid rgba(255,255,255,.08);
-                "
-            >
-
-                <label
-                    for="foto"
-                    class="form-label text-light fw-semibold d-block"
-                >
-
-                    {{ $editando ? 'Cambiar fotografía' : 'Fotografía del empleado' }}
-
-                </label>
-
+            <div class="text-center">
 
                 <img
                     id="preview-imagen"
@@ -51,28 +34,74 @@
                             : 'https://placehold.co/220x220?text=Sin+foto'
                     }}"
                     alt="Vista previa"
-                    class="img-fluid rounded-circle shadow mb-3"
+                    class="img-fluid rounded-circle shadow"
                     style="
                         width:190px;
                         height:190px;
                         object-fit:cover;
-                        border:4px solid #D4AF37;
+                        border:4px solid var(--gtri-gold);
                     "
                 >
+
+
+                <div
+                    class="mx-auto my-3"
+                    style="
+                        width:80%;
+                        height:1px;
+                        background:linear-gradient(
+                            to right,
+                            transparent,
+                            rgba(212,169,53,.8),
+                            transparent
+                        );
+                    "
+                ></div>
+
+
+                <label
+                    for="foto"
+                    class="btn gtri-btn-secondary px-3 py-2"
+                >
+
+                    <i class="bi bi-camera me-2"></i>
+
+                    {{ $editando
+                        ? 'Cambiar fotografía'
+                        : 'Seleccionar fotografía'
+                    }}
+
+                </label>
 
 
                 <input
                     type="file"
                     name="foto"
                     id="foto"
-                    class="form-control gtri-input"
+                    class="d-none"
                     accept="image/*"
                 >
 
 
-                <small class="text-secondary d-block mt-2">
+                <small
+                    id="nombre-archivo"
+                    class="text-secondary d-block mt-3"
+                >
 
-                    Formatos recomendados: JPG, JPEG o PNG.
+                    Ningún archivo seleccionado
+
+                </small>
+
+
+                <small class="text-secondary d-block mt-3">
+
+                    Formatos permitidos
+
+                </small>
+
+                <small class="text-warning fw-semibold d-block">
+
+                    JPG · JPEG · PNG
 
                 </small>
 
@@ -80,43 +109,98 @@
 
         </div>
 
+    </div>
 
-        {{-- NOMBRE --}}
-        <div class="col-xl-9 col-lg-8">
+
+    {{-- DATOS PERSONALES --}}
+    <div class="col-xl-9 col-lg-8 col-md-7">
+
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>02</span>
+
+                Datos personales
+
+            </div>
+
 
             <div class="row g-3">
 
-                <div class="col-md-4">
+                <div class="col-12">
 
                     <x-rh.input-rh
                         label="Nombre"
                         name="nombre"
                         type="text"
-                        :value="$editando ? $empleado->nombre : ''"
+                        placeholder="Ej. Juan Carlos"
+                        :value="$editando
+                            ? $empleado->nombre
+                            : ''
+                        "
                     />
 
                 </div>
 
 
-                <div class="col-md-4">
+                <div class="col-md-6">
 
                     <x-rh.input-rh
                         label="Apellido paterno"
                         name="apellido_paterno"
                         type="text"
-                        :value="$editando ? $empleado->apellido_paterno : ''"
+                        placeholder="Ej. Hernández"
+                        :value="$editando
+                            ? $empleado->apellido_paterno
+                            : ''
+                        "
                     />
 
                 </div>
 
 
-                <div class="col-md-4">
+                <div class="col-md-6">
 
                     <x-rh.input-rh
                         label="Apellido materno"
                         name="apellido_materno"
                         type="text"
-                        :value="$editando ? $empleado->apellido_materno : ''"
+                        placeholder="Ej. Ramírez"
+                        :value="$editando
+                            ? $empleado->apellido_materno
+                            : ''
+                        "
+                    />
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <x-rh.input-rh
+                        label="Fecha de nacimiento"
+                        name="fecha_nacimiento"
+                        type="date"
+                        :value="$editando
+                            ? $empleado->fecha_nacimiento
+                            : ''
+                        "
+                    />
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <x-rh.input-rh
+                        label="Fecha de ingreso"
+                        name="fecha_ingreso"
+                        type="date"
+                        :value="$editando
+                            ? $empleado->fecha_ingreso
+                            : ''
+                        "
                     />
 
                 </div>
@@ -129,268 +213,279 @@
 
 </div>
 
+{{-- INFORMACIÓN PRINCIPAL --}}
+<div class="gtri-expediente-main-grid">
 
-{{-- DOCUMENTOS --}}
-<div class="gtri-section">
+    {{-- DOCUMENTOS DE IDENTIDAD --}}
+    <div class="gtri-section">
 
-    <div class="gtri-section-title">
+        <div class="gtri-section-title">
 
-        <span>02</span>
+            <span>02</span>
 
-        Documentos de identidad
-
-    </div>
-
-
-    <div class="row g-3">
-
-        <div class="col-md-4">
-
-            <x-rh.input-rh
-                label="CURP"
-                name="curp"
-                type="text"
-                :value="$editando ? $empleado->curp : ''"
-            />
+            Documentos de identidad
 
         </div>
 
 
-        <div class="col-md-4">
+        <div class="row g-3">
 
-            <x-rh.input-rh
-                label="RFC"
-                name="rfc"
-                type="text"
-                :value="$editando ? $empleado->rfc : ''"
-            />
+            <div class="col-12">
 
-        </div>
+                <x-rh.input-rh
+                    label="CURP"
+                    name="curp"
+                    type="text"
+                    placeholder="Ej. LOTM980722MPLRRO2"
+                    style="text-transform: uppercase;"
+                    oninput="this.value = this.value.toUpperCase()"
+                    :value="$editando ? $empleado->curp : ''"
+                />
 
-
-        <div class="col-md-4">
-
-            <x-rh.input-rh
-                label="NSS"
-                name="nss"
-                type="text"
-                :value="$editando ? $empleado->nss : ''"
-            />
-
-        </div>
-
-    </div>
-
-</div>
+            </div>
 
 
-{{-- CONTACTO --}}
-<div class="gtri-section">
+            <div class="col-md-6">
 
-    <div class="gtri-section-title">
+                <x-rh.input-rh
+                    label="RFC"
+                    name="rfc"
+                    type="text"
+                    placeholder="Ej. LOTM980722CD2"
+                    style="text-transform: uppercase;"
+                    oninput="this.value = this.value.toUpperCase()"
+                    :value="$editando ? $empleado->rfc : ''"
+                />
 
-        <span>03</span>
-
-        Información de contacto
-
-    </div>
-
-
-    <div class="row g-3">
-
-        <div class="col-md-6">
-
-            <x-rh.input-rh
-                label="Teléfono"
-                name="telefono"
-                type="text"
-                :value="$editando ? $empleado->telefono : ''"
-            />
-
-        </div>
+            </div>
 
 
-        <div class="col-md-6">
+            <div class="col-md-6">
 
-            <x-rh.input-rh
-                label="Correo electrónico"
-                name="correo"
-                type="email"
-                :value="$editando ? $empleado->correo : ''"
-            />
+                <x-rh.input-rh
+                    label="NSS"
+                    name="nss"
+                    type="text"
+                    placeholder="Ej. 12345678901"
+                    :value="$editando
+                        ? $empleado->nss
+                        : ''
+                    "
+                />
+
+            </div>
 
         </div>
 
     </div>
 
-</div>
 
+    {{-- INFORMACIÓN DE CONTACTO --}}
+    <div class="gtri-section">
 
-{{-- INFORMACIÓN RH --}}
-<div class="gtri-section">
+        <div class="gtri-section-title">
 
-    <div class="gtri-section-title">
+            <span>03</span>
 
-        <span>04</span>
-
-        Información de Recursos Humanos
-
-    </div>
-
-
-    <div class="row g-3">
-
-        <div class="col-xl-3 col-md-6">
-
-            <x-rh.input-rh
-                label="Tipo de sangre"
-                name="tipo_sangre"
-                type="text"
-                :value="$editando ? $empleado->tipo_sangre : ''"
-            />
+            Información de contacto
 
         </div>
 
 
-        <div class="col-xl-3 col-md-6">
+        <div class="row g-3">
 
-            <x-rh.input-rh
-                label="Puesto"
-                name="puesto"
-                type="text"
-                :value="$editando ? $empleado->puesto : ''"
-            />
+            <div class="col-12">
 
-        </div>
+                <x-rh.input-rh
+                    label="Teléfono"
+                    name="telefono"
+                    type="text"
+                    placeholder="Ej. 222 123 4567"
+                    :value="$editando
+                        ? $empleado->telefono
+                        : ''
+                    "
+                />
 
-
-        <div class="col-xl-3 col-md-6">
-
-            <x-rh.input-rh
-                label="Rango"
-                name="rango"
-                type="text"
-                :value="$editando ? $empleado->rango : ''"
-            />
-
-        </div>
+            </div>
 
 
-        <div class="col-xl-3 col-md-6">
+            <div class="col-12">
 
-            <x-rh.input-rh
-                label="Salario base"
-                name="salario_base"
-                type="number"
-                :value="$editando ? $empleado->salario_base : ''"
-            />
+                <x-rh.input-rh
+                    label="Correo electrónico"
+                    name="correo"
+                    type="email"
+                    placeholder="Ej. empleado@correo.com"
+                    :value="$editando
+                        ? $empleado->correo
+                        : ''
+                    "
+                />
+
+            </div>
 
         </div>
 
     </div>
 
-</div>
 
+    {{-- INFORMACIÓN DE RECURSOS HUMANOS --}}
+    <div class="gtri-section gtri-section-wide">
 
-{{-- FECHAS --}}
-<div class="gtri-section">
+        <div class="gtri-section-title">
 
-    <div class="gtri-section-title">
+            <span>04</span>
 
-        <span>05</span>
-
-        Fechas importantes
-
-    </div>
-
-
-    <div class="row g-3">
-
-        <div class="col-md-6">
-
-            <x-rh.input-rh
-                label="Fecha de nacimiento"
-                name="fecha_nacimiento"
-                type="date"
-                :value="$editando ? $empleado->fecha_nacimiento : ''"
-            />
+            Información de Recursos Humanos
 
         </div>
 
 
-        <div class="col-md-6">
+        <div class="row g-3">
 
-            <x-rh.input-rh
-                label="Fecha de ingreso"
-                name="fecha_ingreso"
-                type="date"
-                :value="$editando ? $empleado->fecha_ingreso : ''"
-            />
+            <div class="col-xl-3 col-md-6">
+
+                <x-rh.input-rh
+                    label="Puesto"
+                    name="puesto"
+                    type="text"
+                    placeholder="Ej. Guardia de seguridad"
+                    :value="$editando
+                        ? $empleado->puesto
+                        : ''
+                    "
+                />
+
+            </div>
+
+
+            <div class="col-xl-3 col-md-6">
+
+                <x-rh.input-rh
+                    label="Rango"
+                    name="rango"
+                    type="text"
+                    placeholder="Ej. Supervisor"
+                    :value="$editando
+                        ? $empleado->rango
+                        : ''
+                    "
+                />
+
+            </div>
+
+
+            <div class="col-xl-3 col-md-6">
+
+                <x-rh.input-rh
+                    label="Tipo de sangre"
+                    name="tipo_sangre"
+                    type="text"
+                    placeholder="Ej. O+"
+                    :value="$editando
+                        ? $empleado->tipo_sangre
+                        : ''
+                    "
+                />
+
+            </div>
+
+
+            <div class="col-xl-3 col-md-6">
+
+                <x-rh.input-rh
+                    label="Salario base"
+                    name="salario_base"
+                    type="text"
+                    id="salario_base"
+                    placeholder="Ej. $12,500.00"
+                    :value="$editando
+                        ? number_format(
+                            $empleado->salario_base,
+                            2
+                        )
+                        : ''
+                    "
+                />
+
+            </div>
 
         </div>
 
     </div>
 
-</div>
 
+    {{-- DIRECCIÓN --}}
+    <div class="gtri-section">
 
-{{-- DIRECCIÓN --}}
-<div class="gtri-section">
+        <div class="gtri-section-title">
 
-    <div class="gtri-section-title">
+            <span>05</span>
 
-        <span>06</span>
-
-        Dirección
-
-    </div>
-
-
-    <x-rh.textarea-rh
-        label="Dirección completa"
-        name="direccion"
-    >{{ old(
-        'direccion',
-        $editando ? $empleado->direccion : ''
-    ) }}</x-rh.textarea-rh>
-
-</div>
-
-
-{{-- CONTACTO DE EMERGENCIA --}}
-<div class="gtri-section">
-
-    <div class="gtri-section-title">
-
-        <span>07</span>
-
-        Contacto de emergencia
-
-    </div>
-
-
-    <div class="row g-3">
-
-        <div class="col-md-6">
-
-            <x-rh.input-rh
-                label="Nombre del contacto"
-                name="contacto_emergencia"
-                type="text"
-                :value="$editando ? $empleado->contacto_emergencia : ''"
-            />
+            Dirección
 
         </div>
 
 
-        <div class="col-md-6">
+        <x-rh.textarea-rh
+            label="Dirección completa"
+            name="direccion"
+            placeholder="Ej. Calle Reforma No. 25, Col. Centro, Huejotzingo, Puebla, C.P. 74160"
+        >{{ old(
+            'direccion',
+            $editando
+                ? $empleado->direccion
+                : ''
+        ) }}</x-rh.textarea-rh>
 
-            <x-rh.input-rh
-                label="Teléfono de emergencia"
-                name="telefono_emergencia"
-                type="text"
-                :value="$editando ? $empleado->telefono_emergencia : ''"
-            />
+    </div>
+
+
+    {{-- CONTACTO DE EMERGENCIA --}}
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>06</span>
+
+            Contacto de emergencia
+
+        </div>
+
+
+        <div class="row g-3">
+
+            <div class="col-12">
+
+                <x-rh.input-rh
+                    label="Nombre del contacto"
+                    name="contacto_emergencia"
+                    type="text"
+                    placeholder="Ej. María Hernández Ramírez"
+                    :value="$editando
+                        ? $empleado->contacto_emergencia
+                        : ''
+                    "
+                />
+
+            </div>
+
+
+            <div class="col-12">
+
+                <x-rh.input-rh
+                    label="Teléfono de emergencia"
+                    name="telefono_emergencia"
+                    type="text"
+                    placeholder="Ej. 222 987 6543"
+                    :value="$editando
+                        ? $empleado->telefono_emergencia
+                        : ''
+                    "
+                />
+
+            </div>
 
         </div>
 
@@ -400,9 +495,17 @@
 
 
 {{-- ACCIONES --}}
-<div class="gtri-section mb-0">
+<div class="gtri-section ">
 
-    <div class="d-flex flex-wrap justify-content-end gap-2">
+    <div
+        class="
+            d-flex
+            flex-wrap
+            justify-content-end
+            align-items-center
+            gap-2
+        "
+    >
 
         <a
             href="{{
@@ -430,7 +533,10 @@
 
             <i class="bi bi-floppy me-1"></i>
 
-            {{ $editando ? 'Actualizar empleado' : 'Guardar empleado' }}
+            {{ $editando
+                ? 'Actualizar empleado'
+                : 'Guardar empleado'
+            }}
 
         </button>
 
@@ -438,26 +544,37 @@
 
 </div>
 
-
 <script>
-
     const inputFoto = document.getElementById('foto');
-    const previewImagen = document.getElementById('preview-imagen');
 
-    if (inputFoto && previewImagen) {
+const previewImagen = document.getElementById(
+    'preview-imagen'
+);
 
-        inputFoto.addEventListener('change', function (event) {
+const nombreArchivo = document.getElementById(
+    'nombre-archivo'
+);
+
+if (inputFoto && previewImagen) {
+
+    inputFoto.addEventListener(
+        'change',
+        function (event) {
 
             const archivo = event.target.files[0];
 
             if (archivo) {
 
-                previewImagen.src = URL.createObjectURL(archivo);
+                previewImagen.src =
+                    URL.createObjectURL(archivo);
+
+                nombreArchivo.textContent =
+                    archivo.name;
 
             }
 
-        });
+        }
+    );
 
-    }
-
+}
 </script>

@@ -11,7 +11,7 @@
 
             <h2 class="gtri-page-title">
 
-                <i class="bi bi-people me-2"></i>
+                <i class="bi bi-people-fill me-2"></i>
 
                 Recursos Humanos
 
@@ -32,11 +32,18 @@
     <div class="row g-3">
 
         {{-- EMPLEADOS ACTIVOS --}}
-        <div class="col-md-4">
+        <div class="col-12 col-md-6 col-xl-4">
 
             <div class="gtri-card h-100">
 
-                <div class="d-flex justify-content-between align-items-center">
+                <div
+                    class="
+                        d-flex
+                        justify-content-between
+                        align-items-center
+                        gap-3
+                    "
+                >
 
                     <div>
 
@@ -56,7 +63,7 @@
 
                     <div class="fs-1 text-success">
 
-                        <i class="bi bi-person-check"></i>
+                        <i class="bi bi-person-check-fill"></i>
 
                     </div>
 
@@ -68,11 +75,18 @@
 
 
         {{-- VACACIONES PENDIENTES --}}
-        <div class="col-md-4">
+        <div class="col-12 col-md-6 col-xl-4">
 
             <div class="gtri-card h-100">
 
-                <div class="d-flex justify-content-between align-items-center">
+                <div
+                    class="
+                        d-flex
+                        justify-content-between
+                        align-items-center
+                        gap-3
+                    "
+                >
 
                     <div>
 
@@ -92,7 +106,7 @@
 
                     <div class="fs-1 text-warning">
 
-                        <i class="bi bi-calendar2-week"></i>
+                        <i class="bi bi-calendar2-week-fill"></i>
 
                     </div>
 
@@ -103,12 +117,19 @@
         </div>
 
 
-        {{-- INCIDENCIAS --}}
-        <div class="col-md-4">
+        {{-- INCIDENCIAS PENDIENTES --}}
+        <div class="col-12 col-md-6 col-xl-4">
 
             <div class="gtri-card h-100">
 
-                <div class="d-flex justify-content-between align-items-center">
+                <div
+                    class="
+                        d-flex
+                        justify-content-between
+                        align-items-center
+                        gap-3
+                    "
+                >
 
                     <div>
 
@@ -118,7 +139,7 @@
 
                         </small>
 
-                        <h2 class="text-info fw-bold mt-2 mb-0">
+                        <h2 class="text-danger fw-bold mt-2 mb-0">
 
                             {{ $incidencias_pendientes }}
 
@@ -126,9 +147,9 @@
 
                     </div>
 
-                    <div class="fs-1 text-info">
+                    <div class="fs-1 text-danger">
 
-                        <i class="bi bi-exclamation-triangle"></i>
+                        <i class="bi bi-exclamation-triangle-fill"></i>
 
                     </div>
 
@@ -140,16 +161,23 @@
 
 
         {{-- EXPEDIENTES INCOMPLETOS --}}
-        <div class="col-md-4">
+        <div class="col-12 col-md-6 col-xl-4">
 
             <a
                 href="{{ route('rh.expedientes.incompletos') }}"
-                class="text-decoration-none"
+                class="text-decoration-none d-block h-100"
             >
 
                 <div class="gtri-card h-100">
 
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div
+                        class="
+                            d-flex
+                            justify-content-between
+                            align-items-center
+                            gap-3
+                        "
+                    >
 
                         <div>
 
@@ -183,11 +211,18 @@
 
 
         {{-- EMPLEADOS INACTIVOS --}}
-        <div class="col-md-4">
+        <div class="col-12 col-md-6 col-xl-4">
 
             <div class="gtri-card h-100">
 
-                <div class="d-flex justify-content-between align-items-center">
+                <div
+                    class="
+                        d-flex
+                        justify-content-between
+                        align-items-center
+                        gap-3
+                    "
+                >
 
                     <div>
 
@@ -207,7 +242,7 @@
 
                     <div class="fs-1 text-danger">
 
-                        <i class="bi bi-person-x"></i>
+                        <i class="bi bi-person-x-fill"></i>
 
                     </div>
 
@@ -218,22 +253,29 @@
         </div>
 
 
-        {{-- TOTAL EMPLEADOS --}}
-        <div class="col-md-4">
+        {{-- TOTAL DE EMPLEADOS --}}
+        <div class="col-12 col-md-6 col-xl-4">
 
             <div class="gtri-card h-100">
 
-                <div class="d-flex justify-content-between align-items-center">
+                <div
+                    class="
+                        d-flex
+                        justify-content-between
+                        align-items-center
+                        gap-3
+                    "
+                >
 
                     <div>
 
                         <small class="text-secondary">
 
-                            Total empleados
+                            Total de empleados
 
                         </small>
 
-                        <h2 class="text-warning fw-bold mt-2 mb-0">
+                        <h2 class="text-info fw-bold mt-2 mb-0">
 
                             {{ $total_empleados }}
 
@@ -241,9 +283,9 @@
 
                     </div>
 
-                    <div class="fs-1 text-warning">
+                    <div class="fs-1 text-info">
 
-                        <i class="bi bi-bar-chart"></i>
+                        <i class="bi bi-bar-chart-fill"></i>
 
                     </div>
 

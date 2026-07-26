@@ -14,9 +14,6 @@ use App\Http\Controllers\Operaciones\DobleteController;
 use App\Http\Controllers\Operaciones\VehiculoController;
 use App\Http\Controllers\Operaciones\MantenimientoVehicularController;
 
-/*
-| DASHBOARD OPERACIONES
-*/
 
 Route::middleware(['auth', 'role:operaciones'])->group(function ()
     {

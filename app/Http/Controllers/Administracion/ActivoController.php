@@ -8,6 +8,7 @@ use App\Models\Administracion\Activo;
 use App\Models\Administracion\Producto;
 use App\Models\Administracion\LogActividad;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ActivoController extends Controller
 {
@@ -64,6 +65,15 @@ class ActivoController extends Controller
         $productos = Producto::where(
             'estado',
             'activo'
+        )
+        ->where(
+            'tipo_producto',
+            'activo'
+        )
+        ->where(
+            'stock_actual',
+            '>',
+            0
         )
         ->orderBy('nombre')
         ->get();
@@ -129,47 +139,98 @@ class ActivoController extends Controller
 
         ]);
 
-        $ultimoId = Activo::max('id') + 1;
 
-        $codigo = 'ACT-' . str_pad(
-            $ultimoId,
-            5,
-            '0',
-            STR_PAD_LEFT
-        );
+        DB::transaction(function () use ($request) {
 
-        $activo = Activo::create([
+            $producto = Producto::where(
+                'id',
+                $request->producto_id
+            )
+            ->where(
+                'tipo_producto',
+                'activo'
+            )
+            ->lockForUpdate()
+            ->firstOrFail();
 
-            'producto_id' => $request->producto_id,
 
-            'codigo_activo' => $codigo,
+            if ($producto->stock_actual <= 0) {
 
-            'numero_serie' => $request->numero_serie,
+                abort(
+                    422,
+                    'Ya no hay unidades pendientes por registrar para este producto.'
+                );
 
-            'marca' => $request->marca,
+            }
 
-            'modelo' => $request->modelo,
 
-            'fecha_adquisicion' => $request->fecha_adquisicion,
+            $ultimoId = Activo::max('id') + 1;
 
-            'valor' => $request->valor,
+            $codigo = 'ACT-' . str_pad(
+                $ultimoId,
+                5,
+                '0',
+                STR_PAD_LEFT
+            );
 
-            'estado' => $request->estado,
 
-            'observaciones' => $request->observaciones,
+            $activo = Activo::create([
 
-        ]);
+                'producto_id' =>
+                    $producto->id,
 
-        LogActividad::create([
+                'codigo_activo' =>
+                    $codigo,
 
-            'usuario' => Auth::user()->rol,
+                'numero_serie' =>
+                    $request->numero_serie,
 
-            'accion' => 'Creó el activo ' . $activo->codigo_activo,
+                'marca' =>
+                    $request->marca,
 
-        ]);
+                'modelo' =>
+                    $request->modelo,
+
+                'fecha_adquisicion' =>
+                    $request->fecha_adquisicion,
+
+                'valor' =>
+                    $request->valor,
+
+                'estado' =>
+                    $request->estado,
+
+                'observaciones' =>
+                    $request->observaciones,
+
+            ]);
+
+
+            $producto->decrement(
+                'stock_actual',
+                1
+            );
+
+
+            LogActividad::create([
+
+                'usuario' =>
+                    Auth::user()->rol,
+
+                'accion' =>
+                    'Creó el activo '
+                    .
+                    $activo->codigo_activo,
+
+            ]);
+
+        });
+
 
         return redirect()
-            ->route('administracion.activos.index')
+            ->route(
+                'administracion.activos.index'
+            )
             ->with(
                 'success',
                 'Activo registrado correctamente.'

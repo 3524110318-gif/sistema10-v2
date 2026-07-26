@@ -3,6 +3,7 @@
 namespace App\Models\RH;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Vigencia extends Model
 {
@@ -16,9 +17,17 @@ class Vigencia extends Model
 
         'fecha_vencimiento',
 
+        'evidencia',
+
     ];
 
-    public function empleado()
+    protected $casts = [
+
+        'fecha_vencimiento' => 'date',
+
+    ];
+
+    public function empleado(): BelongsTo
     {
         return $this->belongsTo(
             Empleado::class

@@ -42,6 +42,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         fila.querySelector('select').selectedIndex = 0;
 
+        fila.querySelector('.plazas').value = '0';
+        fila.querySelector('.cubiertas').value = '0';
+
+        actualizarAlertaCobertura();
+
         body.appendChild(fila);
 
     });
@@ -193,6 +198,110 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
             );
+
+    }
+
+    const tabla = document.getElementById('tabla-servicios');
+
+    const alertaCobertura = document.getElementById(
+        'alerta-cobertura'
+    );
+
+    const vacantesDetectadas = document.getElementById(
+        'vacantes-detectadas'
+    );
+
+    function actualizarCobertura(select) {
+
+        const fila = select.closest('tr');
+
+        const opcion = select.options[
+            select.selectedIndex
+        ];
+
+        const contratadas = parseInt(
+            opcion.dataset.contratadas || 0
+        );
+
+        const cubiertas = parseInt(
+            opcion.dataset.cubiertas || 0
+        );
+
+        fila.querySelector('.plazas').value =
+            contratadas;
+
+        fila.querySelector('.cubiertas').value =
+            cubiertas;
+
+        calcularTotales();
+
+        actualizarAlertaCobertura();
+    }
+
+    function actualizarAlertaCobertura() {
+
+        let totalVacantes = 0;
+
+        document
+            .querySelectorAll(
+                'select[name="servicio_id[]"]'
+            )
+            .forEach(function (select) {
+
+                const opcion = select.options[
+                    select.selectedIndex
+                ];
+
+                totalVacantes += parseInt(
+                    opcion?.dataset?.vacantes || 0
+                );
+
+            });
+
+        if (!alertaCobertura || !vacantesDetectadas) {
+            return;
+        }
+
+        if (totalVacantes > 0) {
+
+            vacantesDetectadas.textContent =
+                totalVacantes;
+
+            alertaCobertura.classList.remove(
+                'd-none'
+            );
+
+        } else {
+
+            vacantesDetectadas.textContent = 0;
+
+            alertaCobertura.classList.add(
+                'd-none'
+            );
+
+        }
+    }
+
+    if (tabla) {
+
+        tabla.addEventListener(
+            'change',
+            function (e) {
+
+                if (
+                    e.target.matches(
+                        'select[name="servicio_id[]"]'
+                    )
+                ) {
+
+                    actualizarCobertura(
+                        e.target
+                    );
+
+                }
+
+            }
+        );
 
     }
 

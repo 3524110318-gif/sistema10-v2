@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\RH\Empleado;
 use App\Models\RH\BajaEmpleado;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\Administracion\LogActividad;
 
 class BajaEmpleadoController extends Controller
 {
@@ -15,77 +17,185 @@ class BajaEmpleadoController extends Controller
             $empleadoId
         );
 
+
+        if ($empleado->estado === 'inactivo') {
+
+            return redirect()
+                ->route(
+                    'rh.empleados.inactivos'
+                )
+                ->with(
+                    'error',
+                    'El empleado ya se encuentra inactivo.'
+                );
+
+        }
+
+
+        if (
+            BajaEmpleado::where(
+                'empleado_id',
+                $empleado->id
+            )->exists()
+        ) {
+
+            return redirect()
+                ->route(
+                    'rh.empleados.show',
+                    $empleado->id
+                )
+                ->with(
+                    'error',
+                    'El empleado ya cuenta con un registro de baja.'
+                );
+
+        }
+
+
         return view(
             'rh.bajas.create',
             compact('empleado')
         );
     }
 
-    public function store(
-        Request $request,
-        $empleadoId
-    )
+    public function store(Request $request,$empleadoId)
     {
-        BajaEmpleado::create([
+        $request->validate([
 
-            'empleado_id' => $empleadoId,
+            'fecha_baja' => [
+                'required',
+                'date',
+                'before_or_equal:today',
+            ],
 
-            'fecha_baja' =>
-                $request->fecha_baja,
-
-            'uniforme_devuelto' =>
-                $request->has(
-                    'uniforme_devuelto'
-                ),
-
-            'botas_devueltas' =>
-                $request->has(
-                    'botas_devueltas'
-                ),
-
-            'credencial_devuelta' =>
-                $request->has(
-                    'credencial_devuelta'
-                ),
-
-            'radio_devuelto' =>
-                $request->has(
-                    'radio_devuelto'
-                ),
-
-            'carta_renuncia' =>
-                $request->has(
-                    'carta_renuncia'
-                ),
-
-            'finiquito_entregado' =>
-                $request->has(
-                    'finiquito_entregado'
-                ),
-
-            'observaciones' =>
-                $request->observaciones,
+            'observaciones' => [
+                'nullable',
+                'string',
+                'max:1000',
+            ],
 
         ]);
+
 
         $empleado = Empleado::findOrFail(
             $empleadoId
         );
 
-        $empleado->update([
-            'estado' => 'inactivo'
-        ]);
+
+        if ($empleado->estado === 'inactivo') {
+
+            return redirect()
+                ->route(
+                    'rh.empleados.inactivos'
+                )
+                ->with(
+                    'error',
+                    'El empleado ya se encuentra inactivo.'
+                );
+
+        }
+
+
+        if (
+            BajaEmpleado::where(
+                'empleado_id',
+                $empleado->id
+            )->exists()
+        ) {
+
+            return redirect()
+                ->route(
+                    'rh.empleados.show',
+                    $empleado->id
+                )
+                ->with(
+                    'error',
+                    'Este empleado ya cuenta con un registro de baja.'
+                );
+
+        }
+
+
+        DB::transaction(
+            function () use (
+                $request,
+                $empleado
+            ) {
+
+                BajaEmpleado::create([
+
+                    'empleado_id' =>
+                        $empleado->id,
+
+                    'fecha_baja' =>
+                        $request->fecha_baja,
+
+                    'uniforme_devuelto' =>
+                        $request->boolean(
+                            'uniforme_devuelto'
+                        ),
+
+                    'botas_devueltas' =>
+                        $request->boolean(
+                            'botas_devueltas'
+                        ),
+
+                    'credencial_devuelta' =>
+                        $request->boolean(
+                            'credencial_devuelta'
+                        ),
+
+                    'radio_devuelto' =>
+                        $request->boolean(
+                            'radio_devuelto'
+                        ),
+
+                    'carta_renuncia' =>
+                        $request->boolean(
+                            'carta_renuncia'
+                        ),
+
+                    'finiquito_entregado' =>
+                        $request->boolean(
+                            'finiquito_entregado'
+                        ),
+
+                    'observaciones' =>
+                        $request->observaciones,
+
+                ]);
+
+
+                $empleado->update([
+
+                    'estado' => 'inactivo',
+
+                ]);
+
+                LogActividad::create([
+
+                    'usuario' => auth()->user()->rol,
+
+                    'accion' => 'Dio de baja al empleado ' .
+                        $empleado->numero_control .
+                        ' - ' .
+                        $empleado->nombre .
+                        ' ' .
+                        $empleado->apellido_paterno,
+
+                ]);
+
+            }
+        );
+
 
         return redirect()
-
             ->route(
-                'rh.empleados.show',
-                $empleadoId
+                'rh.empleados.inactivos'
             )
-
             ->with(
                 'success',
-                'Empleado dado de baja'
+                'Empleado dado de baja correctamente.'
             );
     }
 }

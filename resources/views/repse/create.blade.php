@@ -2,87 +2,112 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    {{-- CARD PRINCIPAL --}}
+    <!-- ENCABEZADO -->
 
-    <x-rh.card-rh titulo="Nuevo expediente REPSE">
+    <div class="gtri-page-header">
 
-        {{-- ERRORES --}}
+        <div>
 
-        @if ($errors->any())
+            <h2 class="gtri-page-title">
 
-            <div class="alert alert-danger">
+                <i class="bi bi-folder-plus me-2"></i>
 
-                <strong>
-                    Se encontraron algunos errores:
-                </strong>
+                Nuevo Expediente REPSE
 
-                <ul class="mb-0 mt-2">
+            </h2>
 
-                    @foreach ($errors->all() as $error)
+            <p class="gtri-page-subtitle">
 
-                        <li>
-                            {{ $error }}
-                        </li>
+                Registra la documentación y datos de cumplimiento normativo del empleado.
 
-                    @endforeach
+            </p>
 
-                </ul>
+        </div>
 
-            </div>
-
-        @endif
-
-
-        <form
-            action="{{ route('expedientes.store') }}"
-            method="POST"
+        <a
+            href="{{ route('expedientes.index') }}"
+            class="btn gtri-btn-secondary"
         >
 
-            @csrf
+            <i class="bi bi-arrow-left me-1"></i>
+
+            Regresar
+
+        </a>
+
+    </div>
 
 
-            {{-- ========================================= --}}
-            {{-- INFORMACIÓN DEL EMPLEADO --}}
-            {{-- ========================================= --}}
+    <!-- ERRORES -->
 
-            <div class="mb-4">
+    @if ($errors->any())
 
-                <h5 class="fw-bold">
+        <div class="alert alert-danger">
 
-                    <i class="bi bi-person-badge me-2"></i>
+            <strong>
 
-                    Información del empleado
+                <i class="bi bi-exclamation-triangle me-1"></i>
 
-                </h5>
+                Se encontraron algunos errores:
 
-                <hr>
+            </strong>
+
+            <ul class="mb-0 mt-2">
+
+                @foreach ($errors->all() as $error)
+
+                    <li>{{ $error }}</li>
+
+                @endforeach
+
+            </ul>
+
+        </div>
+
+    @endif
+
+
+    <form
+        action="{{ route('expedientes.store') }}"
+        method="POST"
+    >
+
+        @csrf
+
+
+        <!-- 01 · INFORMACIÓN DEL EMPLEADO -->
+
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>01</span>
+
+                Información del empleado
 
             </div>
 
+            <div class="row g-3">
 
-            <div class="row">
-
-                <div class="col-md-12 mb-4">
+                <div class="col-12">
 
                     <label
                         for="empleado_id"
-                        class="form-label fw-semibold"
+                        class="form-label"
                     >
 
                         Empleado
 
-                        <span class="text-danger">
-                            *
-                        </span>
+                        <span class="text-danger">*</span>
 
                     </label>
 
                     <select
                         name="empleado_id"
                         id="empleado_id"
-                        class="form-select"
+                        class="form-select gtri-input"
                         required
                     >
 
@@ -111,41 +136,35 @@
 
             </div>
 
+        </div>
 
-            {{-- ========================================= --}}
-            {{-- DOCUMENTACIÓN --}}
-            {{-- ========================================= --}}
 
-            <div class="mb-4 mt-2">
+        <!-- 02 · DOCUMENTACIÓN ENTREGADA -->
 
-                <h5 class="fw-bold">
+        <div class="gtri-section">
 
-                    <i class="bi bi-folder-check me-2"></i>
+            <div class="gtri-section-title">
 
-                    Documentación entregada
+                <span>02</span>
 
-                </h5>
-
-                <p class="text-muted mb-2">
-
-                    Marque únicamente los documentos que el empleado ya haya entregado.
-
-                </p>
-
-                <hr>
+                Documentación entregada
 
             </div>
+
+            <p class="text-secondary mb-4">
+
+                Marque únicamente los documentos que el empleado ya haya entregado.
+
+            </p>
 
 
             <div class="row g-3">
 
-                {{-- ALTA IMSS --}}
+                <!-- ALTA IMSS -->
 
                 <div class="col-md-6">
 
-                    <label
-                        class="border rounded p-3 w-100 d-flex align-items-center gap-3 document-option"
-                    >
+                    <label class="gtri-card w-100 h-100 d-flex align-items-center gap-3 document-option">
 
                         <input
                             type="checkbox"
@@ -159,11 +178,13 @@
 
                             <div class="fw-bold">
 
+                                <i class="bi bi-heart-pulse me-1"></i>
+
                                 Alta IMSS
 
                             </div>
 
-                            <small class="text-muted">
+                            <small class="text-secondary">
 
                                 Constancia de alta del trabajador ante el IMSS.
 
@@ -176,13 +197,11 @@
                 </div>
 
 
-                {{-- CONTRATO --}}
+                <!-- CONTRATO -->
 
                 <div class="col-md-6">
 
-                    <label
-                        class="border rounded p-3 w-100 d-flex align-items-center gap-3 document-option"
-                    >
+                    <label class="gtri-card w-100 h-100 d-flex align-items-center gap-3 document-option">
 
                         <input
                             type="checkbox"
@@ -196,11 +215,13 @@
 
                             <div class="fw-bold">
 
+                                <i class="bi bi-file-earmark-check me-1"></i>
+
                                 Contrato firmado
 
                             </div>
 
-                            <small class="text-muted">
+                            <small class="text-secondary">
 
                                 Contrato laboral firmado por ambas partes.
 
@@ -213,13 +234,11 @@
                 </div>
 
 
-                {{-- CÉDULA SSP --}}
+                <!-- CÉDULA SSP -->
 
                 <div class="col-md-6">
 
-                    <label
-                        class="border rounded p-3 w-100 d-flex align-items-center gap-3 document-option"
-                    >
+                    <label class="gtri-card w-100 h-100 d-flex align-items-center gap-3 document-option">
 
                         <input
                             type="checkbox"
@@ -233,11 +252,13 @@
 
                             <div class="fw-bold">
 
+                                <i class="bi bi-shield-check me-1"></i>
+
                                 Cédula SSP
 
                             </div>
 
-                            <small class="text-muted">
+                            <small class="text-secondary">
 
                                 Documento correspondiente a Seguridad Pública.
 
@@ -250,13 +271,11 @@
                 </div>
 
 
-                {{-- CONSTANCIA FISCAL --}}
+                <!-- CONSTANCIA FISCAL -->
 
                 <div class="col-md-6">
 
-                    <label
-                        class="border rounded p-3 w-100 d-flex align-items-center gap-3 document-option"
-                    >
+                    <label class="gtri-card w-100 h-100 d-flex align-items-center gap-3 document-option">
 
                         <input
                             type="checkbox"
@@ -270,11 +289,13 @@
 
                             <div class="fw-bold">
 
+                                <i class="bi bi-receipt me-1"></i>
+
                                 Constancia fiscal
 
                             </div>
 
-                            <small class="text-muted">
+                            <small class="text-secondary">
 
                                 Constancia de Situación Fiscal del empleado.
 
@@ -289,21 +310,19 @@
             </div>
 
 
-            {{-- ========================================= --}}
-            {{-- RESUMEN DE DOCUMENTACIÓN --}}
-            {{-- ========================================= --}}
+            <!-- RESUMEN DOCUMENTAL -->
 
-            <div class="alert alert-light border mt-4 mb-4">
+            <div class="gtri-card mt-4">
 
                 <div class="row align-items-center">
 
                     <div class="col-md-8">
 
-                        <strong>
+                        <span class="text-secondary">
 
                             Estado de documentación:
 
-                        </strong>
+                        </span>
 
                         <span
                             id="estado-documentacion"
@@ -330,33 +349,34 @@
 
             </div>
 
-            <div class="mb-4 mt-4">
+        </div>
 
-                <h5 class="fw-bold">
 
-                    <i class="bi bi-calendar-check me-2"></i>
+        <!-- 03 · VIGENCIAS DOCUMENTALES -->
 
-                    Vigencias documentales
+        <div class="gtri-section">
 
-                </h5>
+            <div class="gtri-section-title">
 
-                <p class="text-muted mb-2">
+                <span>03</span>
 
-                    Registre la fecha de vigencia correspondiente.
-
-                </p>
-
-                <hr>
+                Vigencias documentales
 
             </div>
 
-            <div class="row">
+            <p class="text-secondary mb-4">
 
-                <div class="col-md-6 mb-3">
+                Registre la fecha de vigencia correspondiente.
+
+            </p>
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
 
                     <label
                         for="vigencia_cedula_ssp"
-                        class="form-label fw-semibold"
+                        class="form-label"
                     >
 
                         Vigencia Cédula SSP
@@ -368,7 +388,7 @@
                         name="vigencia_cedula_ssp"
                         id="vigencia_cedula_ssp"
                         value="{{ old('vigencia_cedula_ssp') }}"
-                        class="form-control"
+                        class="form-control gtri-input"
                     >
 
                     <div class="form-text">
@@ -380,36 +400,35 @@
                 </div>
 
             </div>
-            {{-- ========================================= --}}
-            {{-- VALIDACIÓN FISCAL --}}
-            {{-- ========================================= --}}
-            <div class="mb-4 mt-4">
 
-                <h5 class="fw-bold">
+        </div>
 
-                    <i class="bi bi-file-earmark-text me-2"></i>
 
-                    Validación fiscal
+        <!-- 04 · VALIDACIÓN FISCAL -->
 
-                </h5>
+        <div class="gtri-section">
 
-                <p class="text-muted mb-2">
+            <div class="gtri-section-title">
 
-                    Capture el RFC que aparece en la Constancia de Situación Fiscal.
+                <span>04</span>
 
-                </p>
-
-                <hr>
+                Validación fiscal
 
             </div>
 
-            <div class="row">
+            <p class="text-secondary mb-4">
 
-                <div class="col-md-6 mb-3">
+                Capture el RFC que aparece en la Constancia de Situación Fiscal.
+
+            </p>
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
 
                     <label
                         for="rfc_constancia"
-                        class="form-label fw-semibold"
+                        class="form-label"
                     >
 
                         RFC de la constancia fiscal
@@ -421,7 +440,7 @@
                         name="rfc_constancia"
                         id="rfc_constancia"
                         value="{{ old('rfc_constancia') }}"
-                        class="form-control text-uppercase"
+                        class="form-control gtri-input text-uppercase"
                         maxlength="13"
                         placeholder="Ej. GAAA010101ABC"
                     >
@@ -436,74 +455,67 @@
 
             </div>
 
+        </div>
 
-            {{-- ========================================= --}}
-            {{-- OBSERVACIONES --}}
-            {{-- ========================================= --}}
 
-            <div class="mb-4">
+        <!-- 05 · OBSERVACIONES -->
 
-                <h5 class="fw-bold">
+        <div class="gtri-section">
 
-                    <i class="bi bi-chat-left-text me-2"></i>
+            <div class="gtri-section-title">
 
-                    Observaciones
+                <span>05</span>
 
-                </h5>
-
-                <hr>
+                Observaciones
 
             </div>
 
+            <label
+                for="observaciones"
+                class="form-label"
+            >
 
-            <div class="mb-3">
+                Observaciones del expediente
 
-                <label
-                    for="observaciones"
-                    class="form-label fw-semibold"
+            </label>
+
+            <textarea
+                name="observaciones"
+                id="observaciones"
+                rows="5"
+                maxlength="500"
+                class="form-control gtri-textarea"
+                placeholder="Ej. Documentación pendiente de validación, actualización de cédula o cualquier observación adicional..."
+            >{{ old('observaciones') }}</textarea>
+
+            <div class="text-end mt-1">
+
+                <small
+                    id="contador-caracteres"
+                    class="text-secondary"
                 >
 
-                    Observaciones del expediente
+                    0 / 500
 
-                </label>
-
-                <textarea
-                    name="observaciones"
-                    id="observaciones"
-                    rows="5"
-                    maxlength="500"
-                    class="form-control"
-                    placeholder="Escriba aquí cualquier observación adicional..."
-                >{{ old('observaciones') }}</textarea>
-
-                <div class="text-end mt-1">
-
-                    <small
-                        id="contador-caracteres"
-                        class="text-muted"
-                    >
-
-                        0 / 500
-
-                    </small>
-
-                </div>
+                </small>
 
             </div>
 
+        </div>
 
-            {{-- ========================================= --}}
-            {{-- BOTONES --}}
-            {{-- ========================================= --}}
 
-            <div class="d-flex justify-content-end gap-2 mt-4">
+        <!-- 06 · ACCIONES -->
+
+        <div class="gtri-section mb-0">
+
+            <div class="d-flex justify-content-end gap-2">
 
                 <a
                     href="{{ route('expedientes.index') }}"
-                    class="btn btn-secondary"
+                    class="btn gtri-btn-secondary"
                 >
 
-                    <i class="bi bi-x-circle"></i>
+                    <i class="bi bi-x-lg me-1"></i>
 
                     Cancelar
 
@@ -511,10 +523,10 @@
 
                 <button
                     type="submit"
-                    class="btn btn-success"
+                    class="btn gtri-btn-primary"
                 >
 
-                    <i class="bi bi-save"></i>
+                    <i class="bi bi-save me-1"></i>
 
                     Guardar expediente
 
@@ -522,9 +534,10 @@
 
             </div>
 
-        </form>
+        </div>
 
-    </x-rh.card-rh>
+    </form>
 
 </div>
+
 @endsection

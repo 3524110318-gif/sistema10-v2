@@ -2,131 +2,312 @@
 
 @section('contenido')
 
-<div class="container">
+<div class="container-fluid">
 
-    <div
-        class="d-flex justify-content-between mb-4"
-    >
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-        <h1>
+        <div>
 
-            Mantenimientos
+            <h2 class="gtri-page-title">
 
-        </h1>
+                <i class="bi bi-wrench-adjustable me-2"></i>
+
+                Mantenimientos
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Consulta el historial de mantenimientos y próximos servicios
+                de las unidades vehiculares.
+
+            </p>
+
+        </div>
 
         <a
             href="{{ route(
                 'operaciones.mantenimientos.create'
             ) }}"
-            class="btn btn-primary"
+            class="btn gtri-btn-primary"
         >
 
-            Nuevo Mantenimiento
+            <i class="bi bi-plus-circle me-1"></i>
+
+            Nuevo mantenimiento
 
         </a>
 
     </div>
 
-    <table class="table">
 
-        <thead>
+    {{-- LISTADO --}}
+    <div class="gtri-section mb-0">
 
-            <tr>
-                <th>Vehículo</th>
-                <th>Fecha</th>
-                <th>Km</th>
-                <th>Tipo</th>
-                <th>Próximo</th>
-                <th>Acciones</th>
-            </tr>
+        <div
+            class="
+                d-flex
+                justify-content-between
+                align-items-center
+                flex-wrap
+                gap-2
+                mb-4
+            "
+        >
 
-        </thead>
+            <div class="gtri-section-title mb-0">
 
-        <tbody>
+                <span>01</span>
 
-            @forelse(
-                $mantenimientos as $mantenimiento
-            )
+                Historial de mantenimientos
 
-                <tr>
+            </div>
 
-                    <td>
+            <div>
 
-                        {{ $mantenimiento
-                            ->vehiculo
-                            ->unidad }}
+                <span class="text-secondary">
 
-                    </td>
+                    Registros:
 
-                    <td>
+                </span>
 
-                        {{ $mantenimiento
-                            ->fecha }}
+                <span class="text-warning fw-bold">
 
-                    </td>
+                    {{ $mantenimientos->count() }}
 
-                    <td>
+                </span>
 
-                        {{ number_format(
-                            $mantenimiento
-                            ->kilometraje
-                        ) }}
+            </div>
 
-                    </td>
+        </div>
 
-                    <td>
 
-                        {{ $mantenimiento
-                            ->tipo }}
+        <div class="gtri-table-wrapper">
 
-                    </td>
+            <div class="table-responsive">
 
-                    <td>
+                <table class="table gtri-table align-middle mb-0">
 
-                        {{ number_format(
-                            $mantenimiento
-                            ->proximo_mantenimiento
-                        ) }}
+                    <thead>
 
-                        km
+                        <tr>
 
-                    </td>
+                            <th>Vehículo</th>
 
-                    <td>
+                            <th>Fecha</th>
 
-                        <a
-                            href="{{ route(
-                                'operaciones.mantenimientos.edit',
-                                $mantenimiento->id
-                            ) }}"
-                            class="btn btn-warning btn-sm"
-                        >
+                            <th>Kilometraje</th>
 
-                            Editar
+                            <th>Tipo</th>
 
-                        </a>
+                            <th>Próximo mantenimiento</th>
 
-                    </td>
+                            <th class="text-center">
 
-                </tr>
+                                Acciones
 
-            @empty
+                            </th>
 
-                <tr>
+                        </tr>
 
-                    <td colspan="6">
+                    </thead>
 
-                        Sin mantenimientos
+                    <tbody>
 
-                    </td>
+                        @forelse(
+                            $mantenimientos
+                            as $mantenimiento
+                        )
 
-                </tr>
+                            <tr>
 
-            @endforelse
+                                {{-- VEHÍCULO --}}
+                                <td>
 
-        </tbody>
+                                    <div>
 
-    </table>
+                                        <span class="text-warning fw-semibold d-block">
+
+                                            {{
+                                                $mantenimiento
+                                                    ->vehiculo
+                                                    ->unidad
+                                            }}
+
+                                        </span>
+
+                                        <small class="text-secondary">
+
+                                            {{
+                                                $mantenimiento
+                                                    ->vehiculo
+                                                    ->placas
+                                            }}
+
+                                        </small>
+
+                                    </div>
+
+                                </td>
+
+
+                                {{-- FECHA --}}
+                                <td>
+
+                                    <i
+                                        class="
+                                            bi
+                                            bi-calendar3
+                                            text-warning
+                                            me-1
+                                        "
+                                    ></i>
+
+                                    {{ $mantenimiento->fecha }}
+
+                                </td>
+
+
+                                {{-- KM --}}
+                                <td>
+
+                                    <i
+                                        class="
+                                            bi
+                                            bi-speedometer2
+                                            text-warning
+                                            me-1
+                                        "
+                                    ></i>
+
+                                    {{
+                                        number_format(
+                                            $mantenimiento
+                                                ->kilometraje
+                                        )
+                                    }}
+
+                                    km
+
+                                </td>
+
+
+                                {{-- TIPO --}}
+                                <td>
+
+                                    <span class="text-light fw-semibold">
+
+                                        {{ $mantenimiento->tipo }}
+
+                                    </span>
+
+                                </td>
+
+
+                                {{-- PRÓXIMO --}}
+                                <td>
+
+                                    <span class="badge bg-info text-dark">
+
+                                        {{
+                                            number_format(
+                                                $mantenimiento
+                                                    ->proximo_mantenimiento
+                                            )
+                                        }}
+
+                                        km
+
+                                    </span>
+
+                                </td>
+
+
+                                {{-- ACCIONES --}}
+                                <td class="text-center">
+
+                                    <a
+                                        href="{{ route(
+                                            'operaciones.mantenimientos.edit',
+                                            $mantenimiento->id
+                                        ) }}"
+                                        class="btn btn-warning btn-sm"
+                                        title="Editar mantenimiento"
+                                    >
+
+                                        <i class="bi bi-pencil-square"></i>
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="6"
+                                    class="text-center py-5"
+                                >
+
+                                    <i
+                                        class="
+                                            bi
+                                            bi-tools
+                                            fs-1
+                                            text-secondary
+                                            d-block
+                                            mb-3
+                                        "
+                                    ></i>
+
+                                    <h5 class="text-light">
+
+                                        Sin mantenimientos registrados
+
+                                    </h5>
+
+                                    <p class="text-secondary mb-0">
+
+                                        Registra el primer mantenimiento
+                                        de una unidad vehicular.
+
+                                    </p>
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        {{-- PAGINACIÓN --}}
+        @if(
+            method_exists($mantenimientos, 'hasPages')
+            &&
+            $mantenimientos->hasPages()
+        )
+
+            <div class="d-flex justify-content-center mt-4">
+
+                {{ $mantenimientos->withQueryString()->links() }}
+
+            </div>
+
+        @endif
+
+    </div>
 
 </div>
 

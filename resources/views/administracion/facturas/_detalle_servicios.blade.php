@@ -74,7 +74,12 @@
 
                                 @foreach($servicios as $servicio)
 
-                                    <option value="{{ $servicio->id }}">
+                                    <option
+                                        value="{{ $servicio->id }}"
+                                        data-contratadas="{{ $servicio->plazas_contratadas }}"
+                                        data-cubiertas="{{ $servicio->plazas_cubiertas }}"
+                                        data-vacantes="{{ $servicio->plazas_vacantes }}"
+                                    >
 
                                         {{ $servicio->nombre }}
 
@@ -95,9 +100,9 @@
                                 class="form-control gtri-input plazas"
                                 min="0"
                                 value="0"
+                                readonly
                                 required
                             >
-
                         </td>
 
 
@@ -109,6 +114,7 @@
                                 class="form-control gtri-input cubiertas"
                                 min="0"
                                 value="0"
+                                readonly
                                 required
                             >
 
@@ -168,6 +174,51 @@
                 </tbody>
 
             </table>
+
+        </div>
+
+        <div
+            id="alerta-cobertura"
+            class="alert alert-warning d-none mt-3"
+        >
+
+            <div class="d-flex align-items-start gap-2">
+
+                <i class="bi bi-exclamation-triangle-fill"></i>
+
+                <div>
+
+                    <strong>
+
+                        Cobertura incompleta detectada
+
+                    </strong>
+
+                    <div class="mt-1">
+
+                        El servicio seleccionado tiene
+
+                        <span
+                            id="vacantes-detectadas"
+                            class="fw-bold"
+                        >
+                            0
+                        </span>
+
+                        plaza(s) vacante(s).
+
+                    </div>
+
+                    <div class="mt-1">
+
+                        Se recomienda revisar el importe facturable
+                        o considerar una nota de crédito.
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </div>
 

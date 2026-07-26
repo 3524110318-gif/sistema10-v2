@@ -2,52 +2,80 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    {{-- ENCABEZADO --}}
-    <div class="mb-4">
+    <!-- ENCABEZADO -->
 
-        <h4 class="fw-bold mb-1">
+    <div class="gtri-page-header">
 
-            Resumen general del cumplimiento normativo REPSE.
+        <div>
 
+            <h2 class="gtri-page-title">
 
-        </h4>
+                <i class="bi bi-shield-check me-2"></i>
+
+                Dashboard REPSE
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Resumen general del cumplimiento normativo REPSE.
+
+            </p>
+
+        </div>
 
     </div>
 
 
-    {{-- TARJETAS --}}
-    <div class="row g-3">
+    <!-- 01 · INDICADORES PRINCIPALES -->
 
-        {{-- TOTAL --}}
-        <div class="col-md">
+    <div class="gtri-section">
 
-            <div class="card border-0 shadow-sm h-100">
+        <div class="gtri-section-title">
 
-                <div class="card-body">
+            <span>01</span>
 
-                    <div class="d-flex justify-content-between align-items-center">
+            Indicadores principales
+
+        </div>
+
+        <div class="row g-3">
+
+            <!-- TOTAL DE EXPEDIENTES -->
+
+            <div class="col-xl col-md-6">
+
+                <div class="gtri-card h-100">
+
+                    <div class="d-flex align-items-center justify-content-between">
 
                         <div>
 
-                            <p class="text-muted mb-1">
+                            <div class="gtri-info-label">
 
                                 Total de expedientes
 
-                            </p>
+                            </div>
 
-                            <h3 class="fw-bold mb-0">
+                            <div class="gtri-info-value fs-2 fw-bold mt-2">
 
                                 {{ $total }}
 
-                            </h3>
+                            </div>
+
+                            <small class="text-secondary">
+
+                                Expedientes registrados
+
+                            </small>
 
                         </div>
 
-                        <div class="fs-2 text-primary">
+                        <div class="gtri-stat-icon">
 
-                            <i class="bi bi-folder"></i>
+                            <i class="bi bi-folder2-open fs-3"></i>
 
                         </div>
 
@@ -57,37 +85,40 @@
 
             </div>
 
-        </div>
 
+            <!-- CUMPLEN -->
 
-        {{-- CUMPLEN --}}
-        <div class="col-md">
+            <div class="col-xl col-md-6">
 
-            <div class="card border-0 shadow-sm h-100">
+                <div class="gtri-card h-100">
 
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center justify-content-between">
 
                         <div>
 
-                            <p class="text-muted mb-1">
+                            <div class="gtri-info-label">
 
                                 Cumplen
 
-                            </p>
+                            </div>
 
-                            <h3 class="fw-bold text-success mb-0">
+                            <div class="gtri-info-value fs-2 fw-bold mt-2">
 
                                 {{ $cumplen }}
 
-                            </h3>
+                            </div>
+
+                            <small class="text-secondary">
+
+                                Expedientes completos
+
+                            </small>
 
                         </div>
 
-                        <div class="fs-2 text-success">
+                        <div class="gtri-stat-icon">
 
-                            <i class="bi bi-check-circle"></i>
+                            <i class="bi bi-check-circle fs-3"></i>
 
                         </div>
 
@@ -97,37 +128,40 @@
 
             </div>
 
-        </div>
 
+            <!-- PENDIENTES -->
 
-        {{-- PENDIENTES --}}
-        <div class="col-md">
+            <div class="col-xl col-md-6">
 
-            <div class="card border-0 shadow-sm h-100">
+                <div class="gtri-card h-100">
 
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center justify-content-between">
 
                         <div>
 
-                            <p class="text-muted mb-1">
+                            <div class="gtri-info-label">
 
                                 Pendientes
 
-                            </p>
+                            </div>
 
-                            <h3 class="fw-bold text-warning mb-0">
+                            <div class="gtri-info-value fs-2 fw-bold mt-2">
 
                                 {{ $pendientes }}
 
-                            </h3>
+                            </div>
+
+                            <small class="text-secondary">
+
+                                Requieren atención
+
+                            </small>
 
                         </div>
 
-                        <div class="fs-2 text-warning">
+                        <div class="gtri-stat-icon">
 
-                            <i class="bi bi-exclamation-circle"></i>
+                            <i class="bi bi-exclamation-circle fs-3"></i>
 
                         </div>
 
@@ -137,37 +171,40 @@
 
             </div>
 
-        </div>
 
+            <!-- BLOQUEADOS -->
 
-        {{-- BLOQUEADOS --}}
-        <div class="col-md">
+            <div class="col-xl col-md-6">
 
-            <div class="card border-0 shadow-sm h-100">
+                <div class="gtri-card h-100">
 
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center justify-content-between">
 
                         <div>
 
-                            <p class="text-muted mb-1">
+                            <div class="gtri-info-label">
 
                                 Bloqueados
 
-                            </p>
+                            </div>
 
-                            <h3 class="fw-bold text-danger mb-0">
+                            <div class="gtri-info-value fs-2 fw-bold mt-2">
 
                                 {{ $bloqueados }}
 
-                            </h3>
+                            </div>
+
+                            <small class="text-secondary">
+
+                                Sin cumplimiento vigente
+
+                            </small>
 
                         </div>
 
-                        <div class="fs-2 text-danger">
+                        <div class="gtri-stat-icon">
 
-                            <i class="bi bi-lock"></i>
+                            <i class="bi bi-lock fs-3"></i>
 
                         </div>
 
@@ -177,37 +214,40 @@
 
             </div>
 
-        </div>
 
+            <!-- CÉDULAS POR VENCER -->
 
-        {{-- POR VENCER --}}
-        <div class="col-md">
+            <div class="col-xl col-md-6">
 
-            <div class="card border-0 shadow-sm h-100">
+                <div class="gtri-card h-100">
 
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center justify-content-between">
 
                         <div>
 
-                            <p class="text-muted mb-1">
+                            <div class="gtri-info-label">
 
                                 Cédulas por vencer
 
-                            </p>
+                            </div>
 
-                            <h3 class="fw-bold text-warning mb-0">
+                            <div class="gtri-info-value fs-2 fw-bold mt-2">
 
                                 {{ $porVencer }}
 
-                            </h3>
+                            </div>
+
+                            <small class="text-secondary">
+
+                                Próximas a vencer
+
+                            </small>
 
                         </div>
 
-                        <div class="fs-2 text-warning">
+                        <div class="gtri-stat-icon">
 
-                            <i class="bi bi-calendar-event"></i>
+                            <i class="bi bi-calendar-event fs-3"></i>
 
                         </div>
 

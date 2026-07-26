@@ -1,31 +1,97 @@
+
 @extends('comercial.layouts.app')
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <h2 class="mb-4">
+    <!-- ENCABEZADO -->
 
-        Nuevo Prospecto Comercial
+    <div class="gtri-page-header">
 
-    </h2>
+        <div>
 
-    <x-rh.card-rh titulo="Datos del Prospecto">
+            <h2 class="gtri-page-title">
 
-        <form
-            action="{{ route('comercial.prospectos.store') }}"
-            method="POST"
+                <i class="bi bi-person-plus me-2"></i>
+
+                Nuevo Prospecto Comercial
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Registra una nueva oportunidad comercial y la información necesaria para su seguimiento.
+
+            </p>
+
+        </div>
+
+        <a
+            href="{{ route('comercial.prospectos.index') }}"
+            class="btn gtri-btn-secondary"
         >
 
-            @csrf
+            <i class="bi bi-arrow-left me-1"></i>
 
-            @include(
-                'comercial.prospectos._form'
-            )
+            Regresar
 
-        </form>
+        </a>
 
-    </x-rh.card-rh>
+    </div>
+
+
+    <!-- ERRORES DE VALIDACIÓN -->
+
+    @if($errors->any())
+
+        <div class="alert alert-danger">
+
+            <div class="d-flex align-items-center mb-2">
+
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+                <strong>
+
+                    Revisa la información ingresada
+
+                </strong>
+
+            </div>
+
+            <ul class="mb-0">
+
+                @foreach($errors->all() as $error)
+
+                    <li>
+
+                        {{ $error }}
+
+                    </li>
+
+                @endforeach
+
+            </ul>
+
+        </div>
+
+    @endif
+
+
+    <!-- FORMULARIO -->
+
+    <form
+        action="{{ route('comercial.prospectos.store') }}"
+        method="POST"
+    >
+
+        @csrf
+
+        @include(
+            'comercial.prospectos._form'
+        )
+
+    </form>
 
 </div>
 

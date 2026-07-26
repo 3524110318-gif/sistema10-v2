@@ -1,7 +1,9 @@
 :root {
     --gtri-bg: #0b0f16;
     --gtri-bg-soft: #111722;
-    --gtri-panel: #151c27;
+    --gtri-panel: #0f172a;
+    --gtri-card-bg: #111827;
+    --gtri-card-soft: #172033;
 
     --gtri-gold: #d4a935;
     --gtri-gold-light: #f0cd67;
@@ -10,30 +12,45 @@
     --gtri-blue-soft: #123b6d;
 
     --gtri-text: #f4f4f4;
-    --gtri-muted: #8d95a3;
+    --gtri-muted: #94a3b8;
 
     --gtri-border: rgba(212, 169, 53, 0.35);
+    --gtri-border-soft: rgba(255, 255, 255, 0.08);
 
     --gtri-success: #198754;
     --gtri-warning: #ffc107;
     --gtri-danger: #dc3545;
 }
 
-/* ============================= */
-/* BASE GENERAL                  */
-/* ============================= */
+/* ================================================== */
+/* BASE GENERAL                                       */
+/* ================================================== */
 
 body {
+    margin: 0;
     background: var(--gtri-bg);
     color: var(--gtri-text);
 }
 
 .gtri-page {
-    background: var(--gtri-bg);
     min-height: 100vh;
+    margin: 0;
+
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(15, 94, 199, 0.08),
+            transparent 35%
+        ),
+        #090d13;
+
+    color: var(--gtri-text);
 }
 
 .gtri-page-header {
+    padding: 22px;
+    margin-bottom: 24px;
+
     background:
         linear-gradient(
             135deg,
@@ -44,56 +61,84 @@ body {
     border: 1px solid var(--gtri-border);
     border-radius: 12px;
 
-    padding: 22px;
-
-    margin-bottom: 24px;
-
-    box-shadow:
-        0 8px 24px
-        rgba(0, 0, 0, 0.25);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
 }
 
 .gtri-page-title {
+    margin-bottom: 4px;
     color: var(--gtri-gold);
     font-weight: 700;
-    margin-bottom: 4px;
 }
 
 .gtri-page-subtitle {
-    color: var(--gtri-muted);
     margin-bottom: 0;
+    color: var(--gtri-muted);
 }
 
-
-/* ============================= */
-/* TARJETAS                      */
-/* ============================= */
+/* ================================================== */
+/* TARJETAS                                           */
+/* ================================================== */
 
 .gtri-card {
-    background:
-        linear-gradient(
-            145deg,
-            rgba(21, 28, 39, 0.98),
-            rgba(10, 14, 20, 0.98)
-        );
-
-    border: 1px solid var(--gtri-border);
-
-    border-radius: 12px;
-
     padding: 22px;
 
-    box-shadow:
-        0 8px 24px
-        rgba(0, 0, 0, 0.3);
+    background: var(--gtri-panel);
+
+    border: 1px solid var(--gtri-border-soft);
+    border-radius: 16px;
+
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
 }
 
+.gtri-info-card {
+    padding: 20px;
 
-/* ============================= */
-/* SECCIONES                     */
-/* ============================= */
+    background: var(--gtri-card-bg);
+
+    border: 1px solid var(--gtri-border-soft);
+    border-radius: 14px;
+}
+
+.gtri-info-label {
+    color: var(--gtri-gold);
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.gtri-info-value {
+    color: var(--gtri-text);
+    font-size: 1rem;
+    font-weight: 500;
+    word-break: break-word;
+}
+
+.gtri-stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 48px;
+    height: 48px;
+
+    background: var(--gtri-card-bg);
+    color: var(--gtri-gold);
+
+    border: 1px solid rgba(212, 169, 53, 0.25);
+    border-radius: 12px;
+
+    font-size: 1.35rem;
+}
+
+/* ================================================== */
+/* SECCIONES                                          */
+/* ================================================== */
 
 .gtri-section {
+    padding: 22px;
+    margin-bottom: 20px;
+
     background:
         linear-gradient(
             145deg,
@@ -102,33 +147,31 @@ body {
         );
 
     border: 1px solid var(--gtri-border);
-
     border-radius: 10px;
-
-    padding: 22px;
-
-    margin-bottom: 20px;
 }
 
 .gtri-section-title {
-    color: var(--gtri-gold);
-
-    font-weight: 700;
-
-    text-transform: uppercase;
-
-    letter-spacing: 0.6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 
     margin-bottom: 20px;
 
-    display: flex;
+    color: var(--gtri-gold);
 
-    align-items: center;
-
-    gap: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
 }
 
 .gtri-section-title span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 32px;
+    height: 32px;
+
     background:
         linear-gradient(
             135deg,
@@ -138,42 +181,25 @@ body {
 
     color: #10131a;
 
-    min-width: 32px;
-
-    height: 32px;
-
     border-radius: 6px;
 
-    display: inline-flex;
-
-    align-items: center;
-
-    justify-content: center;
-
     font-size: 0.85rem;
-
     font-weight: 800;
 }
 
-
-/* ============================= */
-/* FORMULARIOS                   */
-/* ============================= */
+/* ================================================== */
+/* FORMULARIOS                                        */
+/* ================================================== */
 
 .gtri-input,
 .gtri-select,
 .gtri-textarea {
-    background-color: #0c1118 !important;
-
-    border:
-        1px solid
-        var(--gtri-border) !important;
-
-    color:
-        var(--gtri-text) !important;
-
     min-height: 46px;
 
+    background-color: #0c1118 !important;
+    color: var(--gtri-text) !important;
+
+    border: 1px solid var(--gtri-border) !important;
     border-radius: 6px;
 }
 
@@ -181,11 +207,9 @@ body {
 .gtri-select:focus,
 .gtri-textarea:focus {
     background-color: #0c1118 !important;
-
     color: #ffffff !important;
 
-    border-color:
-        var(--gtri-gold) !important;
+    border-color: var(--gtri-gold) !important;
 
     box-shadow:
         0 0 0 0.18rem
@@ -212,12 +236,58 @@ body {
     font-size: 0.85rem;
 }
 
+/* ================================================== */
+/* CHECKBOX TIPO TARJETA                              */
+/* ================================================== */
 
-/* ============================= */
-/* BOTONES                       */
-/* ============================= */
+.gtri-check-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+    min-height: 64px;
+    padding: 15px 16px;
+
+    background: var(--gtri-card-bg);
+    color: var(--gtri-text);
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.gtri-check-card:hover {
+    background: var(--gtri-card-soft);
+    border-color: var(--gtri-gold);
+}
+
+.gtri-check-card .form-check-input {
+    flex-shrink: 0;
+
+    width: 19px;
+    height: 19px;
+    margin: 0;
+}
+
+.gtri-check-card .form-check-input:checked {
+    background-color: var(--gtri-gold);
+    border-color: var(--gtri-gold);
+}
+
+.gtri-check-card i {
+    color: var(--gtri-gold);
+}
+
+/* ================================================== */
+/* BOTONES                                            */
+/* ================================================== */
 
 .gtri-btn-primary {
+    padding: 10px 22px;
+
     background:
         linear-gradient(
             135deg,
@@ -228,14 +298,9 @@ body {
     color: #11151c;
 
     border: none;
+    border-radius: 6px;
 
     font-weight: 700;
-
-    padding:
-        10px
-        22px;
-
-    border-radius: 6px;
 }
 
 .gtri-btn-primary:hover {
@@ -250,18 +315,12 @@ body {
 }
 
 .gtri-btn-secondary {
-    background: #151a23;
+    padding: 10px 22px;
 
+    background: #151a23;
     color: #d8dde6;
 
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.16);
-
-    padding:
-        10px
-        22px;
-
+    border: 1px solid rgba(255, 255, 255, 0.16);
     border-radius: 6px;
 }
 
@@ -270,114 +329,144 @@ body {
     color: #ffffff;
 }
 
+.gtri-btn-search{
+    background:rgba(15,94,199,.15);
+    color:#7FC8FF;
+    border:1px solid rgba(15,94,199,.35);
+    transition:.25s ease;
+}
 
-/* ============================= */
-/* TABLAS                        */
-/* ============================= */
+.gtri-btn-search:hover{
+    background:rgba(15,94,199,.30);
+    color:#fff;
+    border-color:rgba(15,94,199,.60);
+}
+
+.gtri-btn-success{
+    background:#198754;
+    color:#fff;
+    border:none;
+}
+
+.gtri-btn-success:hover{
+    background:#157347;
+    color:#fff;
+}
+
+.gtri-btn-danger{
+    background:#dc3545;
+    color:#fff;
+    border:none;
+}
+
+.gtri-btn-danger:hover{
+    background:#bb2d3b;
+    color:#fff;
+}
+
+.gtri-btn-info{
+    background:rgba(13,202,240,.15);
+    color:#7bdfff;
+    border:1px solid rgba(13,202,240,.35);
+}
+
+.gtri-btn-info:hover{
+    background:rgba(13,202,240,.28);
+    color:#fff;
+}
+
+/* ================================================== */
+/* TABLAS                                             */
+/* ================================================== */
 
 .gtri-table-wrapper {
+    overflow: hidden;
+
     background: #0f141c;
 
     border: 1px solid var(--gtri-border);
-
     border-radius: 10px;
-
-    overflow: hidden;
 }
 
-.gtri-table{
-    background:#111827;
-    color:#F8FAFC;
+.gtri-table {
+    background: var(--gtri-card-bg);
+    color: var(--gtri-text);
 }
 
-.gtri-table thead{
-    background:#1E293B;
+.gtri-table thead {
+    background: #1e293b;
 }
 
-.gtri-table thead th{
-    background:#1E293B;
-    color:#D4AF37;
-    font-size:15px;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:.5px;
-    border-bottom:2px solid rgba(212,175,55,.35);
-    padding:16px 18px;
+.gtri-table thead th {
+    padding: 16px 18px;
+
+    background: #1e293b;
+    color: var(--gtri-gold);
+
+    border-bottom: 2px solid rgba(212, 169, 53, 0.35);
+
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.gtri-table tbody td{
-    background:#111827;
-    color:#F8FAFC;
-    border-color:rgba(255,255,255,.08);
+.gtri-table tbody td {
+    background: var(--gtri-card-bg);
+    color: var(--gtri-text);
+
+    border-color: var(--gtri-border-soft);
 }
 
-.gtri-table tbody tr:hover{
-    background:#1F2937;
+.gtri-table tbody tr:hover td {
+    background: #1f2937;
 }
 
-.gtri-table tbody tr:hover td{
-    background:#1F2937;
-}
-
-
-/* ============================= */
-/* BADGES                        */
-/* ============================= */
+/* ================================================== */
+/* BADGES                                             */
+/* ================================================== */
 
 .gtri-badge-success {
-    background:
-        rgba(25, 135, 84, 0.18);
-
+    background: rgba(25, 135, 84, 0.18);
     color: #4ed58a;
 
-    border:
-        1px solid
-        rgba(25, 135, 84, 0.45);
+    border: 1px solid rgba(25, 135, 84, 0.45);
 }
 
 .gtri-badge-warning {
-    background:
-        rgba(255, 193, 7, 0.15);
-
+    background: rgba(255, 193, 7, 0.15);
     color: #ffd65a;
 
-    border:
-        1px solid
-        rgba(255, 193, 7, 0.4);
+    border: 1px solid rgba(255, 193, 7, 0.4);
 }
 
 .gtri-badge-danger {
-    background:
-        rgba(220, 53, 69, 0.15);
-
+    background: rgba(220, 53, 69, 0.15);
     color: #ff6574;
 
-    border:
-        1px solid
-        rgba(220, 53, 69, 0.4);
+    border: 1px solid rgba(220, 53, 69, 0.4);
 }
 
-
-/* ============================= */
-/* SIDEBAR                       */
-/* ============================= */
+/* ================================================== */
+/* SIDEBAR                                            */
+/* ================================================== */
 
 .gtri-sidebar {
     background:
         linear-gradient(
             180deg,
-            #0a0f17,
-            #0d131c
+            #090d14 0%,
+            #0c121b 55%,
+            #090d14 100%
         );
 
-    border-right:
-        1px solid
-        rgba(212, 169, 53, 0.25);
+    border-right: 1px solid rgba(212, 169, 53, 0.25);
+
+    box-shadow: 8px 0 25px rgba(0, 0, 0, 0.25);
 }
 
 .gtri-sidebar-title {
     color: var(--gtri-gold);
-
     font-weight: 800;
 }
 
@@ -386,14 +475,11 @@ body {
 
     border-radius: 6px;
 
-    transition:
-        0.2s ease;
+    transition: 0.2s ease;
 }
 
 .gtri-sidebar-link:hover {
-    background:
-        rgba(15, 94, 199, 0.12);
-
+    background: rgba(15, 94, 199, 0.12);
     color: #ffffff;
 }
 
@@ -407,49 +493,44 @@ body {
 
     color: var(--gtri-gold);
 
-    border:
-        1px solid
-        rgba(212, 169, 53, 0.4);
+    border: 1px solid rgba(212, 169, 53, 0.4);
 }
 
-
-/* ============================= */
-/* NAVBAR                        */
-/* ============================= */
+/* ================================================== */
+/* NAVBAR                                             */
+/* ================================================== */
 
 .gtri-navbar {
-    background:
-        #0f151e !important;
+    min-height: 76px;
 
-    border-bottom:
-        1px solid
-        rgba(212, 169, 53, 0.2);
+    background: rgba(13, 19, 28, 0.98) !important;
+    color: var(--gtri-text);
 
-    color:
-        var(--gtri-text);
+    border-bottom: 1px solid rgba(212, 169, 53, 0.2);
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
 }
 
-
-/* ============================= */
-/* ALERTAS                       */
-/* ============================= */
+/* ================================================== */
+/* ALERTAS                                            */
+/* ================================================== */
 
 .gtri-alert {
-    border-radius: 8px;
     border: 1px solid var(--gtri-border);
+    border-radius: 8px;
 }
 
-/* ============================= */
-/* LOGO / MARCA GTRI             */
-/* ============================= */
+/* ================================================== */
+/* LOGO                                               */
+/* ================================================== */
 
 .gtri-logo-mark {
-    width: 44px;
-    height: 44px;
-
     display: flex;
     align-items: center;
     justify-content: center;
+
+    width: 44px;
+    height: 44px;
 
     background:
         linear-gradient(
@@ -458,155 +539,702 @@ body {
             var(--gtri-gold-light)
         );
 
-    color: #0b0f16;
+    color: var(--gtri-bg);
 
     border-radius: 8px;
 
     font-size: 1.5rem;
     font-weight: 900;
 
-    box-shadow:
-        0 0 18px
-        rgba(212, 169, 53, 0.25);
+    box-shadow: 0 0 18px rgba(212, 169, 53, 0.25);
 }
 
+/* ================================================== */
+/* EXPEDIENTE - ENCABEZADO                            */
+/* ================================================== */
 
-/* ============================= */
-/* ESTRUCTURA GLOBAL             */
-/* ============================= */
+.gtri-expediente-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
 
-.gtri-page {
-    margin: 0;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+}
+
+/* ================================================== */
+/* EXPEDIENTE - PERFIL                                */
+/* ================================================== */
+
+.gtri-expediente-profile {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr) minmax(250px, 330px);
+    align-items: center;
+    gap: 20px;
+
+    padding: 20px;
+    margin-bottom: 16px;
 
     background:
-        radial-gradient(
-            circle at top right,
-            rgba(15, 94, 199, 0.08),
-            transparent 35%
-        ),
-        #090d13;
+        linear-gradient(
+            145deg,
+            var(--gtri-panel),
+            #0b1220
+        );
+
+    border: 1px solid var(--gtri-border);
+    border-radius: 16px;
+}
+
+.gtri-expediente-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gtri-expediente-avatar img,
+.gtri-expediente-avatar-placeholder {
+    width: 135px;
+    height: 135px;
+
+    object-fit: cover;
+
+    border: 4px solid var(--gtri-gold);
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 0 6px
+        rgba(212, 169, 53, 0.08);
+}
+
+.gtri-expediente-avatar-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--gtri-card-bg);
+}
+
+.gtri-expediente-avatar-placeholder i {
+    color: #64748b;
+    font-size: 4.5rem;
+}
+
+.gtri-expediente-name h3 {
+    margin: 0 0 3px;
 
     color: var(--gtri-text);
 
-    min-height: 100vh;
+    font-size: 1.55rem;
+}
+
+.gtri-expediente-name p {
+    margin: 0 0 10px;
+    color: var(--gtri-muted);
+}
+
+/* ================================================== */
+/* EXPEDIENTE - RESUMEN                               */
+/* ================================================== */
+
+.gtri-expediente-summary {
+    display: grid;
+    gap: 10px;
+
+    padding: 14px 16px;
+
+    background: var(--gtri-card-bg);
+
+    border: 1px solid var(--gtri-border-soft);
+    border-radius: 12px;
+}
+
+.gtri-expediente-summary-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 12px;
+
+    padding-bottom: 9px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.gtri-expediente-summary-item:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.gtri-expediente-summary-label {
+    color: var(--gtri-muted);
+
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.gtri-expediente-summary-value {
+    color: var(--gtri-text);
+
+    font-weight: 700;
+    text-align: right;
+}
+
+.gtri-expediente-summary-value.gold {
+    color: var(--gtri-gold-light);
+}
+
+/* ================================================== */
+/* EXPEDIENTE - INFORMACIÓN GENERAL                   */
+/* ================================================== */
+
+.gtri-expediente-main-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+
+    margin-bottom: 16px;
+}
+
+.gtri-expediente-main-grid .gtri-section {
+    margin: 0;
+    padding: 18px;
+}
+
+.gtri-expediente-main-grid .gtri-section-wide {
+    grid-column: 1 / -1;
+}
+
+.gtri-expediente-field {
+    height: 100%;
+    min-height: 72px;
+    padding: 12px 14px;
+
+    background: var(--gtri-card-bg);
+
+    border: 1px solid var(--gtri-border-soft);
+    border-radius: 11px;
+}
+
+.gtri-expediente-field-label {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--gtri-muted);
+
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.035em;
+}
+
+.gtri-expediente-field-value {
+    color: var(--gtri-text);
+
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+/* ================================================== */
+/* EXPEDIENTE - SECCIONES                             */
+/* ================================================== */
+
+.gtri-expediente-documents-section,
+.gtri-expediente-history-section,
+.gtri-expediente-actions-section {
+    padding: 18px;
+    margin-bottom: 16px;
+}
+
+/* ================================================== */
+/* EXPEDIENTE - PROGRESO DOCUMENTOS                   */
+/* ================================================== */
+
+.gtri-expediente-doc-progress {
+    padding: 16px;
+    margin-bottom: 16px;
+
+    background: var(--gtri-card-bg);
+
+    border: 1px solid var(--gtri-border-soft);
+    border-radius: 12px;
+}
+
+.gtri-expediente-doc-progress-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.gtri-expediente-doc-progress-title {
+    color: var(--gtri-text);
+    font-weight: 700;
+}
+
+.gtri-expediente-doc-progress-title i {
+    margin-right: 7px;
+    color: var(--gtri-gold);
+}
+
+.gtri-expediente-doc-progress small {
+    color: var(--gtri-muted);
+}
+
+.gtri-expediente-doc-progress-total {
+    text-align: right;
+}
+
+.gtri-expediente-doc-progress-total strong {
+    display: block;
+
+    color: var(--gtri-gold-light);
+
+    font-size: 1.15rem;
+}
+
+.gtri-expediente-progress {
+    display: block;
+
+    width: 100%;
+    height: 14px;
+    margin-top: 14px;
+
+    overflow: hidden;
+
+    background: #1f2937;
+
+    border: 0;
+    border-radius: 999px;
+}
+
+.gtri-expediente-progress::-webkit-progress-bar {
+    background: #1f2937;
+    border-radius: 999px;
+}
+
+.gtri-expediente-progress::-webkit-progress-value {
+    background: #17945b;
+    border-radius: 999px;
+}
+
+.gtri-expediente-progress::-moz-progress-bar {
+    background: #17945b;
+    border-radius: 999px;
+}
+
+.gtri-expediente-progress-percentage {
+    margin-top: 5px;
+
+    color: var(--gtri-muted);
+
+    font-size: 0.75rem;
+    text-align: right;
+}
+
+/* ================================================== */
+/* EXPEDIENTE - DOCUMENTOS                            */
+/* ================================================== */
+
+.gtri-expediente-documents-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.gtri-expediente-document-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+
+    min-height: 82px;
+    padding: 12px 14px;
+
+    background: var(--gtri-card-bg);
+
+    border: 1px solid var(--gtri-border-soft);
+    border-radius: 11px;
+}
+
+.gtri-expediente-document-item.gtri-document-delivered {
+    border-left: 3px solid #19a464;
+}
+
+.gtri-expediente-document-item.gtri-document-pending {
+    border-left: 3px solid var(--gtri-gold);
+}
+
+.gtri-expediente-document-information {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    min-width: 0;
+}
+
+.gtri-expediente-document-icon {
+    display: flex;
+    flex: 0 0 38px;
+    align-items: center;
+    justify-content: center;
+
+    width: 38px;
+    height: 38px;
+
+    background: rgba(212, 169, 53, 0.09);
+    color: var(--gtri-gold-light);
+
+    border-radius: 9px;
+
+    font-size: 1.15rem;
+}
+
+.gtri-document-delivered .gtri-expediente-document-icon {
+    background: rgba(25, 164, 100, 0.12);
+    color: #32d58a;
+}
+
+.gtri-expediente-document-name {
+    display: block;
+
+    color: var(--gtri-text);
+
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.gtri-expediente-document-information small {
+    color: var(--gtri-muted);
+}
+
+.gtri-expediente-document-action {
+    flex: 0 0 auto;
+}
+
+.gtri-expediente-document-action .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    white-space: nowrap;
+}
+
+.gtri-expediente-readonly {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    color: var(--gtri-muted);
+
+    font-size: 0.8rem;
+}
+
+/* ================================================== */
+/* EXPEDIENTE - HISTORIAL                             */
+/* ================================================== */
+
+.gtri-expediente-history-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    margin-bottom: 16px;
+}
+
+.gtri-expediente-history-tabs .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 9px 13px;
+
+    background: var(--gtri-card-bg);
+    color: var(--gtri-muted);
+
+    border: 1px solid var(--gtri-border-soft);
+    border-radius: 9px;
+}
+
+.gtri-expediente-history-tabs .nav-link > span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 23px;
+    height: 23px;
+    padding: 0 6px;
+
+    background: rgba(212, 169, 53, 0.1);
+    color: var(--gtri-gold);
+
+    border-radius: 999px;
+
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.gtri-expediente-history-tabs .nav-link:hover {
+    color: var(--gtri-gold-light);
+    border-color: rgba(212, 169, 53, 0.45);
+}
+
+.gtri-expediente-history-tabs .nav-link.active {
+    background: var(--gtri-gold);
+    color: var(--gtri-bg);
+
+    border-color: var(--gtri-gold);
+
+    font-weight: 700;
+}
+
+.gtri-expediente-history-tabs .nav-link.active > span {
+    background: rgba(11, 15, 22, 0.15);
+    color: var(--gtri-bg);
+}
+
+.gtri-expediente-history-content {
+    min-height: 170px;
+}
+
+.gtri-expediente-empty-table {
+    padding: 34px !important;
+
+    color: var(--gtri-muted) !important;
+
+    text-align: center;
+}
+
+.gtri-expediente-empty-table i {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 2rem;
+}
+
+.gtri-expediente-empty-table span {
+    display: block;
+}
+
+/* ================================================== */
+/* EXPEDIENTE - ACCIONES                              */
+/* ================================================== */
+
+.gtri-expediente-actions {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.gtri-expediente-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    min-height: 43px;
+}
+
+/* ================================================== */
+/* RESPONSIVE                                         */
+/* ================================================== */
+
+@media (max-width: 1199.98px) {
+    .gtri-expediente-profile {
+        grid-template-columns: 135px minmax(0, 1fr);
+    }
+
+    .gtri-expediente-summary {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .gtri-expediente-summary-item {
+        display: block;
+
+        padding: 0 12px 0 0;
+
+        border-right: 1px solid rgba(255, 255, 255, 0.06);
+        border-bottom: 0;
+    }
+
+    .gtri-expediente-summary-item:last-child {
+        border-right: 0;
+    }
+
+    .gtri-expediente-summary-value {
+        display: block;
+
+        margin-top: 3px;
+
+        text-align: left;
+    }
+
+    .gtri-expediente-actions {
+        grid-template-columns: repeat(3, minmax(150px, 1fr));
+    }
+}
+
+@media (max-width: 991.98px) {
+    .gtri-expediente-main-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .gtri-expediente-main-grid .gtri-section-wide {
+        grid-column: auto;
+    }
+
+    .gtri-expediente-documents-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .gtri-expediente-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .gtri-expediente-profile {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .gtri-expediente-summary {
+        grid-column: auto;
+        grid-template-columns: 1fr;
+
+        text-align: left;
+    }
+
+    .gtri-expediente-summary-item {
+        display: grid;
+        grid-template-columns: 1fr auto;
+
+        padding: 0 0 9px;
+
+        border-right: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .gtri-expediente-summary-value {
+        display: inline;
+
+        margin-top: 0;
+
+        text-align: right;
+    }
+
+    .gtri-expediente-doc-progress-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .gtri-expediente-doc-progress-total {
+        text-align: left;
+    }
+
+    .gtri-expediente-document-item {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .gtri-expediente-document-action,
+    .gtri-expediente-document-action form,
+    .gtri-expediente-document-action .btn {
+        width: 100%;
+    }
+
+    .gtri-expediente-actions {
+        grid-template-columns: 1fr;
+    }
 }
 
 
-.gtri-sidebar {
-    background:
-        linear-gradient(
-            180deg,
-            #090d14 0%,
-            #0c121b 55%,
-            #090d14 100%
-        );
 
-    border-right:
-        1px solid
-        rgba(212, 169, 53, 0.25);
+/* =========================================================
+   INCIDENCIAS RH
+========================================================= */
 
-    box-shadow:
-        8px 0 25px
-        rgba(0, 0, 0, 0.25);
+.gtri-summary-icon {
+    width: 46px;
+    height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    color: var(--gtri-gold);
+    background: rgba(212, 169, 53, 0.08);
+    border: 1px solid var(--gtri-border);
+    font-size: 1.25rem;
 }
 
-
-.gtri-navbar {
-    background:
-        rgba(
-            13,
-            19,
-            28,
-            0.98
-        ) !important;
-
-    border-bottom:
-        1px solid
-        rgba(212, 169, 53, 0.2);
-
-    min-height: 76px;
-
-    box-shadow:
-        0 5px 20px
-        rgba(0, 0, 0, 0.2);
+.gtri-summary-icon.text-light i {
+    color: #ffffff;
 }
 
-
-.gtri-check-card{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    width:100%;
-    min-height:64px;
-    padding:15px 16px;
-    background:#111827;
-    border:1px solid rgba(255,255,255,.10);
-    border-radius:12px;
-    color:#F8FAFC;
-    cursor:pointer;
-    transition:.2s ease;
+.gtri-summary-icon.text-warning i {
+    color: var(--bs-warning);
 }
 
-.gtri-check-card:hover{
-    border-color:#D4AF37;
-    background:#172033;
+.gtri-summary-icon.text-success i {
+    color: var(--bs-success);
 }
 
-.gtri-check-card .form-check-input{
-    width:19px;
-    height:19px;
-    margin:0;
-    flex-shrink:0;
+.gtri-summary-icon.text-danger i {
+    color: var(--bs-danger);
 }
 
-.gtri-check-card .form-check-input:checked{
-    background-color:#D4AF37;
-    border-color:#D4AF37;
+.gtri-table-avatar {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: 700;
+    color: var(--gtri-gold-light);
+    background: rgba(212, 169, 53, 0.09);
+    border: 1px solid var(--gtri-border);
 }
 
-.gtri-check-card i{
-    color:#D4AF37;
+.gtri-type-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.42rem 0.72rem;
+    border-radius: 999px;
+    color: var(--gtri-text);
+    background: rgba(15, 94, 199, 0.12);
+    border: 1px solid rgba(15, 94, 199, 0.38);
+    font-size: 0.83rem;
+    font-weight: 600;
 }
 
-.gtri-stat-icon{
-    width:48px;
-    height:48px;
-    border-radius:12px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:#111827;
-    border:1px solid rgba(212,175,55,.25);
-    color:#D4AF37;
-    font-size:1.35rem;
+.gtri-table .btn-outline-success,
+.gtri-table .btn-outline-danger {
+    border-radius: 8px;
+    white-space: nowrap;
 }
 
-.gtri-card{
-    background:#0F172A;
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:16px;
-    padding:22px;
-    box-shadow:0 10px 25px rgba(0,0,0,.12);
+.gtri-table .btn-outline-success:hover,
+.gtri-table .btn-outline-danger:hover {
+    color: #ffffff;
 }
 
-.gtri-info-card{
-    background:#111827;
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:14px;
-    padding:20px;
+.gtri-section .input-group-text {
+    color: var(--gtri-gold);
+    background: var(--gtri-bg-soft);
+    border-color: var(--gtri-border);
 }
 
-.gtri-info-label{
-    color:#D4AF37;
-    font-size:.82rem;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:.04em;
+.gtri-section .input-group .form-control {
+    border-left: 0;
 }
 
-.gtri-info-value{
-    color:#F8FAFC;
-    font-size:1rem;
-    font-weight:500;
-    word-break:break-word;
+.gtri-section .input-group .form-control:focus {
+    border-color: var(--gtri-gold);
+    box-shadow: none;
 }

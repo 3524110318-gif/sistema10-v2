@@ -24,23 +24,12 @@
 
         </div>
 
-
-        <a
-            href="{{ route('rh.empleados.show', $empleado->id) }}"
-            class="btn gtri-btn-secondary"
-        >
-
-            <i class="bi bi-arrow-left me-1"></i>
-
-            Volver
-
-        </a>
-
     </div>
 
 
     <form
         method="POST"
+        enctype="multipart/form-data"
         action="{{ route(
             'rh.capacitaciones.store',
             $empleado->id
@@ -379,6 +368,83 @@
                     >
 
                     @error('vigencia_hasta')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label
+                        for="evidencia"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Evidencia
+
+                    </label>
+
+                    <input
+                        type="file"
+                        name="evidencia"
+                        id="evidencia"
+                        class="form-control gtri-input"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                    >
+
+                    <small class="text-secondary">
+
+                        PDF o imagen.
+
+                    </small>
+
+                    @error('evidencia')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <label
+                        for="dc3"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Constancia DC3
+
+                    </label>
+
+                    <input
+                        type="file"
+                        name="dc3"
+                        id="dc3"
+                        class="form-control gtri-input"
+                        accept=".pdf"
+                    >
+
+                    <small class="text-secondary">
+
+                        Únicamente PDF.
+
+                    </small>
+
+                    @error('dc3')
 
                         <div class="text-danger small mt-1">
 

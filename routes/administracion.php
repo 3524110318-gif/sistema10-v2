@@ -28,6 +28,7 @@ Route::middleware(['auth', 'role:administracion'])->group(function () {
         ->name('administracion.logs');
 
     Route::resource('categorias',CategoriaProductoController::class)
+        ->except('show')
         ->names('administracion.categorias');
 
     Route::resource('productos',ProductoController::class)

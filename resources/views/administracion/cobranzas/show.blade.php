@@ -229,7 +229,7 @@
 
                     @case('pendiente')
 
-                        <span class="badge gtri-badge-warning">
+                        <span class="badge bg-primary">
 
                             <i class="bi bi-clock me-1"></i>
 
@@ -242,7 +242,7 @@
 
                     @case('revision')
 
-                        <span class="badge bg-primary">
+                        <span class="badge gtri-badge-warning">
 
                             <i class="bi bi-search me-1"></i>
 

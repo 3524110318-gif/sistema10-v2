@@ -141,7 +141,7 @@ class CobranzaController extends Controller
 
         LogActividad::create([
 
-            'usuario' => Auth::user()->name,
+            'usuario' => Auth::user()->rol,
 
             'accion' => 'Creó una cobranza de la factura '.$factura->folio,
 

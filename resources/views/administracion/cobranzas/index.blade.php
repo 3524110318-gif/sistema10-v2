@@ -215,62 +215,54 @@
                                 </td>
 
                                 {{-- ESTADO --}}
+
                                 <td class="text-center">
 
-                                    @switch($cobranza->estado)
+                                    @if(
+                                        $cobranza->semaforo === 'rojo'
+                                        &&
+                                        $cobranza->estado !== 'pagada'
+                                    )
 
-                                        @case('pendiente')
+                                        <span class="badge gtri-badge-danger">
 
-                                            <span class="badge gtri-badge-warning">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
 
-                                                <i class="bi bi-clock me-1"></i>
+                                            Vencida
 
-                                                Pendiente
+                                        </span>
 
-                                            </span>
+                                    @elseif($cobranza->estado === 'revision')
 
-                                            @break
+                                        <span class="badge gtri-badge-warning">
 
+                                            <i class="bi bi-search me-1"></i>
 
-                                        @case('revision')
+                                            En revisión
 
-                                            <span class="badge bg-primary">
+                                        </span>
 
-                                                <i class="bi bi-search me-1"></i>
+                                    @elseif($cobranza->estado === 'pagada')
 
-                                                En revisión
+                                        <span class="badge gtri-badge-success">
 
-                                            </span>
+                                            <i class="bi bi-check-circle me-1"></i>
 
-                                            @break
+                                            Pagada
 
+                                        </span>
 
-                                        @case('pagada')
+                                    @else
 
-                                            <span class="badge gtri-badge-success">
+                                        <span class="badge bg-primary">
 
-                                                <i class="bi bi-check-circle me-1"></i>
+                                            <i class="bi bi-clock me-1"></i>
 
-                                                Pagada
+                                            Pendiente
 
-                                            </span>
+                                        </span>
 
-                                            @break
-
-
-                                        @case('vencida')
-
-                                            <span class="badge gtri-badge-danger">
-
-                                                <i class="bi bi-exclamation-circle me-1"></i>
-
-                                                Vencida
-
-                                            </span>
-
-                                            @break
-
-                                    @endswitch
+                                    @endif
 
                                 </td>
 

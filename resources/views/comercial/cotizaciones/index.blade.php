@@ -2,24 +2,39 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
     <x-rh.alert-success />
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <h2>
+    <!-- ENCABEZADO -->
 
-            Cotizaciones
+    <div class="gtri-page-header">
 
-        </h2>
+        <div>
+
+            <h2 class="gtri-page-title">
+
+                <i class="bi bi-file-earmark-text me-2"></i>
+
+                Cotizaciones
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Consulta y administra las propuestas comerciales generadas para los prospectos.
+
+            </p>
+
+        </div>
 
         <a
             href="{{ route('comercial.cotizaciones.create') }}"
-            class="btn btn-primary"
+            class="btn gtri-btn-primary"
         >
 
-            <i class="bi bi-plus-circle"></i>
+            <i class="bi bi-plus-circle me-1"></i>
 
             Nueva Cotización
 
@@ -27,224 +42,348 @@
 
     </div>
 
-    <form
-        method="GET"
-        class="row g-2 mb-4"
-    >
 
-        <div class="col-md-4">
+    <!-- 01 · BUSCADOR -->
 
-            <input
-                type="text"
-                name="buscar"
-                class="form-control"
-                placeholder="Buscar por folio..."
-                value="{{ request('buscar') }}"
-            >
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>01</span>
+
+            Buscar cotizaciones
 
         </div>
 
-        <div class="col-auto">
+        <form
+            method="GET"
+            class="row g-3 align-items-end"
+        >
 
-            <button
-                class="btn btn-outline-primary"
-            >
+            <div class="col-lg-8 col-md-7">
 
-                Buscar
+                <label
+                    for="buscar"
+                    class="form-label"
+                >
 
-            </button>
+                    Buscar
+
+                </label>
+
+                <div class="input-group">
+
+                    <span class="input-group-text bg-dark border-secondary text-warning">
+
+                        <i class="bi bi-search"></i>
+
+                    </span>
+
+                    <input
+                        type="text"
+                        id="buscar"
+                        name="buscar"
+                        class="form-control gtri-input"
+                        placeholder="Buscar por folio..."
+                        value="{{ request('buscar') }}"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-4 col-md-5">
+
+                <div class="d-flex gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn gtri-btn-primary flex-grow-1"
+                    >
+
+                        <i class="bi bi-search me-1"></i>
+
+                        Buscar
+
+                    </button>
+
+                    @if(request('buscar'))
+
+                        <a
+                            href="{{ route('comercial.cotizaciones.index') }}"
+                            class="btn gtri-btn-secondary"
+                            title="Limpiar búsqueda"
+                        >
+
+                            <i class="bi bi-x-lg"></i>
+
+                        </a>
+
+                    @endif
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- 02 · LISTADO -->
+
+    <div class="gtri-section mb-0">
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+
+            <div class="gtri-section-title mb-0">
+
+                <span>02</span>
+
+                Listado de cotizaciones
+
+            </div>
+
+            <div>
+
+                <span class="text-secondary">
+
+                    Registros:
+
+                </span>
+
+                <span class="text-warning fw-bold">
+
+                    {{ $cotizaciones->count() }}
+
+                </span>
+
+            </div>
 
         </div>
 
-    </form>
 
-    <x-rh.card-rh titulo="Listado de Cotizaciones">
+        <div class="gtri-table-wrapper">
 
-        <div class="table-responsive">
+            <div class="table-responsive">
 
-            <table
-                class="table table-bordered table-hover align-middle"
-            >
+                <table class="table gtri-table align-middle mb-0">
 
-                <thead class="table-dark">
-
-                    <tr>
-
-                        <th>Folio</th>
-
-                        <th>Prospecto</th>
-
-                        <th>Fecha</th>
-
-                        <th>Monto</th>
-
-                        <th>Plazas</th>
-
-                        <th>Estatus</th>
-
-                        <th width="180">
-
-                            Acciones
-
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @forelse($cotizaciones as $cotizacion)
+                    <thead>
 
                         <tr>
 
-                            <td>
+                            <th>Folio</th>
 
-                                {{ $cotizacion->folio }}
+                            <th>Prospecto</th>
 
-                            </td>
+                            <th>Fecha</th>
 
-                            <td>
+                            <th>Monto</th>
 
-                                {{ $cotizacion->prospecto->razon_social }}
+                            <th class="text-center">Plazas</th>
 
-                            </td>
+                            <th class="text-center">Estatus</th>
 
-                            <td>
+                            <th width="140">Acciones</th>
 
-                                {{ $cotizacion->fecha->format('d/m/Y') }}
+                        </tr>
 
-                            </td>
+                    </thead>
 
-                            <td>
+                    <tbody>
 
-                                $ {{ number_format($cotizacion->monto,2) }}
+                        @forelse($cotizaciones as $cotizacion)
 
-                            </td>
+                            <tr>
 
-                            <td class="text-center">
+                                <td>
 
-                                {{ $cotizacion->numero_plazas }}
+                                    <span class="fw-semibold text-light">
 
-                            </td>
+                                        {{ $cotizacion->folio }}
 
-                            <td class="text-center">
+                                    </span>
 
-                                @switch($cotizacion->estatus)
+                                </td>
 
-                                    @case('pendiente')
+                                <td>
 
-                                        <span class="badge bg-warning text-dark">
+                                    <i class="bi bi-building me-1 text-secondary"></i>
 
-                                            Pendiente
+                                    {{ $cotizacion->prospecto->razon_social }}
 
-                                        </span>
+                                </td>
 
-                                    @break
+                                <td>
 
-                                    @case('aceptada')
+                                    <i class="bi bi-calendar-event me-1 text-secondary"></i>
 
-                                        <span class="badge bg-success">
+                                    {{ $cotizacion->fecha->format('d/m/Y') }}
 
-                                            Aceptada
+                                </td>
 
-                                        </span>
+                                <td>
 
-                                    @break
+                                    <span class="fw-semibold">
 
-                                    @case('rechazada')
+                                        $ {{ number_format($cotizacion->monto, 2) }}
 
-                                        <span class="badge bg-danger">
+                                    </span>
 
-                                            Rechazada
+                                </td>
 
-                                        </span>
+                                <td class="text-center">
 
-                                    @break
+                                    <span class="badge bg-secondary">
 
-                                    @case('cancelada')
+                                        {{ $cotizacion->numero_plazas }}
 
-                                        <span class="badge bg-secondary">
+                                    </span>
 
-                                            Cancelada
+                                </td>
 
-                                        </span>
+                                <td class="text-center">
 
-                                    @break
+                                    @switch($cotizacion->estatus)
 
-                                @endswitch
+                                        @case('pendiente')
 
-                            </td>
+                                            <span class="badge bg-warning text-dark">
 
-                            <td>
+                                                Pendiente
 
-                                <div class="d-flex gap-2">
+                                            </span>
 
-                                    <a
-                                        href="{{ route('comercial.cotizaciones.edit',$cotizacion) }}"
-                                        class="btn btn-warning btn-sm"
-                                    >
+                                        @break
 
-                                        <i class="bi bi-pencil"></i>
+                                        @case('aceptada')
 
-                                    </a>
+                                            <span class="badge bg-success">
 
-                                    <form
-                                        action="{{ route('comercial.cotizaciones.destroy',$cotizacion) }}"
-                                        method="POST"
-                                    >
+                                                Aceptada
 
-                                        @csrf
+                                            </span>
 
-                                        @method('DELETE')
+                                        @break
 
-                                        <button
-                                            class="btn btn-danger btn-sm"
-                                            onclick="return confirm('¿Eliminar esta cotización?')"
+                                        @case('rechazada')
+
+                                            <span class="badge bg-danger">
+
+                                                Rechazada
+
+                                            </span>
+
+                                        @break
+
+                                        @case('cancelada')
+
+                                            <span class="badge bg-secondary">
+
+                                                Cancelada
+
+                                            </span>
+
+                                        @break
+
+                                    @endswitch
+
+                                </td>
+
+                                <td>
+
+                                    <div class="d-flex gap-2 flex-nowrap">
+
+                                        <a
+                                            href="{{ route('comercial.cotizaciones.edit', $cotizacion) }}"
+                                            class="btn btn-warning btn-sm"
+                                            title="Editar cotización"
                                         >
 
-                                            <i class="bi bi-trash"></i>
+                                            <i class="bi bi-pencil"></i>
 
-                                        </button>
+                                        </a>
 
-                                    </form>
+                                        <form
+                                            action="{{ route('comercial.cotizaciones.destroy', $cotizacion) }}"
+                                            method="POST"
+                                        >
 
-                                </div>
+                                            @csrf
 
-                            </td>
+                                            @method('DELETE')
 
-                        </tr>
+                                            <button
+                                                type="submit"
+                                                class="btn btn-danger btn-sm"
+                                                title="Eliminar cotización"
+                                                onclick="return confirm('¿Eliminar esta cotización?')"
+                                            >
 
-                    @empty
+                                                <i class="bi bi-trash"></i>
 
-                        <tr>
+                                            </button>
 
-                            <td
-                                colspan="7"
-                                class="text-center"
-                            >
+                                        </form>
 
-                                No existen cotizaciones registradas.
+                                    </div>
 
-                            </td>
+                                </td>
 
-                        </tr>
+                            </tr>
 
-                    @endforelse
+                        @empty
 
-                </tbody>
+                            <tr>
 
-            </table>
+                                <td
+                                    colspan="7"
+                                    class="text-center py-5"
+                                >
+
+                                    <i class="bi bi-file-earmark-x fs-1 text-secondary d-block mb-3"></i>
+
+                                    <h5 class="text-light mb-2">
+
+                                        No existen cotizaciones registradas
+
+                                    </h5>
+
+                                    <p class="text-secondary mb-0">
+
+                                        Genera una nueva cotización para comenzar a gestionar propuestas comerciales.
+
+                                    </p>
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
-        <div class="mt-3">
 
-            {{ $cotizaciones->links() }}
+        <!-- PAGINACIÓN -->
 
-        </div>
+        @if(method_exists($cotizaciones, 'hasPages') && $cotizaciones->hasPages())
 
-    </x-rh.card-rh>
+            <div class="d-flex justify-content-center mt-4">
+
+                {{ $cotizaciones->withQueryString()->links() }}
+
+            </div>
+
+        @endif
+
+    </div>
 
 </div>
 

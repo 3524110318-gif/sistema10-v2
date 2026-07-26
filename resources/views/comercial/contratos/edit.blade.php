@@ -2,31 +2,90 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <h2 class="mb-4">
+    <div class="gtri-page-header">
 
-        Editar Contrato
+        <div>
 
-    </h2>
+            <h2 class="gtri-page-title">
 
-    <x-rh.card-rh titulo="Datos del Contrato">
+                <i class="bi bi-pencil-square me-2"></i>
 
-        <form
-            enctype="multipart/form-data"
-            action="{{ route('comercial.contratos.update',$contrato) }}"
-            method="POST"
+                Editar Contrato
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Actualiza las condiciones, vigencia, documentación y estado del contrato comercial.
+
+            </p>
+
+        </div>
+
+        <a
+            href="{{ route('comercial.contratos.index') }}"
+            class="btn gtri-btn-secondary"
         >
 
-            @csrf
+            <i class="bi bi-arrow-left me-1"></i>
 
-            @method('PUT')
+            Regresar
 
-            @include('comercial.contratos._form')
+        </a>
 
-        </form>
+    </div>
 
-    </x-rh.card-rh>
+
+    @if($errors->any())
+
+        <div class="alert alert-danger">
+
+            <div class="d-flex align-items-center mb-2">
+
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+                <strong>
+
+                    Revisa la información ingresada
+
+                </strong>
+
+            </div>
+
+            <ul class="mb-0">
+
+                @foreach($errors->all() as $error)
+
+                    <li>
+
+                        {{ $error }}
+
+                    </li>
+
+                @endforeach
+
+            </ul>
+
+        </div>
+
+    @endif
+
+
+    <form
+        enctype="multipart/form-data"
+        action="{{ route('comercial.contratos.update', $contrato) }}"
+        method="POST"
+    >
+
+        @csrf
+
+        @method('PUT')
+
+        @include('comercial.contratos._form')
+
+    </form>
 
 </div>
 

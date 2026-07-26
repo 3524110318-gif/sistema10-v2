@@ -1,25 +1,41 @@
+
 @extends('comercial.layouts.app')
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
     <x-rh.alert-success />
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <h2>
+    <!-- ENCABEZADO -->
 
-            Prospectos Comerciales
+    <div class="gtri-page-header">
 
-        </h2>
+        <div>
+
+            <h2 class="gtri-page-title">
+
+                <i class="bi bi-person-lines-fill me-2"></i>
+
+                Prospectos Comerciales
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Administra las oportunidades comerciales y da seguimiento a cada prospecto.
+
+            </p>
+
+        </div>
 
         <a
             href="{{ route('comercial.prospectos.create') }}"
-            class="btn btn-primary"
+            class="btn gtri-btn-primary"
         >
 
-            <i class="bi bi-plus-circle"></i>
+            <i class="bi bi-plus-circle me-1"></i>
 
             Nuevo Prospecto
 
@@ -27,242 +43,410 @@
 
     </div>
 
-    <form
-        method="GET"
-        class="row g-2 mb-4"
-    >
 
-        <div class="col-md-4">
+    <!-- BUSCADOR -->
 
-            <input
-                type="text"
-                name="buscar"
-                class="form-control"
-                placeholder="Buscar..."
-                value="{{ request('buscar') }}"
-            >
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>01</span>
+
+            Buscar prospectos
 
         </div>
 
-        <div class="col-auto">
+        <form
+            method="GET"
+            class="row g-3 align-items-end"
+        >
 
-            <button
-                class="btn btn-outline-primary"
-            >
+            <div class="col-lg-8 col-md-7">
 
-                Buscar
+                <label
+                    for="buscar"
+                    class="form-label"
+                >
 
-            </button>
+                    Buscar
+
+                </label>
+
+                <div class="input-group">
+
+                    <span class="input-group-text bg-dark border-secondary text-warning">
+
+                        <i class="bi bi-search"></i>
+
+                    </span>
+
+                    <input
+                        type="text"
+                        id="buscar"
+                        name="buscar"
+                        class="form-control gtri-input"
+                        placeholder="Buscar por razón social, contacto u otra información..."
+                        value="{{ request('buscar') }}"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-4 col-md-5">
+
+                <div class="d-flex gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn gtri-btn-primary flex-grow-1"
+                    >
+
+                        <i class="bi bi-search me-1"></i>
+
+                        Buscar
+
+                    </button>
+
+                    @if(request('buscar'))
+
+                        <a
+                            href="{{ route('comercial.prospectos.index') }}"
+                            class="btn gtri-btn-secondary"
+                            title="Limpiar búsqueda"
+                        >
+
+                            <i class="bi bi-x-lg"></i>
+
+                        </a>
+
+                    @endif
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- LISTADO -->
+
+    <div class="gtri-section mb-0">
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+
+            <div class="gtri-section-title mb-0">
+
+                <span>02</span>
+
+                Listado de prospectos
+
+            </div>
+
+            <div>
+
+                <span class="text-secondary">
+
+                    Registros:
+
+                </span>
+
+                <span class="text-warning fw-bold">
+
+                    {{ $prospectos->count() }}
+
+                </span>
+
+            </div>
 
         </div>
 
-    </form>
 
-    <x-rh.card-rh titulo="Listado de Prospectos">
+        <div class="gtri-table-wrapper">
 
-        <div class="table-responsive">
+            <div class="table-responsive">
 
-            <table
-                class="table table-bordered table-hover align-middle"
-            >
+                <table class="table gtri-table align-middle mb-0">
 
-                <thead class="table-dark">
-
-                    <tr>
-
-                        <th>Razón Social</th>
-
-                        <th>Contacto</th>
-
-                        <th>Teléfono</th>
-
-                        <th>Correo</th>
-
-                        <th>Tarifa</th>
-
-                        <th>Plazas</th>
-
-                        <th>Estatus</th>
-
-                        <th width="180">
-
-                            Acciones
-
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @forelse($prospectos as $prospecto)
+                    <thead>
 
                         <tr>
 
-                            <td>
+                            <th>
 
-                                {{ $prospecto->razon_social }}
+                                Razón Social
 
-                            </td>
+                            </th>
 
-                            <td>
+                            <th>
 
-                                {{ $prospecto->contacto }}
+                                Contacto
 
-                            </td>
+                            </th>
 
-                            <td>
+                            <th>
 
-                                {{ $prospecto->telefono }}
+                                Teléfono
 
-                            </td>
+                            </th>
 
-                            <td>
+                            <th>
 
-                                {{ $prospecto->correo }}
+                                Correo
 
-                            </td>
+                            </th>
 
-                            <td>
+                            <th>
 
-                                $ {{ number_format($prospecto->tarifa,2) }}
+                                Tarifa
 
-                            </td>
+                            </th>
 
-                            <td class="text-center">
+                            <th class="text-center">
 
-                                {{ $prospecto->numero_plazas }}
+                                Plazas
 
-                            </td>
+                            </th>
 
-                            <td class="text-center">
+                            <th class="text-center">
 
-                                @switch($prospecto->estatus)
+                                Estatus
 
-                                    @case('nuevo')
+                            </th>
 
-                                        <span class="badge bg-primary">
+                            <th width="140">
 
-                                            Nuevo
+                                Acciones
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @forelse($prospectos as $prospecto)
+
+                            <tr>
+
+                                <td>
+
+                                    <div class="fw-semibold text-light">
+
+                                        {{ $prospecto->razon_social }}
+
+                                    </div>
+
+                                </td>
+
+                                <td>
+
+                                    {{ $prospecto->contacto }}
+
+                                </td>
+
+                                <td>
+
+                                    <i class="bi bi-telephone me-1 text-secondary"></i>
+
+                                    {{ $prospecto->telefono }}
+
+                                </td>
+
+                                <td>
+
+                                    @if($prospecto->correo)
+
+                                        <i class="bi bi-envelope me-1 text-secondary"></i>
+
+                                        {{ $prospecto->correo }}
+
+                                    @else
+
+                                        <span class="text-secondary">
+
+                                            Sin correo
 
                                         </span>
 
-                                    @break
+                                    @endif
 
-                                    @case('seguimiento')
+                                </td>
 
-                                        <span class="badge bg-warning text-dark">
+                                <td>
 
-                                            Seguimiento
+                                    <span class="fw-semibold">
 
-                                        </span>
+                                        $ {{ number_format($prospecto->tarifa, 2) }}
 
-                                    @break
+                                    </span>
 
-                                    @case('cotizacion')
+                                </td>
 
-                                        <span class="badge bg-info text-dark">
+                                <td class="text-center">
 
-                                            Cotización
+                                    <span class="badge bg-secondary">
 
-                                        </span>
+                                        {{ $prospecto->numero_plazas }}
 
-                                    @break
+                                    </span>
 
-                                    @case('ganado')
+                                </td>
 
-                                        <span class="badge bg-success">
+                                <td class="text-center">
 
-                                            Ganado
+                                    @switch($prospecto->estatus)
 
-                                        </span>
+                                        @case('nuevo')
 
-                                    @break
+                                            <span class="badge bg-primary">
 
-                                    @case('perdido')
+                                                Nuevo
 
-                                        <span class="badge bg-danger">
+                                            </span>
 
-                                            Perdido
+                                        @break
 
-                                        </span>
+                                        @case('seguimiento')
 
-                                    @break
+                                            <span class="badge bg-warning text-dark">
 
-                                @endswitch
+                                                Seguimiento
 
-                            </td>
+                                            </span>
 
-                            <td>
+                                        @break
 
-                                <div class="d-flex gap-2">
+                                        @case('cotizacion')
 
-                                    <a
-                                        href="{{ route('comercial.prospectos.edit',$prospecto) }}"
-                                        class="btn btn-warning btn-sm"
-                                    >
+                                            <span class="badge bg-info text-dark">
 
-                                        <i class="bi bi-pencil"></i>
+                                                Cotización
 
-                                    </a>
+                                            </span>
 
-                                    <form
-                                        action="{{ route('comercial.prospectos.destroy',$prospecto) }}"
-                                        method="POST"
-                                    >
+                                        @break
 
-                                        @csrf
+                                        @case('ganado')
 
-                                        @method('DELETE')
+                                            <span class="badge bg-success">
 
-                                        <button
-                                            class="btn btn-danger btn-sm"
-                                            onclick="return confirm('¿Eliminar este prospecto?')"
+                                                Ganado
+
+                                            </span>
+
+                                        @break
+
+                                        @case('perdido')
+
+                                            <span class="badge bg-danger">
+
+                                                Perdido
+
+                                            </span>
+
+                                        @break
+
+                                    @endswitch
+
+                                </td>
+
+                                <td>
+
+                                    <div class="d-flex gap-2 flex-nowrap">
+
+                                        <a
+                                            href="{{ route('comercial.prospectos.edit', $prospecto) }}"
+                                            class="btn btn-warning btn-sm"
+                                            title="Editar prospecto"
                                         >
 
-                                            <i class="bi bi-trash"></i>
+                                            <i class="bi bi-pencil"></i>
 
-                                        </button>
+                                        </a>
 
-                                    </form>
+                                        <form
+                                            action="{{ route('comercial.prospectos.destroy', $prospecto) }}"
+                                            method="POST"
+                                        >
 
-                                </div>
+                                            @csrf
 
-                            </td>
+                                            @method('DELETE')
 
-                        </tr>
+                                            <button
+                                                type="submit"
+                                                class="btn btn-danger btn-sm"
+                                                title="Eliminar prospecto"
+                                                onclick="return confirm('¿Eliminar este prospecto?')"
+                                            >
 
-                    @empty
+                                                <i class="bi bi-trash"></i>
 
-                        <tr>
+                                            </button>
 
-                            <td
-                                colspan="8"
-                                class="text-center"
-                            >
+                                        </form>
 
-                                No existen prospectos comerciales.
+                                    </div>
 
-                            </td>
+                                </td>
 
-                        </tr>
+                            </tr>
 
-                    @endforelse
+                        @empty
 
-                </tbody>
+                            <tr>
 
-            </table>
+                                <td
+                                    colspan="8"
+                                    class="text-center py-5"
+                                >
+
+                                    <i class="bi bi-person-x fs-1 text-secondary d-block mb-3"></i>
+
+                                    <h5 class="text-light mb-2">
+
+                                        No existen prospectos comerciales
+
+                                    </h5>
+
+                                    <p class="text-secondary mb-0">
+
+                                        Registra un nuevo prospecto para comenzar su seguimiento comercial.
+
+                                    </p>
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
-        <div class="mt-3">
 
-            {{ $prospectos->links() }}
+        <!-- PAGINACIÓN -->
 
-        </div>
+        @if(method_exists($prospectos, 'hasPages') && $prospectos->hasPages())
 
-    </x-rh.card-rh>
+            <div class="d-flex justify-content-center mt-4">
+
+                {{ $prospectos->withQueryString()->links() }}
+
+            </div>
+
+        @endif
+
+    </div>
 
 </div>
 

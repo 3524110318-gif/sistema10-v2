@@ -2,31 +2,72 @@
 
 @section('contenido')
 
-@if ($errors->any())
+<div class="container-fluid">
 
-    <div class="alert alert-danger">
+    {{-- ENCABEZADO --}}
+    <div class="gtri-page-header">
 
-        <ul class="mb-0">
+        <div>
 
-            @foreach ($errors->all() as $error)
+            <h2 class="gtri-page-title">
 
-                <li>{{ $error }}</li>
+                <i class="bi bi-car-front-fill me-2"></i>
 
-            @endforeach
+                Nuevo vehículo
 
-        </ul>
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Registra una nueva unidad vehicular para la operación.
+
+            </p>
+
+        </div>
+
+        <a
+            href="{{ route(
+                'operaciones.vehiculos.index'
+            ) }}"
+            class="btn gtri-btn-secondary"
+        >
+
+            <i class="bi bi-arrow-left me-1"></i>
+
+            Regresar
+
+        </a>
 
     </div>
 
-@endif
 
-<div class="container">
+    {{-- ERRORES --}}
+    @if ($errors->any())
 
-    <h1>
+        <div class="alert alert-danger">
 
-        Nuevo Vehículo
+            <div class="fw-bold mb-2">
 
-    </h1>
+                <i class="bi bi-exclamation-triangle me-1"></i>
+
+                Se encontraron los siguientes errores:
+
+            </div>
+
+            <ul class="mb-0">
+
+                @foreach ($errors->all() as $error)
+
+                    <li>{{ $error }}</li>
+
+                @endforeach
+
+            </ul>
+
+        </div>
+
+    @endif
+
 
     <form
         method="POST"
@@ -37,125 +78,293 @@
 
         @csrf
 
-        <div class="mb-3">
 
-            <label>
+        {{-- DATOS GENERALES --}}
+        <div class="gtri-section">
 
-                Unidad
+            <div class="gtri-section-title">
 
-            </label>
+                <span>01</span>
 
-            <input
-                type="text"
-                name="unidad"
-                class="form-control"
-                required
-            >
+                Datos generales
 
-        </div>
+            </div>
 
-        <div class="mb-3">
 
-            <label>
+            <div class="row g-3">
 
-                Placas
+                {{-- UNIDAD --}}
+                <div class="col-md-6">
 
-            </label>
+                    <label
+                        for="unidad"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
 
-            <input
-                type="text"
-                name="placas"
-                class="form-control"
-                required
-            >
+                        Unidad
 
-            @error('placas')
+                    </label>
 
-                <div class="text-danger">
+                    <input
+                        type="text"
+                        name="unidad"
+                        id="unidad"
+                        class="form-control gtri-input"
+                        value="{{ old('unidad') }}"
+                        placeholder="Ejemplo: Unidad 01"
+                        required
+                    >
 
-                    {{ $message }}
+                    @error('unidad')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
 
                 </div>
 
-            @enderror
+
+                {{-- PLACAS --}}
+                <div class="col-md-6">
+
+                    <label
+                        for="placas"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Placas
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="placas"
+                        id="placas"
+                        class="form-control gtri-input"
+                        value="{{ old('placas') }}"
+                        placeholder="Ejemplo: ABC-123-D"
+                        style="text-transform:uppercase;"
+                        required
+                    >
+
+                    @error('placas')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
+
+
+                {{-- MARCA --}}
+                <div class="col-md-6">
+
+                    <label
+                        for="marca"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Marca
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="marca"
+                        id="marca"
+                        class="form-control gtri-input"
+                        value="{{ old('marca') }}"
+                        placeholder="Ejemplo: Nissan"
+                        required
+                    >
+
+                    @error('marca')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
+
+
+                {{-- MODELO --}}
+                <div class="col-md-6">
+
+                    <label
+                        for="modelo"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Modelo
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="modelo"
+                        id="modelo"
+                        class="form-control gtri-input"
+                        value="{{ old('modelo') }}"
+                        placeholder="Ejemplo: NP300"
+                        required
+                    >
+
+                    @error('modelo')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
+
+            </div>
 
         </div>
 
-        <div class="mb-3">
 
-            <label>
+        {{-- DATOS OPERATIVOS --}}
+        <div class="gtri-section">
 
-                Marca
+            <div class="gtri-section-title">
 
-            </label>
+                <span>02</span>
 
-            <input
-                type="text"
-                name="marca"
-                class="form-control"
-                required
-            >
+                Datos operativos
+
+            </div>
+
+
+            <div class="row g-3">
+
+                {{-- AÑO --}}
+                <div class="col-md-6">
+
+                    <label
+                        for="anio"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Año
+
+                    </label>
+
+                    <input
+                        type="number"
+                        name="anio"
+                        id="anio"
+                        class="form-control gtri-input"
+                        value="{{ old('anio') }}"
+                        placeholder="Ejemplo: 2023"
+                        required
+                    >
+
+                    @error('anio')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
+
+
+                {{-- KILOMETRAJE --}}
+                <div class="col-md-6">
+
+                    <label
+                        for="kilometraje_actual"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Kilometraje actual
+
+                    </label>
+
+                    <input
+                        type="number"
+                        name="kilometraje_actual"
+                        id="kilometraje_actual"
+                        class="form-control gtri-input"
+                        value="{{ old('kilometraje_actual') }}"
+                        placeholder="Ejemplo: 45000"
+                        min="0"
+                        required
+                    >
+
+                    @error('kilometraje_actual')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
+
+            </div>
 
         </div>
 
-        <div class="mb-3">
 
-            <label>
+        {{-- ACCIONES --}}
+        <div class="gtri-section mb-0">
 
-                Modelo
+            <div class="d-flex justify-content-end gap-2 flex-wrap">
 
-            </label>
+                <a
+                    href="{{ route(
+                        'operaciones.vehiculos.index'
+                    ) }}"
+                    class="btn gtri-btn-secondary"
+                >
 
-            <input
-                type="text"
-                name="modelo"
-                class="form-control"
-                required
-            >
+                    <i class="bi bi-x-circle me-1"></i>
 
-        </div>
+                    Cancelar
 
-        <div class="mb-3">
+                </a>
 
-            <label>
+                <button
+                    type="submit"
+                    class="btn gtri-btn-primary"
+                >
 
-                Año
+                    <i class="bi bi-floppy me-1"></i>
 
-            </label>
+                    Guardar vehículo
 
-            <input
-                type="number"
-                name="anio"
-                class="form-control"
-                required
-            >
+                </button>
 
-        </div>
-
-        <div class="mb-3">
-
-            <label>
-
-                Kilometraje Actual
-
-            </label>
-
-            <input
-                type="number"
-                name="kilometraje_actual"
-                class="form-control"
-                required
-            >
+            </div>
 
         </div>
-
-        <button
-            class="btn btn-success"
-        >
-
-            Guardar
-
-        </button>
 
     </form>
 

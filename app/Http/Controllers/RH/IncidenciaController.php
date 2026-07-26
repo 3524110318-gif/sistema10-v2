@@ -3,72 +3,368 @@
 namespace App\Http\Controllers\RH;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Administracion\LogActividad;
 use App\Models\RH\Empleado;
 use App\Models\RH\Incidencia;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class IncidenciaController extends Controller
 {
-     public function index()
+    public function index(Request $request)
     {
-        $incidencias = Incidencia::with('empleado')
-            ->latest()
-            ->get();
+        $buscar = trim(
+            $request->input('buscar', '')
+        );
 
-        return view('rh.incidencias.index', compact('incidencias'));
+        $incidencias = Incidencia::with('empleado')
+            ->when(
+                $buscar !== '',
+                function ($query) use ($buscar) {
+
+                    $query->where(function ($subquery) use ($buscar) {
+
+                        $subquery
+                            ->whereHas(
+                                'empleado',
+                                function ($empleadoQuery) use ($buscar) {
+
+                                    $empleadoQuery
+                                        ->where(
+                                            'numero_control',
+                                            'like',
+                                            "%{$buscar}%"
+                                        )
+                                        ->orWhere(
+                                            'nombre',
+                                            'like',
+                                            "%{$buscar}%"
+                                        )
+                                        ->orWhere(
+                                            'apellido_paterno',
+                                            'like',
+                                            "%{$buscar}%"
+                                        )
+                                        ->orWhere(
+                                            'apellido_materno',
+                                            'like',
+                                            "%{$buscar}%"
+                                        );
+
+                                }
+                            )
+                            ->orWhere(
+                                'tipo',
+                                'like',
+                                "%{$buscar}%"
+                            )
+                            ->orWhere(
+                                'estado',
+                                'like',
+                                "%{$buscar}%"
+                            )
+                            ->orWhere(
+                                'fecha',
+                                'like',
+                                "%{$buscar}%"
+                            );
+
+                    });
+
+                }
+            )
+            ->latest('fecha')
+            ->latest('id')
+            ->paginate(10)
+            ->withQueryString();
+        
+        $totalIncidencias = Incidencia::count();
+
+        $pendientes = Incidencia::where(
+            'estado',
+            'pendiente'
+        )->count();
+
+        $justificadas = Incidencia::where(
+            'estado',
+            'justificada'
+        )->count();
+
+        $injustificadas = Incidencia::where(
+            'estado',
+            'injustificada'
+        )->count();
+
+        return view(
+            'rh.incidencias.index',
+            compact(
+                'incidencias',
+                'buscar',
+                'totalIncidencias',
+                'pendientes',
+                'justificadas',
+                'injustificadas'
+            )
+        );
     }
 
     public function create()
     {
-
-        $empleados = Empleado::orderBy('nombre')
+        $empleados = Empleado::where(
+            'estado',
+            'activo'
+        )
+            ->orderBy('nombre')
+            ->orderBy('apellido_paterno')
             ->get();
 
-        return view('rh.incidencias.create',compact('empleados'));
+        return view(
+            'rh.incidencias.create',
+            compact('empleados')
+        );
     }
 
     public function store(Request $request)
     {
+        $datos = $request->validate(
+            [
+                'empleado_id' => [
+                    'required',
+                    'integer',
+                    'exists:empleados,id',
+                ],
 
-        $request->validate([
-            'empleado_id' => 'required',
-            'tipo' => 'required',
-            'fecha' => 'required|date',
-        ]);
+                'tipo' => [
+                    'required',
+                    Rule::in([
+                        'falta',
+                        'retardo',
+                        'permiso',
+                        'incapacidad',
+                    ]),
+                ],
 
-        Incidencia::create([
-            'empleado_id' => $request->empleado_id,
-            'tipo' => $request->tipo,
-            'fecha' => $request->fecha,
-            'descripcion' => $request->descripcion,
-            'estado' => 'pendiente',
-        ]);
+                'fecha' => [
+                    'required',
+                    'date',
+                    'before_or_equal:today',
+                ],
 
+                'descripcion' => [
+                    'nullable',
+                    'string',
+                    'max:2000',
+                    function ($attribute, $value, $fail) {
+
+                        if (
+                            $value &&
+                            str_word_count(
+                                strip_tags($value)
+                            ) > 300
+                        ) {
+
+                            $fail(
+                                'La descripción no debe superar las 300 palabras.'
+                            );
+
+                        }
+
+                    },
+                ],
+            ],
+            [
+                'empleado_id.required' =>
+                    'Debes seleccionar un empleado.',
+
+                'empleado_id.exists' =>
+                    'El empleado seleccionado no existe.',
+
+                'tipo.required' =>
+                    'Debes seleccionar el tipo de incidencia.',
+
+                'tipo.in' =>
+                    'El tipo de incidencia seleccionado no es válido.',
+
+                'fecha.required' =>
+                    'La fecha de la incidencia es obligatoria.',
+
+                'fecha.date' =>
+                    'La fecha ingresada no es válida.',
+
+                'fecha.before_or_equal' =>
+                    'La fecha de la incidencia no puede ser posterior al día de hoy.',
+
+                'descripcion.string' =>
+                    'La descripción ingresada no es válida.',
+
+                'descripcion.max' =>
+                    'La descripción no debe superar los 1,000 caracteres.',
+            ]
+        );
+
+        $empleado = Empleado::findOrFail(
+            $datos['empleado_id']
+        );
+
+        if ($empleado->estado !== 'activo') {
+
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'No puedes registrar incidencias para un empleado inactivo.'
+                );
+        }
+
+        $incidenciaDuplicada = Incidencia::where(
+            'empleado_id',
+            $empleado->id
+        )
+            ->where(
+                'tipo',
+                $datos['tipo']
+            )
+            ->where(
+                'fecha',
+                $datos['fecha']
+            )
+            ->exists();
+
+        if ($incidenciaDuplicada) {
+
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Esta incidencia ya fue registrada para el empleado en la misma fecha.'
+                );
+        }
+
+        DB::transaction(function () use (
+            $datos,
+            $empleado
+        ) {
+
+            $incidencia = Incidencia::create([
+                'empleado_id' =>
+                    $empleado->id,
+
+                'tipo' =>
+                    $datos['tipo'],
+
+                'fecha' =>
+                    $datos['fecha'],
+
+                'descripcion' =>
+                    isset($datos['descripcion'])
+                        ? trim($datos['descripcion'])
+                        : null,
+
+                'estado' =>
+                    'pendiente',
+            ]);
+
+            LogActividad::create([
+                'usuario' =>
+                    Auth::user()->rol,
+
+                'accion' =>
+                    'Registró una incidencia de tipo ' .
+                    $incidencia->tipo .
+                    ' para el empleado ' .
+                    $empleado->numero_control,
+            ]);
+        });
 
         return redirect()
             ->route('rh.incidencias.index')
-            ->with('success','Incidencia registrada');
+            ->with(
+                'success',
+                'Incidencia registrada correctamente.'
+            );
     }
 
-    public function justificar(Incidencia $incidencia)
-    {
-        $incidencia->update([
-            'estado' => 'justificada',
-        ]);
+    public function justificar(
+        Incidencia $incidencia
+    ) {
+        if ($incidencia->estado !== 'pendiente') {
+
+            return back()->with(
+                'error',
+                'Esta incidencia ya fue procesada.'
+            );
+        }
+
+        DB::transaction(function () use (
+            $incidencia
+        ) {
+
+            $incidencia->load('empleado');
+
+            $incidencia->update([
+                'estado' => 'justificada',
+            ]);
+
+            LogActividad::create([
+                'usuario' =>
+                    Auth::user()->rol,
+
+                'accion' =>
+                    'Justificó la incidencia de tipo ' .
+                    $incidencia->tipo .
+                    ' del empleado ' .
+                    $incidencia->empleado->numero_control,
+            ]);
+        });
 
         return redirect()
             ->route('rh.incidencias.index')
-            ->with('success','Incidencia justificada');
+            ->with(
+                'success',
+                'Incidencia justificada correctamente.'
+            );
     }
 
-    public function injustificar(Incidencia $incidencia)
-    {
-        $incidencia->update([
-            'estado' => 'injustificada',
-        ]);
+    public function injustificar(
+        Incidencia $incidencia
+    ) {
+        if ($incidencia->estado !== 'pendiente') {
+
+            return back()->with(
+                'error',
+                'Esta incidencia ya fue procesada.'
+            );
+        }
+
+        DB::transaction(function () use (
+            $incidencia
+        ) {
+
+            $incidencia->load('empleado');
+
+            $incidencia->update([
+                'estado' => 'injustificada',
+            ]);
+
+            LogActividad::create([
+                'usuario' =>
+                    Auth::user()->rol,
+
+                'accion' =>
+                    'Marcó como injustificada la incidencia de tipo ' .
+                    $incidencia->tipo .
+                    ' del empleado ' .
+                    $incidencia->empleado->numero_control,
+            ]);
+        });
 
         return redirect()
             ->route('rh.incidencias.index')
-            ->with('success','Incidencia injustificada');
+            ->with(
+                'success',
+                'Incidencia marcada como injustificada.'
+            );
     }
 }

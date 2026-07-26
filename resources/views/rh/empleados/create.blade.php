@@ -27,18 +27,6 @@
 
         </div>
 
-
-        <a
-            href="{{ route('rh.empleados') }}"
-            class="btn gtri-btn-secondary"
-        >
-
-            <i class="bi bi-arrow-left me-1"></i>
-
-            Volver
-
-        </a>
-
     </div>
 
 

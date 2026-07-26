@@ -2,32 +2,91 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <h2 class="mb-4">
+    <div class="gtri-page-header">
 
-        Editar Cliente Comercial
+        <div>
 
-    </h2>
+            <h2 class="gtri-page-title">
 
-    <x-rh.card-rh titulo="Datos del Cliente">
+                <i class="bi bi-pencil-square me-2"></i>
 
-        <form
-            action="{{ route('comercial.clientes.update',$cliente) }}"
-            method="POST"
+                Editar Cliente Comercial
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Actualiza la información general, fiscal y de contacto del cliente.
+
+            </p>
+
+        </div>
+
+        <a
+            href="{{ route('comercial.clientes.index') }}"
+            class="btn gtri-btn-secondary"
         >
 
-            @csrf
+            <i class="bi bi-arrow-left me-1"></i>
 
-            @method('PUT')
+            Regresar
 
-            @include(
-                'comercial.clientes._form'
-            )
+        </a>
 
-        </form>
+    </div>
 
-    </x-rh.card-rh>
+
+    @if($errors->any())
+
+        <div class="alert alert-danger">
+
+            <div class="d-flex align-items-center mb-2">
+
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+                <strong>
+
+                    Revisa la información ingresada
+
+                </strong>
+
+            </div>
+
+            <ul class="mb-0">
+
+                @foreach($errors->all() as $error)
+
+                    <li>
+
+                        {{ $error }}
+
+                    </li>
+
+                @endforeach
+
+            </ul>
+
+        </div>
+
+    @endif
+
+
+    <form
+        action="{{ route('comercial.clientes.update', $cliente) }}"
+        method="POST"
+    >
+
+        @csrf
+
+        @method('PUT')
+
+        @include(
+            'comercial.clientes._form'
+        )
+
+    </form>
 
 </div>
 

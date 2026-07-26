@@ -12,21 +12,40 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('capacitaciones', function (Blueprint $table) {
+
             $table->id();
+
             $table->foreignId('empleado_id')
                 ->constrained('empleados')
-                ->onDelete('cascade');
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
 
-            $table->string('curso');
+            $table->string('curso', 150);
 
             $table->date('fecha_capacitacion');
 
-            $table->integer('calificacion')
+            $table->unsignedTinyInteger('calificacion')
                 ->nullable();
 
             $table->date('vigencia_hasta')
                 ->nullable();
+
+            /*
+            |--------------------------------------------------------------------------
+            | NUEVOS CAMPOS
+            |--------------------------------------------------------------------------
+            */
+
+            $table->string('evidencia')
+                ->nullable()
+                ->comment('Ruta del archivo de evidencia');
+
+            $table->string('dc3')
+                ->nullable()
+                ->comment('Ruta del archivo DC3');
+
             $table->timestamps();
+
         });
     }
 

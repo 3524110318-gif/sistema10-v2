@@ -4,6 +4,7 @@
 
 <div class="container-fluid">
 
+    {{-- ENCABEZADO --}}
     <div class="gtri-page-header">
 
         <div>
@@ -24,18 +25,6 @@
 
         </div>
 
-
-        <a
-            href="{{ route('rh.vacaciones.index') }}"
-            class="btn gtri-btn-secondary"
-        >
-
-            <i class="bi bi-arrow-left me-1"></i>
-
-            Volver
-
-        </a>
-
     </div>
 
 
@@ -47,6 +36,7 @@
         @csrf
 
 
+        {{-- DATOS DE LA SOLICITUD --}}
         <div class="gtri-section">
 
             <div class="gtri-section-title">
@@ -58,7 +48,7 @@
             </div>
 
 
-            <div class="row g-3">
+            <div class="row g-4">
 
                 {{-- EMPLEADO --}}
                 <div class="col-12">
@@ -68,6 +58,8 @@
                         class="form-label fw-semibold"
                         style="color:#CBD5E1;"
                     >
+
+                        <i class="bi bi-person-badge me-1 text-warning"></i>
 
                         Empleado
 
@@ -86,6 +78,7 @@
                             Selecciona un empleado
 
                         </option>
+
 
                         @foreach ($empleados as $empleado)
 
@@ -127,38 +120,91 @@
                 </div>
 
 
-                {{-- FECHA INICIO --}}
+                {{-- FECHA DE INICIO --}}
                 <div class="col-md-6">
 
                     <x-rh.input-rh
                         label="Fecha de inicio"
                         name="fecha_inicio"
                         type="date"
+                        :value="old('fecha_inicio')"
                     />
+
+
+                    <small class="text-secondary d-block mt-1">
+
+                        Primer día del periodo solicitado.
+
+                    </small>
 
                 </div>
 
 
-                {{-- FECHA FIN --}}
+                {{-- FECHA DE FIN --}}
                 <div class="col-md-6">
 
                     <x-rh.input-rh
                         label="Fecha de fin"
                         name="fecha_fin"
                         type="date"
+                        :value="old('fecha_fin')"
                     />
+
+
+                    <small class="text-secondary d-block mt-1">
+
+                        Último día del periodo solicitado.
+
+                    </small>
 
                 </div>
 
 
-                {{-- DÍAS --}}
-                <div class="col-md-6">
+                {{-- AVISO DE CÁLCULO --}}
+                <div class="col-12">
 
-                    <x-rh.input-rh
-                        label="Días solicitados"
-                        name="dias"
-                        type="number"
-                    />
+                    <div
+                        class="
+                            d-flex
+                            align-items-center
+                            gap-3
+                            rounded-3
+                            p-3
+                        "
+                        style="
+                            background:rgba(15,94,199,.10);
+                            border:1px solid rgba(15,94,199,.25);
+                        "
+                    >
+
+                        <i
+                            class="
+                                bi
+                                bi-calculator
+                                fs-4
+                                text-info
+                            "
+                        ></i>
+
+
+                        <div>
+
+                            <span class="text-light fw-semibold d-block">
+
+                                Cálculo automático
+
+                            </span>
+
+                            <small class="text-secondary">
+
+                                Los días solicitados se calcularán automáticamente
+                                con base en las fechas seleccionadas.
+
+                            </small>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
@@ -167,6 +213,7 @@
         </div>
 
 
+        {{-- OBSERVACIONES --}}
         <div class="gtri-section">
 
             <div class="gtri-section-title">
@@ -179,18 +226,32 @@
 
 
             <x-rh.textarea-rh
-                label="Observaciones"
+                label="Motivo u observaciones adicionales"
                 name="observaciones"
-                placeholder="Escribe el motivo o alguna observación adicional sobre la solicitud de vacaciones..."
+                placeholder="Ej. Vacaciones correspondientes al periodo 2026 o alguna indicación adicional..."
+            >{{ old('observaciones') }}</x-rh.textarea-rh>
 
-            />
+
+            <small class="text-secondary d-block mt-2">
+
+                Este campo es opcional.
+
+            </small>
 
         </div>
 
 
+        {{-- ACCIONES --}}
         <div class="gtri-section mb-0">
 
-            <div class="d-flex flex-wrap justify-content-end gap-2">
+            <div
+                class="
+                    d-flex
+                    flex-wrap
+                    justify-content-end
+                    gap-2
+                "
+            >
 
                 <a
                     href="{{ route('rh.vacaciones.index') }}"

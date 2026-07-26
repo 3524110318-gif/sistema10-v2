@@ -1,167 +1,302 @@
-<div class="row">
+<!-- 01 · INFORMACIÓN DE LA COTIZACIÓN -->
 
-    <div class="col-md-6">
+<div class="gtri-section">
 
-        <label class="form-label">
+    <div class="gtri-section-title">
 
-            Prospecto
+        <span>01</span>
 
-        </label>
+        Información de la cotización
 
-        <select
-            name="prospecto_comercial_id"
-            class="form-select"
-            required
-        >
+    </div>
 
-            <option value="">
+    <div class="row g-3">
 
-                Seleccione
+        <div class="col-md-6">
 
-            </option>
+            <label
+                for="prospecto_comercial_id"
+                class="form-label"
+            >
 
-            @foreach($prospectos as $prospecto)
+                Prospecto
 
-                <option
-                    value="{{ $prospecto->id }}"
-                    @selected(old('prospecto_comercial_id',$cotizacion->prospecto_comercial_id ?? '')==$prospecto->id)
-                >
+            </label>
 
-                    {{ $prospecto->razon_social }}
+            <select
+                name="prospecto_comercial_id"
+                id="prospecto_comercial_id"
+                class="form-select gtri-input"
+                required
+            >
+
+                <option value="">
+
+                    Seleccione un prospecto
 
                 </option>
 
-            @endforeach
+                @foreach($prospectos as $prospecto)
 
-        </select>
+                    <option
+                        value="{{ $prospecto->id }}"
+                        @selected(
+                            old(
+                                'prospecto_comercial_id',
+                                $cotizacion->prospecto_comercial_id ?? ''
+                            ) == $prospecto->id
+                        )
+                    >
 
-    </div>
+                        {{ $prospecto->razon_social }}
 
-    <div class="col-md-3">
+                    </option>
 
-        <x-rh.input-rh
-            label="Folio"
-            name="folio"
-            type="text"
-            :value="old('folio',$cotizacion->folio ?? '')"
-            required
-        />
+                @endforeach
 
-    </div>
+            </select>
 
-    <div class="col-md-3">
+        </div>
 
-        <x-rh.input-rh
-            label="Fecha"
-            name="fecha"
-            type="date"
-            :value="old('fecha',isset($cotizacion) ? $cotizacion->fecha?->format('Y-m-d') : now()->format('Y-m-d'))"
-            required
-        />
+        <div class="col-md-3">
 
-    </div>
+            <x-rh.input-rh
+                label="Folio"
+                name="folio"
+                type="text"
+                :value="old('folio', $cotizacion->folio ?? '')"
+                placeholder="Ej. COT-2026-001"
+                required
+            />
 
-</div>
+        </div>
 
-<div class="row mt-3">
+        <div class="col-md-3">
 
-    <div class="col-md-3">
+            <x-rh.input-rh
+                label="Fecha"
+                name="fecha"
+                type="date"
+                :value="old(
+                    'fecha',
+                    isset($cotizacion)
+                        ? $cotizacion->fecha?->format('Y-m-d')
+                        : now()->format('Y-m-d')
+                )"
+                required
+            />
 
-        <x-rh.input-rh
-            label="Monto"
-            name="monto"
-            type="number"
-            step="0.01"
-            :value="old('monto',$cotizacion->monto ?? 0)"
-            required
-        />
-
-    </div>
-
-    <div class="col-md-3">
-
-        <x-rh.input-rh
-            label="Plazas"
-            name="numero_plazas"
-            type="number"
-            :value="old('numero_plazas',$cotizacion->numero_plazas ?? 1)"
-            required
-        />
-
-    </div>
-
-    <div class="col-md-3">
-
-        <x-rh.input-rh
-            label="Vigencia (días)"
-            name="vigencia_dias"
-            type="number"
-            :value="old('vigencia_dias',$cotizacion->vigencia_dias ?? 30)"
-            required
-        />
-
-    </div>
-
-    <div class="col-md-3">
-
-        <label class="form-label">
-
-            Estatus
-
-        </label>
-
-        <select
-            name="estatus"
-            class="form-select"
-        >
-
-            <option value="pendiente">Pendiente</option>
-
-            <option value="aceptada">Aceptada</option>
-
-            <option value="rechazada">Rechazada</option>
-
-            <option value="cancelada">Cancelada</option>
-
-        </select>
+        </div>
 
     </div>
 
 </div>
 
-<div class="mt-3">
 
-    <label class="form-label">
+<!-- 02 · INFORMACIÓN COMERCIAL -->
+
+<div class="gtri-section">
+
+    <div class="gtri-section-title">
+
+        <span>02</span>
+
+        Información comercial
+
+    </div>
+
+    <div class="row g-3">
+
+        <div class="col-md-3">
+
+            <x-rh.input-rh
+                label="Monto"
+                name="monto"
+                type="number"
+                step="0.01"
+                :value="old('monto', $cotizacion->monto ?? '')"
+                placeholder="Ej. 25000.00"
+                required
+            />
+
+        </div>
+
+        <div class="col-md-3">
+
+            <x-rh.input-rh
+                label="Plazas"
+                name="numero_plazas"
+                type="number"
+                :value="old('numero_plazas', $cotizacion->numero_plazas ?? '')"
+                placeholder="Ej. 5"
+                required
+            />
+
+        </div>
+
+        <div class="col-md-3">
+
+            <x-rh.input-rh
+                label="Vigencia (días)"
+                name="vigencia_dias"
+                type="number"
+                :value="old('vigencia_dias', $cotizacion->vigencia_dias ?? '')"
+                placeholder="Ej. 30"
+                required
+            />
+
+        </div>
+
+        <div class="col-md-3">
+
+            <label
+                for="estatus"
+                class="form-label"
+            >
+
+                Estatus
+
+            </label>
+
+            <select
+                name="estatus"
+                id="estatus"
+                class="form-select gtri-input"
+            >
+
+                <option
+                    value="pendiente"
+                    @selected(
+                        old(
+                            'estatus',
+                            $cotizacion->estatus ?? 'pendiente'
+                        ) == 'pendiente'
+                    )
+                >
+
+                    Pendiente
+
+                </option>
+
+                <option
+                    value="aceptada"
+                    @selected(
+                        old(
+                            'estatus',
+                            $cotizacion->estatus ?? ''
+                        ) == 'aceptada'
+                    )
+                >
+
+                    Aceptada
+
+                </option>
+
+                <option
+                    value="rechazada"
+                    @selected(
+                        old(
+                            'estatus',
+                            $cotizacion->estatus ?? ''
+                        ) == 'rechazada'
+                    )
+                >
+
+                    Rechazada
+
+                </option>
+
+                <option
+                    value="cancelada"
+                    @selected(
+                        old(
+                            'estatus',
+                            $cotizacion->estatus ?? ''
+                        ) == 'cancelada'
+                    )
+                >
+
+                    Cancelada
+
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- 03 · OBSERVACIONES -->
+
+<div class="gtri-section">
+
+    <div class="gtri-section-title">
+
+        <span>03</span>
 
         Observaciones
 
-    </label>
+    </div>
 
-    <textarea
-        name="observaciones"
-        class="form-control"
-        rows="3"
-    >{{ old('observaciones',$cotizacion->observaciones ?? '') }}</textarea>
+    <div class="row g-3">
+
+        <div class="col-12">
+
+            <label
+                for="observaciones"
+                class="form-label"
+            >
+
+                Observaciones de la cotización
+
+            </label>
+
+            <textarea
+                name="observaciones"
+                id="observaciones"
+                class="form-control gtri-textarea"
+                rows="4"
+                placeholder="Ej. Cotización para servicio de seguridad privada en 5 plazas, turno de 12 horas..."
+            >{{ old('observaciones', $cotizacion->observaciones ?? '') }}</textarea>
+
+        </div>
+
+    </div>
 
 </div>
 
-<div class="mt-4">
 
-    <button
-        class="btn btn-primary"
-    >
+<!-- 04 · ACCIONES -->
 
-        Guardar
+<div class="gtri-section mb-0">
 
-    </button>
+    <div class="d-flex justify-content-end gap-2 flex-wrap">
 
-    <a
-        href="{{ route('comercial.cotizaciones.index') }}"
-        class="btn btn-secondary"
-    >
+        <a
+            href="{{ route('comercial.cotizaciones.index') }}"
+            class="btn gtri-btn-secondary"
+        >
 
-        Cancelar
+            <i class="bi bi-x-lg me-1"></i>
 
-    </a>
+            Cancelar
+
+        </a>
+
+        <button
+            type="submit"
+            class="btn gtri-btn-primary"
+        >
+
+            <i class="bi bi-check-circle me-1"></i>
+
+            Guardar cotización
+
+        </button>
+
+    </div>
 
 </div>

@@ -174,13 +174,192 @@
 
     </div>
 
+    {{-- PRODUCTOS DE LA COMPRA --}}
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>02</span>
+
+            Productos de la compra
+
+        </div>
+
+        <div class="gtri-table-wrapper">
+
+            <div class="table-responsive">
+
+                <table class="table gtri-table align-middle">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Producto</th>
+
+                            <th class="text-center">
+                                Cantidad
+                            </th>
+
+                            <th class="text-end">
+                                Precio unitario
+                            </th>
+
+                            <th class="text-end">
+                                Subtotal
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @forelse($compra->detalles as $detalle)
+
+                            <tr>
+
+                                <td>
+
+                                    <div class="fw-semibold text-light">
+
+                                        {{ $detalle->producto->codigo }}
+
+                                        -
+
+                                        {{ $detalle->producto->nombre }}
+
+                                    </div>
+
+                                </td>
+
+                                <td class="text-center">
+
+                                    {{ $detalle->cantidad }}
+
+                                </td>
+
+                                <td class="text-end">
+
+                                    ${{ number_format(
+                                        $detalle->precio_unitario,
+                                        2
+                                    ) }}
+
+                                </td>
+
+                                <td class="text-end fw-semibold text-warning">
+
+                                    ${{ number_format(
+                                        $detalle->subtotal,
+                                        2
+                                    ) }}
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="4"
+                                    class="text-center py-4 text-secondary"
+                                >
+
+                                    No hay productos registrados en esta compra.
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <div class="row justify-content-end mt-4">
+
+            <div class="col-md-5">
+
+                <div class="d-flex justify-content-between mb-2">
+
+                    <span class="text-secondary">
+
+                        Subtotal
+
+                    </span>
+
+                    <strong class="text-light">
+
+                        ${{ number_format(
+                            $compra->subtotal,
+                            2
+                        ) }}
+
+                    </strong>
+
+                </div>
+
+                <div class="d-flex justify-content-between mb-2">
+
+                    <span class="text-secondary">
+
+                        IVA
+
+                    </span>
+
+                    <strong class="text-light">
+
+                        ${{ number_format(
+                            $compra->iva,
+                            2
+                        ) }}
+
+                    </strong>
+
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between">
+
+                    <span class="fw-bold text-warning">
+
+                        Total
+
+                    </span>
+
+                    <strong class="text-warning fs-5">
+
+                        ${{ number_format(
+                            $compra->total,
+                            2
+                        ) }}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 
     {{-- OBSERVACIONES --}}
     <div class="gtri-section">
 
         <div class="gtri-section-title">
 
-            <span>02</span>
+            <span>03</span>
 
             Observaciones
 

@@ -185,4 +185,15 @@ class Empleado extends Model
     {
         return $this->hasOne(Repse::class, 'empleado_id');
     }
+
+    public function getNombreCompletoAttribute(): string
+    {
+        return trim(
+            $this->nombre .
+            ' ' .
+            ($this->apellido_paterno ?? '') .
+            ' ' .
+            ($this->apellido_materno ?? '')
+        );
+    }
 }

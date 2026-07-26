@@ -2,86 +2,114 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    {{-- CARD PRINCIPAL --}}
-    <x-rh.card-rh titulo="Expediente REPSE">
+    <!-- ENCABEZADO -->
 
-        {{-- INFORMACIÓN GENERAL --}}
-        <div class="mb-4">
+    <div class="gtri-page-header">
 
-            <h5 class="fw-bold">
+        <div>
 
-                <i class="bi bi-person-vcard me-2"></i>
+            <h2 class="gtri-page-title">
 
-                Información general
+                <i class="bi bi-folder2-open me-2"></i>
 
-            </h5>
+                Expediente REPSE
 
-            <hr>
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Consulta el estado documental y de cumplimiento normativo del empleado.
+
+            </p>
 
         </div>
 
+        <a
+            href="{{ route('expedientes.index') }}"
+            class="btn gtri-btn-secondary"
+        >
 
-        <div class="row g-4">
+            <i class="bi bi-arrow-left me-1"></i>
+
+            Regresar
+
+        </a>
+
+    </div>
+
+
+    <!-- 01 · INFORMACIÓN GENERAL -->
+
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>01</span>
+
+            Información general
+
+        </div>
+
+        <div class="row g-3">
 
             <div class="col-md-6">
 
-                <div class="border rounded p-3 h-100">
+                <div class="gtri-card h-100">
 
-                    <div class="mb-3">
+                    <div class="gtri-info-label">
 
-                        <span class="text-muted d-block">
-                            Empleado
-                        </span>
-
-                        <span class="fw-bold fs-5">
-
-                            {{ $expediente->empleado->nombre }}
-
-                        </span>
+                        Empleado
 
                     </div>
 
-                    <div>
+                    <div class="gtri-info-value fs-5 mt-2 mb-4">
 
-                        <span class="text-muted d-block mb-2">
-                            Estado del expediente
-                        </span>
+                        <i class="bi bi-person-badge me-2"></i>
 
-                        @if($expediente->estatus === 'cumple')
-
-                            <span class="badge bg-success px-3 py-2">
-
-                                <i class="bi bi-check-circle me-1"></i>
-
-                                Cumple
-
-                            </span>
-
-                        @elseif($expediente->estatus === 'pendiente')
-
-                            <span class="badge bg-warning text-dark px-3 py-2">
-
-                                <i class="bi bi-exclamation-circle me-1"></i>
-
-                                Pendiente
-
-                            </span>
-
-                        @else
-
-                            <span class="badge bg-danger px-3 py-2">
-
-                                <i class="bi bi-x-circle me-1"></i>
-
-                                Bloqueado
-
-                            </span>
-
-                        @endif
+                        {{ $expediente->empleado->nombre }}
 
                     </div>
+
+
+                    <div class="gtri-info-label mb-2">
+
+                        Estado del expediente
+
+                    </div>
+
+                    @if($expediente->estatus === 'cumple')
+
+                        <span class="badge bg-success px-3 py-2">
+
+                            <i class="bi bi-check-circle me-1"></i>
+
+                            Cumple
+
+                        </span>
+
+                    @elseif($expediente->estatus === 'pendiente')
+
+                        <span class="badge bg-warning text-dark px-3 py-2">
+
+                            <i class="bi bi-exclamation-circle me-1"></i>
+
+                            Pendiente
+
+                        </span>
+
+                    @else
+
+                        <span class="badge bg-danger px-3 py-2">
+
+                            <i class="bi bi-x-circle me-1"></i>
+
+                            Bloqueado
+
+                        </span>
+
+                    @endif
 
                 </div>
 
@@ -90,13 +118,13 @@
 
             <div class="col-md-6">
 
-                <div class="border rounded p-3 h-100">
+                <div class="gtri-card h-100">
 
-                    <span class="text-muted d-block mb-2">
+                    <div class="gtri-info-label mb-2">
 
                         Observaciones
 
-                    </span>
+                    </div>
 
                     <p class="mb-0">
 
@@ -110,47 +138,47 @@
 
         </div>
 
+    </div>
 
-        {{-- DOCUMENTACIÓN --}}
-        <div class="mb-4 mt-5">
 
-            <h5 class="fw-bold">
+    <!-- 02 · DOCUMENTACIÓN ENTREGADA -->
 
-                <i class="bi bi-folder-check me-2"></i>
+    <div class="gtri-section">
 
-                Documentación entregada
+        <div class="gtri-section-title">
 
-            </h5>
+            <span>02</span>
 
-            <p class="text-muted mb-2">
-
-                Estado actual de los documentos del expediente.
-
-            </p>
-
-            <hr>
+            Documentación entregada
 
         </div>
+
+        <p class="text-secondary mb-4">
+
+            Estado actual de los documentos requeridos para el expediente.
+
+        </p>
 
 
         <div class="row g-3">
 
-            {{-- ALTA IMSS --}}
+            <!-- IMSS -->
+
             <div class="col-md-6">
 
-                <div
-                    class="border rounded p-3 d-flex justify-content-between align-items-center"
-                >
+                <div class="gtri-card h-100 d-flex justify-content-between align-items-center">
 
                     <div>
 
                         <div class="fw-bold">
 
+                            <i class="bi bi-heart-pulse me-1"></i>
+
                             Alta IMSS
 
                         </div>
 
-                        <small class="text-muted">
+                        <small class="text-secondary">
 
                             Constancia de alta ante el IMSS.
 
@@ -185,22 +213,23 @@
             </div>
 
 
-            {{-- CONTRATO --}}
+            <!-- CONTRATO -->
+
             <div class="col-md-6">
 
-                <div
-                    class="border rounded p-3 d-flex justify-content-between align-items-center"
-                >
+                <div class="gtri-card h-100 d-flex justify-content-between align-items-center">
 
                     <div>
 
                         <div class="fw-bold">
 
+                            <i class="bi bi-file-earmark-check me-1"></i>
+
                             Contrato firmado
 
                         </div>
 
-                        <small class="text-muted">
+                        <small class="text-secondary">
 
                             Contrato laboral firmado.
 
@@ -235,21 +264,28 @@
             </div>
 
 
-            {{-- CÉDULA SSP --}}
+            <!-- CÉDULA SSP -->
+
             <div class="col-md-6">
 
-                <div class="border rounded p-3 h-100">
+                <div class="gtri-card h-100">
 
                     <div class="d-flex justify-content-between align-items-start">
 
                         <div>
 
                             <div class="fw-bold">
+
+                                <i class="bi bi-shield-check me-1"></i>
+
                                 Cédula SSP
+
                             </div>
 
-                            <small class="text-muted">
+                            <small class="text-secondary">
+
                                 Documento correspondiente a Seguridad Pública.
+
                             </small>
 
                         </div>
@@ -279,25 +315,25 @@
                     </div>
 
 
-                    {{-- VIGENCIA --}}
-                    <div class="mt-3">
+                    <div class="mt-4 pt-3 border-top border-secondary">
 
                         @if($expediente->vigencia_cedula_ssp)
 
-                            <small class="d-block text-muted mb-1">
+                            <small class="text-secondary d-block mb-2">
 
-                                Vigencia:
-
-                                <strong class="text-dark">
-
-                                    {{ \Carbon\Carbon::parse(
-                                        $expediente->vigencia_cedula_ssp
-                                    )->format('d/m/Y') }}
-
-                                </strong>
+                                Vigencia registrada
 
                             </small>
 
+                            <strong class="d-block mb-2">
+
+                                <i class="bi bi-calendar-event me-1"></i>
+
+                                {{ \Carbon\Carbon::parse(
+                                    $expediente->vigencia_cedula_ssp
+                                )->format('d/m/Y') }}
+
+                            </strong>
 
                             @if(
                                 now()->startOfDay()->lte(
@@ -308,25 +344,33 @@
                             )
 
                                 <span class="badge bg-success">
+
                                     Vigente
+
                                 </span>
 
                             @else
 
                                 <span class="badge bg-danger">
+
                                     Vencida
+
                                 </span>
 
                             @endif
 
                         @else
 
-                            <small class="text-muted">
+                            <span class="text-secondary">
+
                                 Vigencia:
-                            </small>
+
+                            </span>
 
                             <span class="badge bg-danger ms-1">
+
                                 Sin vigencia registrada
+
                             </span>
 
                         @endif
@@ -338,102 +382,129 @@
             </div>
 
 
-            {{-- CONSTANCIA FISCAL --}}
+            <!-- CONSTANCIA FISCAL -->
+
             <div class="col-md-6">
 
-                <div
-                    class="border rounded p-3 d-flex justify-content-between align-items-center"
-                >
+                <div class="gtri-card h-100">
 
-                    <div>
+                    <div class="d-flex justify-content-between align-items-start">
 
-                        <div class="fw-bold">
+                        <div>
 
-                            Constancia fiscal
+                            <div class="fw-bold">
+
+                                <i class="bi bi-receipt me-1"></i>
+
+                                Constancia fiscal
+
+                            </div>
+
+                            <small class="text-secondary">
+
+                                Constancia de Situación Fiscal.
+
+                            </small>
 
                         </div>
 
-                        <small class="text-muted">
+                        @if($expediente->constancia_fiscal)
 
-                            Constancia de Situación Fiscal.
+                            <span class="badge bg-success">
 
-                        </small>
+                                <i class="bi bi-check-circle me-1"></i>
+
+                                Entregado
+
+                            </span>
+
+                        @else
+
+                            <span class="badge bg-danger">
+
+                                <i class="bi bi-x-circle me-1"></i>
+
+                                No entregado
+
+                            </span>
+
+                        @endif
 
                     </div>
 
-                    @if($expediente->constancia_fiscal)
 
-                        <span class="badge bg-success">
+                    <!-- VALIDACIÓN RFC -->
 
-                            <i class="bi bi-check-circle me-1"></i>
+                    <div class="mt-4 pt-3 border-top border-secondary">
 
-                            Entregado
+                        <div class="row g-3">
 
-                        </span>
+                            <div class="col-md-6">
 
-                    @else
+                                <div class="gtri-info-label">
 
-                        <span class="badge bg-danger">
+                                    RFC registrado en RH
 
-                            <i class="bi bi-x-circle me-1"></i>
+                                </div>
 
-                            No entregado
+                                <strong class="d-block mt-1">
 
-                        </span>
+                                    {{ $expediente->empleado->rfc }}
 
-                    @endif
+                                </strong>
 
-                </div>
+                            </div>
 
-            </div>
+                            <div class="col-md-6">
 
-            {{-- VALIDACIÓN RFC --}}
+                                <div class="gtri-info-label">
 
-            <div class="mt-3">
+                                    RFC de la constancia
 
-                <small class="text-muted d-block">
-                    RFC registrado en RH:
-                </small>
+                                </div>
 
-                <strong>
-                    {{ $expediente->empleado->rfc }}
-                </strong>
+                                <strong class="d-block mt-1">
 
-                <small class="text-muted d-block mt-2">
-                    RFC capturado de la constancia:
-                </small>
+                                    {{ $expediente->rfc_constancia ?: 'No registrado' }}
 
-                <strong>
-                    {{ $expediente->rfc_constancia ?: 'No registrado' }}
-                </strong>
+                                </strong>
 
-                <div class="mt-2">
+                            </div>
 
-                    @if(
-                        $expediente->rfc_constancia &&
-                        strtoupper(trim($expediente->rfc_constancia)) ===
-                        strtoupper(trim($expediente->empleado->rfc))
-                    )
+                        </div>
 
-                        <span class="badge bg-success">
 
-                            <i class="bi bi-check-circle me-1"></i>
+                        <div class="mt-3">
 
-                            RFC validado
+                            @if(
+                                $expediente->rfc_constancia &&
+                                strtoupper(trim($expediente->rfc_constancia)) ===
+                                strtoupper(trim($expediente->empleado->rfc))
+                            )
 
-                        </span>
+                                <span class="badge bg-success">
 
-                    @else
+                                    <i class="bi bi-check-circle me-1"></i>
 
-                        <span class="badge bg-danger">
+                                    RFC validado
 
-                            <i class="bi bi-x-circle me-1"></i>
+                                </span>
 
-                            RFC no coincide
+                            @else
 
-                        </span>
+                                <span class="badge bg-danger">
 
-                    @endif
+                                    <i class="bi bi-x-circle me-1"></i>
+
+                                    RFC no coincide
+
+                                </span>
+
+                            @endif
+
+                        </div>
+
+                    </div>
 
                 </div>
 
@@ -441,33 +512,49 @@
 
         </div>
 
+    </div>
 
-        {{-- RESUMEN --}}
-        <div class="alert alert-light border mt-4">
+
+    <!-- 03 · RESUMEN DEL EXPEDIENTE -->
+
+    <div class="gtri-section mb-0">
+
+        <div class="gtri-section-title">
+
+            <span>03</span>
+
+            Resumen del expediente
+
+        </div>
+
+        @php
+
+            $documentosEntregados =
+                ($expediente->alta_imss ? 1 : 0) +
+                ($expediente->contrato_firmado ? 1 : 0) +
+                ($expediente->cedula_ssp ? 1 : 0) +
+                ($expediente->constancia_fiscal ? 1 : 0);
+
+        @endphp
+
+
+        <div class="gtri-card">
 
             <div class="row align-items-center">
 
                 <div class="col-md-8">
 
-                    <strong>
+                    <span class="text-secondary">
 
-                        Resumen del expediente:
+                        Estado de documentación:
 
-                    </strong>
-
-                    @php
-
-                        $documentosEntregados =
-                            ($expediente->alta_imss ? 1 : 0) +
-                            ($expediente->contrato_firmado ? 1 : 0) +
-                            ($expediente->cedula_ssp ? 1 : 0) +
-                            ($expediente->constancia_fiscal ? 1 : 0);
-
-                    @endphp
+                    </span>
 
                     @if($documentosEntregados === 4)
 
                         <span class="badge bg-success ms-2">
+
+                            <i class="bi bi-check-circle me-1"></i>
 
                             Cumple
 
@@ -477,6 +564,8 @@
 
                         <span class="badge bg-warning text-dark ms-2">
 
+                            <i class="bi bi-exclamation-circle me-1"></i>
+
                             Pendiente
 
                         </span>
@@ -484,6 +573,8 @@
                     @else
 
                         <span class="badge bg-danger ms-2">
+
+                            <i class="bi bi-x-circle me-1"></i>
 
                             Sin documentación
 
@@ -493,7 +584,7 @@
 
                 </div>
 
-                <div class="col-md-4 text-md-end mt-2 mt-md-0">
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
 
                     <strong>
 
@@ -508,15 +599,16 @@
         </div>
 
 
-        {{-- BOTONES --}}
+        <!-- ACCIONES -->
+
         <div class="d-flex justify-content-end gap-2 mt-4">
 
             <a
                 href="{{ route('expedientes.index') }}"
-                class="btn btn-secondary"
+                class="btn gtri-btn-secondary"
             >
 
-                <i class="bi bi-arrow-left"></i>
+                <i class="bi bi-arrow-left me-1"></i>
 
                 Volver
 
@@ -524,10 +616,10 @@
 
             <a
                 href="{{ route('expedientes.edit', $expediente) }}"
-                class="btn btn-primary"
+                class="btn gtri-btn-primary"
             >
 
-                <i class="bi bi-pencil-square"></i>
+                <i class="bi bi-pencil-square me-1"></i>
 
                 Editar expediente
 
@@ -535,7 +627,7 @@
 
         </div>
 
-    </x-rh.card-rh>
+    </div>
 
 </div>
 

@@ -7,35 +7,53 @@
     {{-- ENCABEZADO --}}
     <div class="gtri-page-header">
 
-        <div>
-
-            <h2 class="gtri-page-title">
-
-                <i class="bi bi-person-x me-2"></i>
-
-                Empleados inactivos
-
-            </h2>
-
-            <p class="gtri-page-subtitle">
-
-                Consulta y reactiva empleados dados de baja.
-
-            </p>
-
-        </div>
-
-
-        <a
-            href="{{ route('rh.empleados') }}"
-            class="btn gtri-btn-secondary"
+        <div
+            class="
+                d-flex
+                flex-column
+                flex-md-row
+                justify-content-between
+                align-items-md-center
+                gap-3
+            "
         >
 
-            <i class="bi bi-arrow-left me-1"></i>
+            <div>
 
-            Volver
+                <h2 class="gtri-page-title">
 
-        </a>
+                    <i class="bi bi-person-x me-2"></i>
+
+                    Empleados inactivos
+
+                </h2>
+
+
+                <p class="gtri-page-subtitle mb-0">
+
+                    Consulta y reactiva empleados dados de baja.
+
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <a
+                    href="{{ route('rh.empleados') }}"
+                    class="btn gtri-btn-secondary"
+                >
+
+                    <i class="bi bi-arrow-left me-1"></i>
+
+                    Volver
+
+                </a>
+
+            </div>
+
+        </div>
 
     </div>
 

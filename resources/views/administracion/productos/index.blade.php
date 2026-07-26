@@ -30,7 +30,6 @@
 
             </div>
 
-
             <a
                 href="{{ route('administracion.productos.create') }}"
                 class="btn gtri-btn-primary"
@@ -84,6 +83,41 @@
 
         </div>
 
+
+        <div class="col-md-4">
+
+            <div class="gtri-card">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <small class="text-secondary">
+
+                            Stock crítico
+
+                        </small>
+
+                        <h2 class="mt-2 mb-0 text-danger fw-bold">
+
+                            {{ $productosStockCritico }}
+
+                        </h2>
+
+                    </div>
+
+                    <div class="fs-1 text-danger">
+
+                        <i class="bi bi-exclamation-triangle"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
 
@@ -97,7 +131,6 @@
             Filtros de búsqueda
 
         </div>
-
 
         <form method="GET">
 
@@ -121,7 +154,6 @@
 
                 </div>
 
-
                 <div class="col-auto">
 
                     <button
@@ -136,7 +168,6 @@
                     </button>
 
                 </div>
-
 
                 @if(request('buscar'))
 
@@ -175,7 +206,6 @@
 
         </div>
 
-
         <div class="gtri-table-wrapper">
 
             <div class="table-responsive">
@@ -186,34 +216,57 @@
 
                         <tr>
 
-                            <th>
+                            <th class="text-nowrap">
+
                                 Código
+
                             </th>
 
                             <th>
+
                                 Producto
+
                             </th>
 
                             <th>
+
                                 Categoría
+
+                            </th>
+
+                            <th class="text-center text-nowrap">
+
+                                En bodega
+
+                            </th>
+
+                            <th class="text-center text-nowrap">
+
+                                En uso
+
                             </th>
 
                             <th class="text-center">
-                                Stock
+
+                                Total
+
                             </th>
 
                             <th class="text-center">
+
                                 Estado
+
                             </th>
 
                             <th class="text-center">
+
                                 Acciones
+
                             </th>
 
                         </tr>
 
                     </thead>
-
 
                     <tbody>
 
@@ -221,7 +274,8 @@
 
                             <tr>
 
-                                <td>
+                                {{-- CÓDIGO --}}
+                                <td class="text-nowrap">
 
                                     <span class="text-warning fw-semibold">
 
@@ -232,6 +286,7 @@
                                 </td>
 
 
+                                {{-- PRODUCTO --}}
                                 <td>
 
                                     <div class="fw-semibold text-light">
@@ -240,37 +295,42 @@
 
                                     </div>
 
+                                    <small class="text-secondary">
+
+                                        {{ ucfirst($producto->tipo_producto) }}
+
+                                    </small>
+
                                 </td>
 
 
+                                {{-- CATEGORÍA --}}
                                 <td>
 
                                     <span class="text-secondary">
 
-                                        {{ $producto->categoria->nombre }}
+                                        {{ $producto->categoria->nombre
+                                            ?? 'Sin categoría' }}
 
                                     </span>
 
                                 </td>
 
 
+                                {{-- EN BODEGA --}}
                                 <td class="text-center">
 
-                                    @if(
-                                        $producto->stock_actual
-                                        <=
-                                        $producto->stock_minimo
-                                    )
+                                    @if($producto->tipo_producto === 'activo')
 
-                                        <span class="badge gtri-badge-danger">
+                                        <span class="fw-bold text-light">
 
-                                            {{ $producto->stock_actual }}
+                                            {{ $producto->activos_en_bodega ?? 0 }}
 
                                         </span>
 
                                     @else
 
-                                        <span class="badge gtri-badge-success">
+                                        <span class="fw-bold text-light">
 
                                             {{ $producto->stock_actual }}
 
@@ -281,9 +341,66 @@
                                 </td>
 
 
+                                {{-- EN USO --}}
                                 <td class="text-center">
 
-                                    @if($producto->estado == 'activo')
+                                    @if($producto->tipo_producto === 'activo')
+
+                                        <span class="fw-bold text-info">
+
+                                            {{ $producto->activos_en_uso ?? 0 }}
+
+                                        </span>
+
+                                    @else
+
+                                        <span class="fw-bold text-info">
+
+                                            {{ $producto->cantidad_en_uso ?? 0 }}
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                {{-- TOTAL --}}
+                                <td class="text-center">
+
+                                    @if($producto->tipo_producto === 'activo')
+
+                                        <span class="fw-bold text-warning">
+
+                                            {{
+                                                ($producto->activos_en_bodega ?? 0)
+                                                +
+                                                ($producto->activos_en_uso ?? 0)
+                                            }}
+
+                                        </span>
+
+                                    @else
+
+                                        <span class="fw-bold text-warning">
+
+                                            {{
+                                                $producto->stock_actual
+                                                +
+                                                ($producto->cantidad_en_uso ?? 0)
+                                            }}
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+
+                                {{-- ESTADO --}}
+                                <td class="text-center">
+
+                                    @if($producto->estado === 'activo')
 
                                         <span class="badge gtri-badge-success">
 
@@ -308,23 +425,23 @@
                                 </td>
 
 
-                                <td>
+                                {{-- ACCIONES --}}
+                                <td class="text-center text-nowrap">
 
                                     <div class="d-flex justify-content-center gap-2">
 
                                         <a
                                             href="{{ route(
-                                                'administracion.productos.edit',
+                                                'administracion.productos.show',
                                                 $producto
                                             ) }}"
                                             class="btn btn-sm gtri-btn-secondary"
-                                            title="Editar producto"
+                                            title="Ver detalle"
                                         >
 
-                                            <i class="bi bi-pencil"></i>
+                                            <i class="bi bi-eye"></i>
 
                                         </a>
-
 
                                         <form
                                             action="{{ route(
@@ -337,27 +454,26 @@
                                             @csrf
                                             @method('DELETE')
 
-
                                             <button
                                                 type="submit"
                                                 class="btn btn-sm
-                                                {{ $producto->estado == 'activo'
+                                                {{ $producto->estado === 'activo'
                                                     ? 'btn-outline-danger'
                                                     : 'btn-outline-success'
                                                 }}"
                                                 onclick="return confirm(
-                                                    '¿Desea {{ $producto->estado == 'activo'
+                                                    '¿Desea {{ $producto->estado === 'activo'
                                                         ? 'desactivar'
                                                         : 'activar'
                                                     }} este producto?'
                                                 )"
-                                                title="{{ $producto->estado == 'activo'
+                                                title="{{ $producto->estado === 'activo'
                                                     ? 'Desactivar'
                                                     : 'Activar'
                                                 }}"
                                             >
 
-                                                @if($producto->estado == 'activo')
+                                                @if($producto->estado === 'activo')
 
                                                     <i class="bi bi-power"></i>
 
@@ -377,13 +493,12 @@
 
                             </tr>
 
-
                         @empty
 
                             <tr>
 
                                 <td
-                                    colspan="6"
+                                    colspan="8"
                                     class="text-center py-5"
                                 >
 

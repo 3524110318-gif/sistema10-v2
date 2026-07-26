@@ -14,11 +14,27 @@
 
     </span>
 
-@else
+@elseif ($estado == 'rechazada')
 
     <span class="badge bg-danger">
 
         Rechazada
+
+    </span>
+
+@elseif ($estado == 'cancelada')
+
+    <span class="badge bg-secondary">
+
+        Cancelada
+
+    </span>
+
+@else
+
+    <span class="badge bg-dark">
+
+        Desconocido
 
     </span>
 

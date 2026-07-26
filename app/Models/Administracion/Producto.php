@@ -5,6 +5,7 @@ namespace App\Models\Administracion;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\RH\EntregaUniforme;
 
 class Producto extends Model
 {
@@ -24,7 +25,9 @@ class Producto extends Model
         'unidad_medida',
         'stock_actual',
         'stock_minimo',
+        'stock_maximo',
         'precio_compra',
+        'precio_promedio',
         'estado',
         'tipo_producto',
     ];
@@ -36,6 +39,7 @@ class Producto extends Model
     {
         return [
             'precio_compra' => 'decimal:2',
+            'precio_promedio' => 'decimal:2',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
@@ -79,6 +83,17 @@ class Producto extends Model
     {
         return $this->hasMany(
             Activo::class
+        );
+    }
+
+    /**
+     * Entregas de uniforme relacionadas con el producto.
+     */
+    public function entregasUniforme(): HasMany
+    {
+        return $this->hasMany(
+            EntregaUniforme::class,
+            'producto_id'
         );
     }
 }

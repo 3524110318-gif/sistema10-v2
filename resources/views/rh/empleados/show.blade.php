@@ -5,7 +5,7 @@
 <div class="container-fluid">
 
     {{-- ENCABEZADO --}}
-    <div class="gtri-page-header">
+    <div class="gtri-page-header gtri-expediente-header">
 
         <div>
 
@@ -40,34 +40,57 @@
             </a>
 
 
-            <a
-                href="{{ route(
-                    'rh.empleados.edit',
-                    $empleado->id
-                ) }}"
-                class="btn gtri-btn-primary"
-            >
+            @if ($empleado->estado === 'activo')
 
-                <i class="bi bi-pencil-square me-1"></i>
+                <a
+                    href="{{ route(
+                        'rh.empleados.edit',
+                        $empleado->id
+                    ) }}"
+                    class="btn gtri-btn-primary"
+                >
 
-                Editar empleado
+                    <i class="bi bi-pencil-square me-1"></i>
 
-            </a>
+                    Editar empleado
+
+                </a>
+
+            @else
+
+                <span class="btn gtri-btn-secondary disabled">
+
+                    <i class="bi bi-lock-fill me-1"></i>
+
+                    Solo lectura
+
+                </span>
+
+            @endif
 
         </div>
 
     </div>
 
+    {{-- PERFIL PRINCIPAL --}}
+    <div class="gtri-section">
 
-    <div class="row g-4">
+        <div
+            class="
+                d-flex
+                flex-column
+                flex-md-row
+                align-items-center
+                justify-content-center
+                gap-4
+                py-3
+            "
+        >
 
-        {{-- PERFIL DEL EMPLEADO --}}
-        {{-- PERFIL DEL EMPLEADO --}}
-        <div class="col-xl-3 col-lg-4 align-self-start">
+            {{-- FOTOGRAFÍA --}}
+            <div class="flex-shrink-0">
 
-            <div class="gtri-card">
-
-                <div class="text-center">
+                <div class="gtri-expediente-avatar">
 
                     @if ($empleado->foto)
 
@@ -76,13 +99,11 @@
                                 'fotos_empleados/' .
                                 $empleado->foto
                             ) }}"
-                            alt="Foto empleado"
-                            class="img-fluid rounded-circle shadow mb-3"
+                            alt="Foto de {{ $empleado->nombre }}"
                             style="
-                                width: 210px;
-                                height: 210px;
+                                width: 200px;
+                                height: 200px;
                                 object-fit: cover;
-                                border: 4px solid #D4AF37;
                             "
                         >
 
@@ -90,135 +111,151 @@
 
                         <div
                             class="
-                                rounded-circle
-                                mx-auto
-                                mb-3
+                                gtri-expediente-avatar-placeholder
                                 d-flex
                                 align-items-center
                                 justify-content-center
                             "
                             style="
-                                width: 210px;
-                                height: 210px;
-                                background: #111827;
-                                border: 4px solid #D4AF37;
+                                width: 155px;
+                                height: 155px;
                             "
                         >
 
-                            <i
-                                class="bi bi-person text-secondary"
-                                style="font-size: 6rem;"
-                            ></i>
+                            <i class="bi bi-person"></i>
 
                         </div>
 
                     @endif
 
+                </div>
 
-                    <h3 class="text-light fw-bold mb-1">
-
-                        {{ $empleado->nombre }}
-
-                        {{ $empleado->apellido_paterno }}
-
-                    </h3>
+            </div>
 
 
-                    @if ($empleado->apellido_materno)
+            {{-- IDENTIDAD --}}
+            <div class="text-center text-md-start">
 
-                        <p class="text-secondary mb-2">
+                <small
+                    class="
+                        text-secondary
+                        text-uppercase
+                        fw-semibold
+                        d-block
+                        mb-2
+                    "
+                >
 
-                            {{ $empleado->apellido_materno }}
+                    <i class="bi bi-person-vcard me-1"></i>
 
-                        </p>
+                    Perfil del empleado
 
-                    @endif
+                </small>
 
 
-                    <div class="mb-3">
+                <h2 class="text-light fw-bold mb-1">
 
-                        @if ($empleado->estado == 'activo')
+                    {{ $empleado->nombre }}
 
-                            <span class="gtri-badge-success">
+                    {{ $empleado->apellido_paterno }}
 
-                                <i class="bi bi-check-circle me-1"></i>
+                    {{ $empleado->apellido_materno }}
 
-                                Activo
+                </h2>
 
-                            </span>
 
-                        @else
+                <p class="text-secondary mb-3">
 
-                            <span class="gtri-badge-danger">
+                    Expediente individual de Recursos Humanos
 
-                                <i class="bi bi-x-circle me-1"></i>
+                </p>
 
-                                Inactivo
 
-                            </span>
+                @if ($empleado->estado === 'activo')
 
-                        @endif
+                    <span class="gtri-badge-success">
+
+                        <i class="bi bi-check-circle-fill me-1"></i>
+
+                        Empleado activo
+
+                    </span>
+
+                @else
+
+                    <span class="gtri-badge-danger">
+
+                        <i class="bi bi-x-circle-fill me-1"></i>
+
+                        Empleado inactivo
+
+                    </span>
+
+                @endif
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {{-- INFORMACIÓN PRINCIPAL --}}
+    <div class="gtri-expediente-main-grid">
+
+        {{-- INFORMACIÓN GENERAL --}}
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>01</span>
+
+                Información general
+
+            </div>
+
+
+            <div class="row g-3">
+
+                <div class="col-md-5">
+
+                    <div class="gtri-expediente-field">
+
+                        <small class="gtri-expediente-field-label">
+
+                            No. de control
+
+                        </small>
+
+                        <span class="gtri-expediente-field-value">
+
+                            {{ $empleado->numero_control }}
+
+                        </span>
 
                     </div>
 
-
-                    <div
-                        class="rounded-3 p-3 text-start"
-                        style="
-                            background: #111827;
-                            border: 1px solid rgba(255, 255, 255, .08);
-                        "
-                    >
-
-                        <div class="mb-3">
-
-                            <small class="text-secondary d-block">
-
-                                Número de control
-
-                            </small>
-
-                            <span class="text-warning fw-bold">
-
-                                {{ $empleado->numero_control }}
-
-                            </span>
-
-                        </div>
+                </div>
 
 
-                        <div class="mb-3">
+                <div class="col-md-7">
 
-                            <small class="text-secondary d-block">
+                    <div class="gtri-expediente-field">
 
-                                Puesto
+                        <small class="gtri-expediente-field-label">
 
-                            </small>
+                            Nombre completo
 
-                            <span class="text-light">
+                        </small>
 
-                                {{ $empleado->puesto }}
+                        <span class="gtri-expediente-field-value">
 
-                            </span>
+                            {{ $empleado->nombre }}
 
-                        </div>
+                            {{ $empleado->apellido_paterno }}
 
+                            {{ $empleado->apellido_materno }}
 
-                        <div>
-
-                            <small class="text-secondary d-block">
-
-                                Rango
-
-                            </small>
-
-                            <span class="text-light">
-
-                                {{ $empleado->rango }}
-
-                            </span>
-
-                        </div>
+                        </span>
 
                     </div>
 
@@ -229,77 +266,77 @@
         </div>
 
 
-        {{-- INFORMACIÓN DEL EMPLEADO --}}
-        <div class="col-xl-9 col-lg-8">
+        {{-- DOCUMENTOS DE IDENTIDAD --}}
+        <div class="gtri-section">
 
-            {{-- INFORMACIÓN GENERAL --}}
-            <div class="gtri-section">
+            <div class="gtri-section-title">
 
-                <div class="gtri-section-title">
+                <span>02</span>
 
-                    <span>01</span>
+                Documentos de identidad
 
-                    Información general
+            </div>
+
+
+            <div class="row g-3">
+
+                <div class="col-md-4">
+
+                    <div class="gtri-expediente-field">
+
+                        <small class="gtri-expediente-field-label">
+
+                            CURP
+
+                        </small>
+
+                        <span class="gtri-expediente-field-value">
+
+                            {{ $empleado->curp }}
+
+                        </span>
+
+                    </div>
 
                 </div>
 
 
-                <div class="row g-3">
+                <div class="col-md-4">
 
-                    <div class="col-md-4">
+                    <div class="gtri-expediente-field">
 
-                        <div
-                            class="rounded-3 p-3 h-100"
-                            style="
-                                background: #111827;
-                                border: 1px solid rgba(255, 255, 255, .08);
-                            "
-                        >
+                        <small class="gtri-expediente-field-label">
 
-                            <small class="text-secondary d-block mb-1">
+                            RFC
 
-                                No. de control
+                        </small>
 
-                            </small>
+                        <span class="gtri-expediente-field-value">
 
-                            <span class="text-light fw-semibold">
+                            {{ $empleado->rfc }}
 
-                                {{ $empleado->numero_control }}
-
-                            </span>
-
-                        </div>
+                        </span>
 
                     </div>
 
+                </div>
 
-                    <div class="col-md-8">
 
-                        <div
-                            class="rounded-3 p-3 h-100"
-                            style="
-                                background: #111827;
-                                border: 1px solid rgba(255, 255, 255, .08);
-                            "
-                        >
+                <div class="col-md-4">
 
-                            <small class="text-secondary d-block mb-1">
+                    <div class="gtri-expediente-field">
 
-                                Nombre completo
+                        <small class="gtri-expediente-field-label">
 
-                            </small>
+                            NSS
 
-                            <span class="text-light fw-semibold">
+                        </small>
 
-                                {{ $empleado->nombre }}
+                        <span class="gtri-expediente-field-value">
 
-                                {{ $empleado->apellido_paterno }}
+                            {{ $empleado->nss }}
 
-                                {{ $empleado->apellido_materno }}
-
-                            </span>
-
-                        </div>
+                        </span>
 
                     </div>
 
@@ -307,98 +344,86 @@
 
             </div>
 
+        </div>
 
-            {{-- DOCUMENTOS --}}
-            <div class="gtri-section">
 
-                <div class="gtri-section-title">
+        {{-- INFORMACIÓN DE CONTACTO --}}
+        <div class="gtri-section">
 
-                    <span>02</span>
+            <div class="gtri-section-title">
 
-                    Documentos de identidad
+                <span>03</span>
+
+                Información de contacto
+
+            </div>
+
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+
+                    <div class="gtri-expediente-field">
+
+                        <small class="gtri-expediente-field-label">
+
+                            <i class="bi bi-telephone me-1"></i>
+
+                            Teléfono
+
+                        </small>
+
+                        <span class="gtri-expediente-field-value">
+
+                            {{ $empleado->telefono }}
+
+                        </span>
+
+                    </div>
 
                 </div>
 
 
-                <div class="row g-3">
+                <div class="col-md-6">
 
-                    <div class="col-md-4">
+                    <div class="gtri-expediente-field">
 
-                        <div
-                            class="rounded-3 p-3 h-100"
-                            style="
-                                background: #111827;
-                                border: 1px solid rgba(255, 255, 255, .08);
-                            "
-                        >
+                        <small class="gtri-expediente-field-label">
 
-                            <small class="text-secondary d-block mb-1">
+                            <i class="bi bi-envelope me-1"></i>
 
-                                CURP
+                            Correo electrónico
 
-                            </small>
+                        </small>
 
-                            <span class="text-light fw-semibold">
+                        <span class="gtri-expediente-field-value">
 
-                                {{ $empleado->curp }}
+                            {{ $empleado->correo }}
 
-                            </span>
-
-                        </div>
+                        </span>
 
                     </div>
 
-
-                    <div class="col-md-4">
-
-                        <div
-                            class="rounded-3 p-3 h-100"
-                            style="
-                                background: #111827;
-                                border: 1px solid rgba(255, 255, 255, .08);
-                            "
-                        >
-
-                            <small class="text-secondary d-block mb-1">
-
-                                RFC
-
-                            </small>
-
-                            <span class="text-light fw-semibold">
-
-                                {{ $empleado->rfc }}
-
-                            </span>
-
-                        </div>
-
-                    </div>
+                </div>
 
 
-                    <div class="col-md-4">
+                <div class="col-12">
 
-                        <div
-                            class="rounded-3 p-3 h-100"
-                            style="
-                                background: #111827;
-                                border: 1px solid rgba(255, 255, 255, .08);
-                            "
-                        >
+                    <div class="gtri-expediente-field">
 
-                            <small class="text-secondary d-block mb-1">
+                        <small class="gtri-expediente-field-label">
 
-                                NSS
+                            <i class="bi bi-geo-alt me-1"></i>
 
-                            </small>
+                            Dirección
 
-                            <span class="text-light fw-semibold">
+                        </small>
 
-                                {{ $empleado->nss }}
+                        <span class="gtri-expediente-field-value">
 
-                            </span>
+                            {{ $empleado->direccion }}
 
-                        </div>
+                        </span>
 
                     </div>
 
@@ -406,104 +431,109 @@
 
             </div>
 
+        </div>
 
-            {{-- CONTACTO --}}
-            <div class="gtri-section">
 
-                <div class="gtri-section-title">
+        {{-- FECHAS Y CONTACTO DE EMERGENCIA --}}
+        <div class="gtri-section">
 
-                    <span>03</span>
+            <div class="gtri-section-title">
 
-                    Información de contacto
+                <span>05</span>
+
+                Fechas y contacto de emergencia
+
+            </div>
+
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+
+                    <div class="gtri-expediente-field">
+
+                        <small class="gtri-expediente-field-label">
+
+                            <i class="bi bi-calendar-heart me-1"></i>
+
+                            Fecha de nacimiento
+
+                        </small>
+
+                        <span class="gtri-expediente-field-value">
+
+                            {{ $empleado->fecha_nacimiento }}
+
+                        </span>
+
+                    </div>
 
                 </div>
 
 
-                <div class="row g-3">
+                <div class="col-md-6">
 
-                    <div class="col-md-6">
+                    <div class="gtri-expediente-field">
 
-                        <div
-                            class="rounded-3 p-3 h-100"
-                            style="
-                                background: #111827;
-                                border: 1px solid rgba(255, 255, 255, .08);
-                            "
-                        >
+                        <small class="gtri-expediente-field-label">
 
-                            <small class="text-secondary d-block mb-1">
+                            <i class="bi bi-calendar-check me-1"></i>
 
-                                <i class="bi bi-telephone me-1"></i>
+                            Fecha de ingreso
 
-                                Teléfono
+                        </small>
 
-                            </small>
+                        <span class="gtri-expediente-field-value">
 
-                            <span class="text-light fw-semibold">
+                            {{ $empleado->fecha_ingreso }}
 
-                                {{ $empleado->telefono }}
-
-                            </span>
-
-                        </div>
+                        </span>
 
                     </div>
 
+                </div>
 
-                    <div class="col-md-6">
 
-                        <div
-                            class="rounded-3 p-3 h-100"
-                            style="
-                                background: #111827;
-                                border: 1px solid rgba(255, 255, 255, .08);
-                            "
-                        >
+                <div class="col-md-6">
 
-                            <small class="text-secondary d-block mb-1">
+                    <div class="gtri-expediente-field">
 
-                                <i class="bi bi-envelope me-1"></i>
+                        <small class="gtri-expediente-field-label">
 
-                                Correo electrónico
+                            <i class="bi bi-person-exclamation me-1"></i>
 
-                            </small>
+                            Contacto de emergencia
 
-                            <span class="text-light fw-semibold">
+                        </small>
 
-                                {{ $empleado->correo }}
+                        <span class="gtri-expediente-field-value">
 
-                            </span>
+                            {{ $empleado->contacto_emergencia }}
 
-                        </div>
+                        </span>
 
                     </div>
 
+                </div>
 
-                    <div class="col-12">
 
-                        <div
-                            class="rounded-3 p-3"
-                            style="
-                                background: #111827;
-                                border: 1px solid rgba(255, 255, 255, .08);
-                            "
-                        >
+                <div class="col-md-6">
 
-                            <small class="text-secondary d-block mb-1">
+                    <div class="gtri-expediente-field">
 
-                                <i class="bi bi-geo-alt me-1"></i>
+                        <small class="gtri-expediente-field-label">
 
-                                Dirección
+                            <i class="bi bi-telephone-outbound me-1"></i>
 
-                            </small>
+                            Teléfono de emergencia
 
-                            <span class="text-light fw-semibold">
+                        </small>
 
-                                {{ $empleado->direccion }}
+                        <span class="gtri-expediente-field-value">
 
-                            </span>
+                            {{ $empleado->telefono_emergencia }}
 
-                        </div>
+                        </span>
 
                     </div>
 
@@ -511,388 +541,188 @@
 
             </div>
 
+        </div>
 
-            {{-- INFORMACIÓN RH --}}
-            <div class="gtri-section">
 
-                <div class="gtri-section-title">
+        {{-- INFORMACIÓN DE RECURSOS HUMANOS --}}
+        <div class="gtri-section gtri-section-wide">
 
-                    <span>04</span>
+            <div class="gtri-section-title">
 
-                    Información de Recursos Humanos
+                <span>04</span>
 
-                </div>
-
-
-                <div class="row g-3">
-
-                    <div class="col-md-3 col-sm-6">
-
-                        <div
-                            class="rounded-3 p-3 h-100"
-                            style="
-                                background: #111827;
-                                border: 1px solid rgba(255, 255, 255, .08);
-                            "
-                        >
-
-                            <small class="text-secondary d-block mb-1">
-
-                                Puesto
-
-                            </small>
-
-                            <span class="text-light fw-semibold">
-
-                                {{ $empleado->puesto }}
-
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="col-md-3 col-sm-6">
-
-                        <div
-                            class="rounded-3 p-3 h-100"
-                            style="
-                                background: #111827;
-                                border: 1px solid rgba(255, 255, 255, .08);
-                            "
-                        >
-
-                            <small class="text-secondary d-block mb-1">
-
-                                Rango
-
-                            </small>
-
-                            <span class="text-light fw-semibold">
-
-                                {{ $empleado->rango }}
-
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="col-md-3 col-sm-6">
-
-                        <div
-                            class="rounded-3 p-3 h-100"
-                            style="
-                                background: #111827;
-                                border: 1px solid rgba(255, 255, 255, .08);
-                            "
-                        >
-
-                            <small class="text-secondary d-block mb-1">
-
-                                Salario base
-
-                            </small>
-
-                            <span class="text-warning fw-bold">
-
-                                ${{ number_format(
-                                    $empleado->salario_base,
-                                    2
-                                ) }}
-
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="col-md-3 col-sm-6">
-
-                        <div
-                            class="rounded-3 p-3 h-100"
-                            style="
-                                background: #111827;
-                                border: 1px solid rgba(255, 255, 255, .08);
-                            "
-                        >
-
-                            <small class="text-secondary d-block mb-1">
-
-                                Tipo de sangre
-
-                            </small>
-
-                            <span class="text-danger fw-bold">
-
-                                {{ $empleado->tipo_sangre }}
-
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="col-md-3 col-sm-6">
-
-                        <div
-                            class="rounded-3 p-3 h-100"
-                            style="
-                                background: #111827;
-                                border: 1px solid rgba(255, 255, 255, .08);
-                            "
-                        >
-
-                            <small class="text-secondary d-block mb-1">
-
-                                Antigüedad
-
-                            </small>
-
-                            <span class="text-light fw-semibold">
-
-                                {{ $empleado->antiguedad() }}
-
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="col-md-3 col-sm-6">
-
-                        <div
-                            class="rounded-3 p-3 h-100"
-                            style="
-                                background: #111827;
-                                border: 1px solid rgba(255, 255, 255, .08);
-                            "
-                        >
-
-                            <small class="text-secondary d-block mb-1">
-
-                                Vacaciones disponibles
-
-                            </small>
-
-                            <span class="text-info fw-bold">
-
-                                {{ $empleado->vacaciones() }} días
-
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="col-md-3 col-sm-6">
-
-                        <div
-                            class="rounded-3 p-3 h-100"
-                            style="
-                                background: #111827;
-                                border: 1px solid rgba(255, 255, 255, .08);
-                            "
-                        >
-
-                            <small class="text-secondary d-block mb-1">
-
-                                Vacaciones tomadas
-
-                            </small>
-
-                            <span class="text-warning fw-bold">
-
-                                {{ $empleado->vacacionesTomadas() }} días
-
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="col-md-3 col-sm-6">
-
-                        <div
-                            class="rounded-3 p-3 h-100"
-                            style="
-                                background: #111827;
-                                border: 1px solid rgba(255, 255, 255, .08);
-                            "
-                        >
-
-                            <small class="text-secondary d-block mb-1">
-
-                                Vacaciones restantes
-
-                            </small>
-
-                            <span class="text-success fw-bold">
-
-                                {{ $empleado->vacacionesRestantes() }} días
-
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </div>
+                Información de Recursos Humanos
 
             </div>
 
 
-            {{-- FECHAS --}}
-            <div class="gtri-section">
+            <div class="row g-3">
 
-                <div class="gtri-section-title">
+                <div class="col-xl-3 col-md-4 col-sm-6">
 
-                    <span>05</span>
+                    <div class="gtri-expediente-field">
 
-                    Fechas importantes
+                        <small class="gtri-expediente-field-label">
 
-                </div>
+                            Puesto
 
+                        </small>
 
-                <div class="row g-3">
+                        <span class="gtri-expediente-field-value">
 
-                    <div class="col-md-6">
+                            {{ $empleado->puesto }}
 
-                        <div
-                            class="rounded-3 p-3 h-100"
-                            style="
-                                background: #111827;
-                                border: 1px solid rgba(255, 255, 255, .08);
-                            "
-                        >
-
-                            <small class="text-secondary d-block mb-1">
-
-                                <i class="bi bi-calendar-heart me-1"></i>
-
-                                Fecha de nacimiento
-
-                            </small>
-
-                            <span class="text-light fw-semibold">
-
-                                {{ $empleado->fecha_nacimiento }}
-
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="col-md-6">
-
-                        <div
-                            class="rounded-3 p-3 h-100"
-                            style="
-                                background: #111827;
-                                border: 1px solid rgba(255, 255, 255, .08);
-                            "
-                        >
-
-                            <small class="text-secondary d-block mb-1">
-
-                                <i class="bi bi-calendar-check me-1"></i>
-
-                                Fecha de ingreso
-
-                            </small>
-
-                            <span class="text-light fw-semibold">
-
-                                {{ $empleado->fecha_ingreso }}
-
-                            </span>
-
-                        </div>
+                        </span>
 
                     </div>
 
                 </div>
 
-            </div>
 
+                <div class="col-xl-3 col-md-4 col-sm-6">
 
-            {{-- CONTACTO DE EMERGENCIA --}}
-            <div class="gtri-section mb-0">
+                    <div class="gtri-expediente-field">
 
-                <div class="gtri-section-title">
+                        <small class="gtri-expediente-field-label">
 
-                    <span>06</span>
+                            Rango
 
-                    Contacto de emergencia
+                        </small>
+
+                        <span class="gtri-expediente-field-value">
+
+                            {{ $empleado->rango }}
+
+                        </span>
+
+                    </div>
 
                 </div>
 
 
-                <div class="row g-3">
+                <div class="col-xl-3 col-md-4 col-sm-6">
 
-                    <div class="col-md-6">
+                    <div class="gtri-expediente-field">
 
-                        <div
-                            class="rounded-3 p-3 h-100"
-                            style="
-                                background: #111827;
-                                border: 1px solid rgba(255, 255, 255, .08);
-                            "
-                        >
+                        <small class="gtri-expediente-field-label">
 
-                            <small class="text-secondary d-block mb-1">
+                            Salario base
 
-                                <i class="bi bi-person-exclamation me-1"></i>
+                        </small>
 
-                                Nombre del contacto
+                        <span class="gtri-expediente-field-value text-warning">
 
-                            </small>
+                            ${{ number_format(
+                                $empleado->salario_base,
+                                2
+                            ) }}
 
-                            <span class="text-light fw-semibold">
-
-                                {{ $empleado->contacto_emergencia }}
-
-                            </span>
-
-                        </div>
+                        </span>
 
                     </div>
 
+                </div>
 
-                    <div class="col-md-6">
 
-                        <div
-                            class="rounded-3 p-3 h-100"
-                            style="
-                                background: #111827;
-                                border: 1px solid rgba(255, 255, 255, .08);
-                            "
-                        >
+                <div class="col-xl-3 col-md-4 col-sm-6">
 
-                            <small class="text-secondary d-block mb-1">
+                    <div class="gtri-expediente-field">
 
-                                <i class="bi bi-telephone-outbound me-1"></i>
+                        <small class="gtri-expediente-field-label">
 
-                                Teléfono de emergencia
+                            Tipo de sangre
 
-                            </small>
+                        </small>
 
-                            <span class="text-light fw-semibold">
+                        <span class="gtri-expediente-field-value text-danger">
 
-                                {{ $empleado->telefono_emergencia }}
+                            {{ $empleado->tipo_sangre }}
 
-                            </span>
+                        </span>
 
-                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="col-xl-3 col-md-4 col-sm-6">
+
+                    <div class="gtri-expediente-field">
+
+                        <small class="gtri-expediente-field-label">
+
+                            Antigüedad
+
+                        </small>
+
+                        <span class="gtri-expediente-field-value">
+
+                            {{ $empleado->antiguedad() }}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-xl-3 col-md-4 col-sm-6">
+
+                    <div class="gtri-expediente-field">
+
+                        <small class="gtri-expediente-field-label">
+
+                            Vacaciones disponibles
+
+                        </small>
+
+                        <span class="gtri-expediente-field-value text-info">
+
+                            {{ $empleado->vacaciones() }} días
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-xl-3 col-md-4 col-sm-6">
+
+                    <div class="gtri-expediente-field">
+
+                        <small class="gtri-expediente-field-label">
+
+                            Vacaciones tomadas
+
+                        </small>
+
+                        <span class="gtri-expediente-field-value text-warning">
+
+                            {{ $empleado->vacacionesTomadas() }} días
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-xl-3 col-md-4 col-sm-6">
+
+                    <div class="gtri-expediente-field">
+
+                        <small class="gtri-expediente-field-label">
+
+                            Vacaciones restantes
+
+                        </small>
+
+                        <span class="gtri-expediente-field-value text-success">
+
+                            {{ $empleado->vacacionesRestantes() }} días
+
+                        </span>
 
                     </div>
 
@@ -904,97 +734,38 @@
 
     </div>
 
-        {{-- DOCUMENTOS RH --}}
-    <div class="gtri-section mt-4">
+
+    {{-- DOCUMENTOS RH --}}
+    <div class="gtri-section gtri-expediente-documents-section">
 
         <div class="gtri-section-title">
 
-            <span>07</span>
+            <span>06</span>
 
             Documentos RH
 
         </div>
 
 
-        {{-- PROGRESO DEL EXPEDIENTE --}}
-        <div
-            class="rounded-3 p-4 mb-4"
-            style="
-                background: #111827;
-                border: 1px solid rgba(255, 255, 255, .08);
-            "
-        >
+        <div class="gtri-expediente-doc-progress">
 
-            <div
-                class="
-                    d-flex
-                    flex-wrap
-                    justify-content-between
-                    align-items-center
-                    gap-2
-                "
-            >
+            <div class="gtri-expediente-doc-progress-header">
 
                 <div>
 
-                    <h5 class="text-light fw-bold mb-1">
+                    <div class="gtri-expediente-doc-progress-title">
 
-                        <i class="bi bi-folder-check me-2 text-warning"></i>
+                        <i class="bi bi-folder-check"></i>
 
                         Progreso del expediente
 
-                    </h5>
+                    </div>
 
-                    <small class="text-secondary">
+                    <small>
 
-                        Documentos entregados por el empleado
-
-                    </small>
-
-                </div>
-
-
-                <div class="text-end">
-
-                    <span class="text-warning fw-bold fs-5">
-
-                        {{ $documentos->count() }}
-
-                        /
-
-                        {{ count($documentosRH) }}
-
-                    </span>
-
-                    <small class="text-secondary d-block">
-
-                        documentos
+                        Documentación entregada por el empleado.
 
                     </small>
-
-                </div>
-
-            </div>
-
-
-            <div
-                class="progress mt-3"
-                style="
-                    height: 16px;
-                    background: #1F2937;
-                "
-            >
-
-                <div
-                    class="progress-bar bg-success fw-semibold"
-                    role="progressbar"
-                    style="width: {{ $porcentajeDocumentos }}%;"
-                    aria-valuenow="{{ $porcentajeDocumentos }}"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                >
-
-                    {{ $porcentajeDocumentos }}%
 
                 </div>
 
@@ -1003,8 +774,7 @@
         </div>
 
 
-        {{-- LISTADO DE DOCUMENTOS --}}
-        <div class="row g-3">
+        <div class="gtri-expediente-documents-grid">
 
             @foreach ($documentosRH as $documentoRH)
 
@@ -1020,137 +790,149 @@
                 @endphp
 
 
-                <div class="col-xl-4 col-md-6">
+                <div
+                    class="
+                        gtri-expediente-document-item
 
-                    <div
-                        class="rounded-3 p-3 h-100"
-                        style="
-                            background: #111827;
-                            border: 1px solid rgba(255, 255, 255, .08);
-                        "
-                    >
+                        {{ $documentoSubido
+                            ? 'gtri-document-delivered'
+                            : 'gtri-document-pending'
+                        }}
+                    "
+                >
 
-                        <div
-                            class="
-                                d-flex
-                                justify-content-between
-                                align-items-start
-                                gap-3
-                                mb-3
-                            "
-                        >
+                    <div class="gtri-expediente-document-information">
 
-                            <div>
-
-                                <small class="text-secondary d-block mb-1">
-
-                                    Documento
-
-                                </small>
-
-                                <h6 class="text-light fw-bold mb-0">
-
-                                    {{ $documentoRH }}
-
-                                </h6>
-
-                            </div>
-
+                        <div class="gtri-expediente-document-icon">
 
                             @if ($documentoSubido)
 
-                                <span class="gtri-badge-success">
-
-                                    <i class="bi bi-check-circle me-1"></i>
-
-                                    Entregado
-
-                                </span>
+                                <i class="bi bi-file-earmark-check"></i>
 
                             @else
 
-                                <span class="gtri-badge-warning">
-
-                                    <i class="bi bi-clock me-1"></i>
-
-                                    Pendiente
-
-                                </span>
+                                <i class="bi bi-file-earmark-excel"></i>
 
                             @endif
 
                         </div>
 
 
-                        @if ($documentoSubido)
+                        <div>
 
-                            <form
-                                method="POST"
-                                action="{{ route(
-                                    'rh.documentos.pendiente',
-                                    $empleado->id
-                                ) }}"
-                            >
+                            <span class="gtri-expediente-document-name">
 
-                                @csrf
-                                @method('PATCH')
+                                {{ $documentoRH }}
+
+                            </span>
+
+                            <small>
+
+                                @if ($documentoSubido)
+
+                                    Documento entregado
+
+                                @else
+
+                                    Documento pendiente
+
+                                @endif
+
+                            </small>
+
+                        </div>
+
+                    </div>
 
 
-                                <input
-                                    type="hidden"
-                                    name="nombre"
-                                    value="{{ $documentoRH }}"
+                    <div class="gtri-expediente-document-action">
+
+                        @if ($empleado->estado === 'activo')
+
+                            @if ($documentoSubido)
+
+                                <form
+                                    method="POST"
+                                    action="{{ route(
+                                        'rh.documentos.pendiente',
+                                        $empleado->id
+                                    ) }}"
+                                    class="gtri-document-form"
                                 >
 
+                                    @csrf
+                                    @method('PATCH')
 
-                                <button
-                                    type="submit"
-                                    class="btn gtri-btn-secondary btn-sm w-100"
-                                    onclick="return confirm(
-                                        '¿Deseas marcar este documento como pendiente?'
-                                    )"
+                                    <input
+                                        type="hidden"
+                                        name="nombre"
+                                        value="{{ $documentoRH }}"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="btn gtri-btn-secondary btn-sm"
+                                    >
+
+                                        <i class="bi bi-arrow-counterclockwise"></i>
+
+                                        <span>
+
+                                            Marcar pendiente
+
+                                        </span>
+
+                                    </button>
+
+                                </form>
+
+                            @else
+
+                                <form
+                                    method="POST"
+                                    action="{{ route(
+                                        'rh.documentos.store',
+                                        $empleado->id
+                                    ) }}"
+                                    class="gtri-document-form"
                                 >
 
-                                    <i class="bi bi-arrow-counterclockwise me-1"></i>
+                                    @csrf
 
-                                    Marcar pendiente
+                                    <input
+                                        type="hidden"
+                                        name="nombre"
+                                        value="{{ $documentoRH }}"
+                                    >
 
-                                </button>
+                                    <button
+                                        type="submit"
+                                        class="btn gtri-btn-primary btn-sm"
+                                    >
 
-                            </form>
+                                        <i class="bi bi-check2-circle"></i>
+
+                                        <span>
+
+                                            Marcar entregado
+
+                                        </span>
+
+                                    </button>
+
+                                </form>
+
+                            @endif
 
                         @else
 
-                            <form
-                                method="POST"
-                                action="{{ route(
-                                    'rh.documentos.store',
-                                    $empleado->id
-                                ) }}"
-                            >
+                            <span class="gtri-expediente-readonly">
 
-                                @csrf
+                                <i class="bi bi-lock-fill"></i>
 
+                                Solo lectura
 
-                                <input
-                                    type="hidden"
-                                    name="nombre"
-                                    value="{{ $documentoRH }}"
-                                >
-
-
-                                <button
-                                    type="submit"
-                                    class="btn gtri-btn-primary btn-sm w-100"
-                                >
-
-                                    <i class="bi bi-check2-circle me-1"></i>
-
-                                    Marcar como entregado
-
-                                </button>
-
-                            </form>
+                            </span>
 
                         @endif
 
@@ -1165,701 +947,992 @@
     </div>
 
 
-    {{-- HISTORIAL DE VACACIONES --}}
-    <div class="gtri-section">
+    {{-- HISTORIAL --}}
+    <div class="gtri-section gtri-expediente-history-section">
 
         <div class="gtri-section-title">
 
-            <span>08</span>
+            <span>07</span>
 
-            Historial de vacaciones
-
-        </div>
-
-
-        <div class="gtri-table-wrapper">
-
-            <div class="table-responsive">
-
-                <table class="table gtri-table align-middle mb-0">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>Fecha de inicio</th>
-
-                            <th>Fecha de término</th>
-
-                            <th>Días</th>
-
-                            <th>Estado</th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        @forelse ($vacaciones as $vacacion)
-
-                            <tr>
-
-                                <td>
-
-                                    <i class="bi bi-calendar-event me-2 text-warning"></i>
-
-                                    {{ $vacacion->fecha_inicio }}
-
-                                </td>
-
-
-                                <td>
-
-                                    {{ $vacacion->fecha_fin }}
-
-                                </td>
-
-
-                                <td>
-
-                                    <span class="text-light fw-semibold">
-
-                                        {{ $vacacion->dias }}
-
-                                    </span>
-
-                                </td>
-
-
-                                <td>
-
-                                    @if ($vacacion->estado == 'aprobada')
-
-                                        <span class="gtri-badge-success">
-
-                                            Aprobada
-
-                                        </span>
-
-                                    @elseif ($vacacion->estado == 'rechazada')
-
-                                        <span class="gtri-badge-danger">
-
-                                            Rechazada
-
-                                        </span>
-
-                                    @else
-
-                                        <span class="gtri-badge-warning">
-
-                                            {{ ucfirst($vacacion->estado) }}
-
-                                        </span>
-
-                                    @endif
-
-                                </td>
-
-                            </tr>
-
-                        @empty
-
-                            <tr>
-
-                                <td
-                                    colspan="4"
-                                    class="text-center py-5"
-                                >
-
-                                    <i
-                                        class="
-                                            bi
-                                            bi-calendar-x
-                                            d-block
-                                            fs-1
-                                            text-secondary
-                                            mb-2
-                                        "
-                                    ></i>
-
-                                    <span class="text-secondary">
-
-                                        Sin vacaciones registradas
-
-                                    </span>
-
-                                </td>
-
-                            </tr>
-
-                        @endforelse
-
-                    </tbody>
-
-                </table>
-
-            </div>
+            Historial del empleado
 
         </div>
 
-    </div>
 
+        <ul
+            class="nav nav-pills gtri-expediente-history-tabs"
+            id="historialEmpleado"
+            role="tablist"
+        >
 
-    {{-- HISTORIAL DE INCIDENCIAS --}}
-    <div class="gtri-section">
+            <li class="nav-item" role="presentation">
 
-        <div class="gtri-section-title">
+                <button
+                    class="nav-link active"
+                    id="vacaciones-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#vacaciones"
+                    type="button"
+                    role="tab"
+                >
 
-            <span>09</span>
+                    <i class="bi bi-calendar2-week"></i>
 
-            Historial de incidencias
+                    Vacaciones
 
-        </div>
+                    <span>
 
+                        {{ $vacaciones->count() }}
 
-        <div class="gtri-table-wrapper">
+                    </span>
 
-            <div class="table-responsive">
+                </button>
 
-                <table class="table gtri-table align-middle mb-0">
+            </li>
 
-                    <thead>
 
-                        <tr>
+            <li class="nav-item" role="presentation">
 
-                            <th>Tipo</th>
+                <button
+                    class="nav-link"
+                    id="incidencias-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#incidencias"
+                    type="button"
+                    role="tab"
+                >
 
-                            <th>Fecha</th>
+                    <i class="bi bi-exclamation-triangle"></i>
 
-                            <th>Descripción</th>
+                    Incidencias
 
-                        </tr>
+                    <span>
 
-                    </thead>
+                        {{ $incidencias->count() }}
 
+                    </span>
 
-                    <tbody>
+                </button>
 
-                        @forelse ($incidencias as $incidencia)
+            </li>
 
-                            <tr>
 
-                                <td>
+            <li class="nav-item" role="presentation">
 
-                                    <span class="gtri-badge-warning">
+                <button
+                    class="nav-link"
+                    id="uniformes-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#uniformes"
+                    type="button"
+                    role="tab"
+                >
 
-                                        {{ ucfirst($incidencia->tipo) }}
+                    <i class="bi bi-box-seam"></i>
 
-                                    </span>
+                    Uniformes
 
-                                </td>
+                    <span>
 
+                        {{ $uniformes->count() }}
 
-                                <td>
+                    </span>
 
-                                    <i class="bi bi-calendar3 me-2 text-warning"></i>
+                </button>
 
-                                    {{ $incidencia->fecha }}
+            </li>
 
-                                </td>
 
+            <li class="nav-item" role="presentation">
 
-                                <td>
+                <button
+                    class="nav-link"
+                    id="vigencias-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#vigencias"
+                    type="button"
+                    role="tab"
+                >
 
-                                    {{ $incidencia->descripcion }}
+                    <i class="bi bi-calendar-check"></i>
 
-                                </td>
+                    Vigencias
 
-                            </tr>
+                    <span>
 
-                        @empty
+                        {{ $vigencias->count() }}
 
-                            <tr>
+                    </span>
 
-                                <td
-                                    colspan="3"
-                                    class="text-center py-5"
-                                >
+                </button>
 
-                                    <i
-                                        class="
-                                            bi
-                                            bi-shield-check
-                                            d-block
-                                            fs-1
-                                            text-secondary
-                                            mb-2
-                                        "
-                                    ></i>
+            </li>
 
-                                    <span class="text-secondary">
 
-                                        Sin incidencias registradas
+            <li class="nav-item" role="presentation">
 
-                                    </span>
+                <button
+                    class="nav-link"
+                    id="capacitaciones-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#capacitaciones"
+                    type="button"
+                    role="tab"
+                >
 
-                                </td>
+                    <i class="bi bi-mortarboard"></i>
 
-                            </tr>
+                    Capacitaciones
 
-                        @endforelse
+                    <span>
 
-                    </tbody>
+                        {{ $capacitaciones->count() }}
 
-                </table>
+                    </span>
 
-            </div>
+                </button>
 
-        </div>
+            </li>
 
-    </div>
+        </ul>
 
 
-    {{-- UNIFORMES ENTREGADOS --}}
-    <div class="gtri-section">
+        <div
+            class="tab-content gtri-expediente-history-content"
+            id="historialEmpleadoContenido"
+        >
 
-        <div class="gtri-section-title">
+            {{-- VACACIONES --}}
+            <div
+                class="tab-pane fade show active"
+                id="vacaciones"
+                role="tabpanel"
+            >
 
-            <span>10</span>
+                <div class="gtri-table-wrapper">
 
-            Uniformes entregados
+                    <div class="table-responsive">
 
-        </div>
+                        <table class="table gtri-table align-middle mb-0">
 
+                            <thead>
 
-        <div class="gtri-table-wrapper">
+                                <tr>
 
-            <div class="table-responsive">
+                                    <th>Fecha de inicio</th>
 
-                <table class="table gtri-table align-middle mb-0">
+                                    <th>Fecha de término</th>
 
-                    <thead>
+                                    <th>Días</th>
 
-                        <tr>
+                                    <th>Estado</th>
 
-                            <th>Artículo</th>
+                                </tr>
 
-                            <th>Tipo</th>
+                            </thead>
 
-                            <th>Fecha de entrega</th>
 
-                            <th>Observaciones</th>
+                            <tbody>
 
-                        </tr>
+                                @forelse ($vacaciones as $vacacion)
 
-                    </thead>
+                                    <tr>
 
+                                        <td>
 
-                    <tbody>
+                                            <i class="bi bi-calendar-event me-2 text-warning"></i>
 
-                        @forelse ($uniformes as $uniforme)
+                                            {{ $vacacion->fecha_inicio }}
 
-                            <tr>
+                                        </td>
 
-                                <td>
+                                        <td>
 
-                                    <i class="bi bi-box-seam me-2 text-warning"></i>
+                                            {{ $vacacion->fecha_fin }}
 
-                                    <span class="text-light fw-semibold">
+                                        </td>
 
-                                        {{ $uniforme->articulo }}
+                                        <td>
 
-                                    </span>
+                                            {{ $vacacion->dias }}
 
-                                </td>
+                                        </td>
 
+                                        <td>
 
-                                <td>
+                                            @if ($vacacion->estado === 'aprobada')
 
-                                    {{ ucfirst(
-                                        str_replace(
-                                            '_',
-                                            ' ',
-                                            $uniforme->tipo
-                                        )
-                                    ) }}
+                                                <span class="gtri-badge-success">
 
-                                </td>
+                                                    Aprobada
 
+                                                </span>
 
-                                <td>
+                                            @elseif ($vacacion->estado === 'rechazada')
 
-                                    {{ $uniforme->fecha_entrega }}
+                                                <span class="gtri-badge-danger">
 
-                                </td>
+                                                    Rechazada
 
+                                                </span>
 
-                                <td>
+                                            @else
 
-                                    {{ $uniforme->observaciones }}
+                                                <span class="gtri-badge-warning">
 
-                                </td>
+                                                    {{ ucfirst(
+                                                        $vacacion->estado
+                                                    ) }}
 
-                            </tr>
+                                                </span>
 
-                        @empty
+                                            @endif
 
-                            <tr>
+                                        </td>
 
-                                <td
-                                    colspan="4"
-                                    class="text-center py-5"
-                                >
+                                    </tr>
 
-                                    <i
-                                        class="
-                                            bi
-                                            bi-box
-                                            d-block
-                                            fs-1
-                                            text-secondary
-                                            mb-2
-                                        "
-                                    ></i>
+                                @empty
 
-                                    <span class="text-secondary">
+                                    <tr>
 
-                                        Sin uniformes registrados
-
-                                    </span>
-
-                                </td>
-
-                            </tr>
-
-                        @endforelse
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    {{-- SEMÁFORO DE VIGENCIAS --}}
-    <div class="gtri-section">
-
-        <div class="gtri-section-title">
-
-            <span>11</span>
-
-            Semáforo de vigencias
-
-        </div>
-
-
-        <div class="gtri-table-wrapper">
-
-            <div class="table-responsive">
-
-                <table class="table gtri-table align-middle mb-0">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>Documento</th>
-
-                            <th>Fecha de vencimiento</th>
-
-                            <th>Estado</th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        @forelse ($vigencias as $vigencia)
-
-                            @php
-
-                                $dias = now()->diffInDays(
-                                    $vigencia->fecha_vencimiento,
-                                    false
-                                );
-
-                            @endphp
-
-
-                            <tr>
-
-                                <td>
-
-                                    <i class="bi bi-file-earmark-text me-2 text-warning"></i>
-
-                                    <span class="text-light fw-semibold">
-
-                                        {{ $vigencia->documento }}
-
-                                    </span>
-
-                                </td>
-
-
-                                <td>
-
-                                    {{ $vigencia->fecha_vencimiento }}
-
-                                </td>
-
-
-                                <td>
-
-                                    @if ($dias < 0)
-
-                                        <span class="gtri-badge-danger">
-
-                                            <i class="bi bi-x-circle me-1"></i>
-
-                                            Vencido
-
-                                        </span>
-
-                                    @elseif ($dias <= 30)
-
-                                        <span class="gtri-badge-warning">
-
-                                            <i class="bi bi-exclamation-triangle me-1"></i>
-
-                                            Próximo a vencer
-
-                                        </span>
-
-                                    @else
-
-                                        <span class="gtri-badge-success">
-
-                                            <i class="bi bi-check-circle me-1"></i>
-
-                                            Vigente
-
-                                        </span>
-
-                                    @endif
-
-                                </td>
-
-                            </tr>
-
-                        @empty
-
-                            <tr>
-
-                                <td
-                                    colspan="3"
-                                    class="text-center py-5"
-                                >
-
-                                    <i
-                                        class="
-                                            bi
-                                            bi-calendar2-x
-                                            d-block
-                                            fs-1
-                                            text-secondary
-                                            mb-2
-                                        "
-                                    ></i>
-
-                                    <span class="text-secondary">
-
-                                        Sin vigencias registradas
-
-                                    </span>
-
-                                </td>
-
-                            </tr>
-
-                        @endforelse
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    {{-- CAPACITACIONES --}}
-    <div class="gtri-section">
-
-        <div class="gtri-section-title">
-
-            <span>12</span>
-
-            Capacitaciones
-
-        </div>
-
-
-        <div class="gtri-table-wrapper">
-
-            <div class="table-responsive">
-
-                <table class="table gtri-table align-middle mb-0">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>Curso</th>
-
-                            <th>Calificación</th>
-
-                            <th>Vigencia</th>
-
-                            <th>Estado</th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        @forelse ($capacitaciones as $capacitacion)
-
-                            @php
-
-                                $dias = $capacitacion->vigencia_hasta
-                                    ? now()->diffInDays(
-                                        $capacitacion->vigencia_hasta,
-                                        false
-                                    )
-                                    : null;
-
-                            @endphp
-
-
-                            <tr>
-
-                                <td>
-
-                                    <i class="bi bi-mortarboard me-2 text-warning"></i>
-
-                                    <span class="text-light fw-semibold">
-
-                                        {{ $capacitacion->curso }}
-
-                                    </span>
-
-                                </td>
-
-
-                                <td>
-
-                                    {{ $capacitacion->calificacion }}
-
-                                </td>
-
-
-                                <td>
-
-                                    {{ $capacitacion->vigencia_hasta }}
-
-                                </td>
-
-
-                                <td>
-
-                                    @if (!$capacitacion->vigencia_hasta)
-
-                                        <span
-                                            class="
-                                                badge
-                                                rounded-pill
-                                                bg-secondary
-                                            "
+                                        <td
+                                            colspan="4"
+                                            class="gtri-expediente-empty-table"
                                         >
 
-                                            Sin vigencia
+                                            <i class="bi bi-calendar-x"></i>
 
-                                        </span>
+                                            <span>
 
-                                    @elseif ($dias < 0)
+                                                Sin vacaciones registradas
 
-                                        <span class="gtri-badge-danger">
+                                            </span>
 
-                                            <i class="bi bi-x-circle me-1"></i>
+                                        </td>
 
-                                            Vencida
+                                    </tr>
 
-                                        </span>
+                                @endforelse
 
-                                    @elseif ($dias <= 30)
+                            </tbody>
 
-                                        <span class="gtri-badge-warning">
+                        </table>
 
-                                            <i class="bi bi-exclamation-triangle me-1"></i>
+                    </div>
 
-                                            Próxima a vencer
+                </div>
 
-                                        </span>
+            </div>
 
-                                    @else
 
-                                        <span class="gtri-badge-success">
+            {{-- INCIDENCIAS --}}
+            <div
+                class="tab-pane fade"
+                id="incidencias"
+                role="tabpanel"
+            >
 
-                                            <i class="bi bi-check-circle me-1"></i>
+                <div class="gtri-table-wrapper">
 
-                                            Vigente
+                    <div class="table-responsive">
 
-                                        </span>
+                        <table class="table gtri-table align-middle mb-0">
 
-                                    @endif
+                            <thead>
 
-                                </td>
+                                <tr>
 
-                            </tr>
+                                    <th>Tipo</th>
 
-                        @empty
+                                    <th>Fecha</th>
 
-                            <tr>
+                                    <th>Descripción</th>
 
-                                <td
-                                    colspan="4"
-                                    class="text-center py-5"
-                                >
+                                    <th>Estado</th>
 
-                                    <i
-                                        class="
-                                            bi
-                                            bi-mortarboard
-                                            d-block
-                                            fs-1
-                                            text-secondary
-                                            mb-2
-                                        "
-                                    ></i>
+                                </tr>
 
-                                    <span class="text-secondary">
+                            </thead>
 
-                                        Sin capacitaciones registradas
 
-                                    </span>
+                            <tbody>
 
-                                </td>
+                                @forelse ($incidencias as $incidencia)
 
-                            </tr>
+                                    <tr>
 
-                        @endforelse
+                                        <td>
 
-                    </tbody>
+                                            <span class="gtri-badge-warning">
 
-                </table>
+                                                {{ ucfirst(
+                                                    $incidencia->tipo
+                                                ) }}
+
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            {{ $incidencia->fecha }}
+
+                                        </td>
+
+                                        <td>
+
+                                            {{ $incidencia->descripcion
+                                                ?: 'Sin descripción'
+                                            }}
+
+                                        </td>
+
+                                        <td>
+
+                                            @if (
+                                                $incidencia->estado
+                                                ===
+                                                'justificada'
+                                            )
+
+                                                <span class="gtri-badge-success">
+
+                                                    Justificada
+
+                                                </span>
+
+                                            @elseif (
+                                                $incidencia->estado
+                                                ===
+                                                'injustificada'
+                                            )
+
+                                                <span class="gtri-badge-danger">
+
+                                                    Injustificada
+
+                                                </span>
+
+                                            @else
+
+                                                <span class="gtri-badge-warning">
+
+                                                    Pendiente
+
+                                                </span>
+
+                                            @endif
+
+                                        </td>
+
+                                    </tr>
+
+                                @empty
+
+                                    <tr>
+
+                                        <td
+                                            colspan="4"
+                                            class="gtri-expediente-empty-table"
+                                        >
+
+                                            <i class="bi bi-shield-check"></i>
+
+                                            <span>
+
+                                                Sin incidencias registradas
+
+                                            </span>
+
+                                        </td>
+
+                                    </tr>
+
+                                @endforelse
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- UNIFORMES --}}
+            <div
+                class="tab-pane fade"
+                id="uniformes"
+                role="tabpanel"
+            >
+
+                <div class="gtri-table-wrapper">
+
+                    <div class="table-responsive">
+
+                        <table class="table gtri-table align-middle mb-0">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Código</th>
+
+                                    <th>Artículo</th>
+
+                                    <th>Cantidad</th>
+
+                                    <th>Tipo</th>
+
+                                    <th>Fecha de entrega</th>
+
+                                    <th>Observaciones</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                @forelse ($uniformes as $uniforme)
+
+                                    <tr>
+
+                                        <td>
+
+                                            <span class="text-warning fw-semibold">
+
+                                                {{ $uniforme->producto?->codigo ?? 'Sin código' }}
+
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <i class="bi bi-box-seam me-2 text-warning"></i>
+
+                                            {{ $uniforme->articulo }}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            {{ $uniforme->cantidad }}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            {{ ucfirst(
+                                                str_replace(
+                                                    '_',
+                                                    ' ',
+                                                    $uniforme->tipo
+                                                )
+                                            ) }}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            {{ $uniforme->fecha_entrega?->format('d/m/Y') }}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            {{ $uniforme->observaciones
+                                                ?: 'Sin observaciones'
+                                            }}
+
+                                        </td>
+
+                                    </tr>
+
+                                @empty
+
+                                    <tr>
+
+                                        <td
+                                            colspan="6"
+                                            class="gtri-expediente-empty-table"
+                                        >
+
+                                            <i class="bi bi-box"></i>
+
+                                            <span>
+
+                                                Sin uniformes registrados
+
+                                            </span>
+
+                                        </td>
+
+                                    </tr>
+
+                                @endforelse
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {{-- VIGENCIAS --}}
+            <div
+                class="tab-pane fade"
+                id="vigencias"
+                role="tabpanel"
+            >
+
+                <div class="gtri-table-wrapper">
+
+                    <div class="table-responsive">
+
+                        <table class="table gtri-table align-middle mb-0">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Documento</th>
+
+                                    <th>Fecha de vencimiento</th>
+
+                                    <th>Días restantes</th>
+
+                                    <th>Estado</th>
+
+                                    <th>Evidencia</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                @forelse ($vigencias as $vigencia)
+
+                                    @php
+
+                                        $diasVigencia = now()
+                                            ->startOfDay()
+                                            ->diffInDays(
+                                                $vigencia
+                                                    ->fecha_vencimiento
+                                                    ->startOfDay(),
+                                                false
+                                            );
+
+                                    @endphp
+
+
+                                    <tr>
+
+                                        <td>
+
+                                            <div class="d-flex align-items-center gap-2">
+
+                                                <i
+                                                    class="
+                                                        bi
+                                                        bi-file-earmark-text
+                                                        text-warning
+                                                    "
+                                                ></i>
+
+                                                <span>
+
+                                                    {{ $vigencia->documento }}
+
+                                                </span>
+
+                                            </div>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            {{ $vigencia
+                                                ->fecha_vencimiento
+                                                ?->format('d/m/Y')
+                                            }}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            @if ($diasVigencia < 0)
+
+                                                <span class="text-danger fw-semibold">
+
+                                                    Hace {{ abs($diasVigencia) }}
+
+                                                    {{ abs($diasVigencia) === 1
+                                                        ? 'día'
+                                                        : 'días'
+                                                    }}
+
+                                                </span>
+
+                                            @elseif ($diasVigencia === 0)
+
+                                                <span class="text-warning fw-semibold">
+
+                                                    Vence hoy
+
+                                                </span>
+
+                                            @else
+
+                                                <span class="text-light fw-semibold">
+
+                                                    {{ $diasVigencia }}
+
+                                                    {{ $diasVigencia === 1
+                                                        ? 'día'
+                                                        : 'días'
+                                                    }}
+
+                                                </span>
+
+                                            @endif
+
+                                        </td>
+
+
+                                        <td class="text-center">
+
+                                            @if ($diasVigencia < 0)
+
+                                                <span class="gtri-badge-danger">
+
+                                                    Vencido
+
+                                                </span>
+
+                                            @elseif ($diasVigencia <= 30)
+
+                                                <span class="gtri-badge-warning">
+
+                                                    Próximo a vencer
+
+                                                </span>
+
+                                            @else
+
+                                                <span class="gtri-badge-success">
+
+                                                    Vigente
+
+                                                </span>
+
+                                            @endif
+
+                                        </td>
+
+
+                                        <td>
+
+                                            @if ($vigencia->evidencia)
+
+                                                <a
+                                                    href="{{ asset(
+                                                        'storage/' .
+                                                        $vigencia->evidencia
+                                                    ) }}"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    class="
+                                                        btn
+                                                        btn-sm
+                                                        gtri-btn-secondary
+                                                    "
+                                                >
+
+                                                    <i
+                                                        class="
+                                                            bi
+                                                            bi-eye
+                                                            me-1
+                                                        "
+                                                    ></i>
+
+                                                    Ver evidencia
+
+                                                </a>
+
+                                            @else
+
+                                                <span class="text-secondary small">
+
+                                                    <i
+                                                        class="
+                                                            bi
+                                                            bi-file-earmark-x
+                                                            me-1
+                                                        "
+                                                    ></i>
+
+                                                    Sin evidencia
+
+                                                </span>
+
+                                            @endif
+
+                                        </td>
+
+                                    </tr>
+
+                                @empty
+
+                                    <tr>
+
+                                        <td
+                                            colspan="5"
+                                            class="gtri-expediente-empty-table"
+                                        >
+
+                                            <i class="bi bi-calendar2-x"></i>
+
+                                            <span>
+
+                                                Sin vigencias registradas
+
+                                            </span>
+
+                                        </td>
+
+                                    </tr>
+
+                                @endforelse
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {{-- CAPACITACIONES --}}
+            <div
+                class="tab-pane fade"
+                id="capacitaciones"
+                role="tabpanel"
+            >
+
+                <div class="gtri-table-wrapper">
+
+                    <div class="table-responsive">
+
+                        <table class="table gtri-table align-middle mb-0">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Curso</th>
+
+                                    <th>Calificación</th>
+
+                                    <th>Vigencia</th>
+
+                                    <th>Estado</th>
+
+                                    <th class="text-center">Evidencia</th>
+
+                                    <th class="text-center">DC3</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                @forelse ($capacitaciones as $capacitacion)
+
+                                    @php
+
+                                        $diasCapacitacion =
+                                            $capacitacion->vigencia_hasta
+                                                ? now()->diffInDays(
+                                                    $capacitacion->vigencia_hasta,
+                                                    false
+                                                )
+                                                : null;
+
+                                    @endphp
+
+                                    <tr>
+
+                                        <td>
+
+                                            <i class="bi bi-mortarboard me-2 text-warning"></i>
+
+                                            {{ $capacitacion->curso }}
+
+                                        </td>
+
+                                        <td>
+
+                                            {{ $capacitacion->calificacion ?? '-' }}
+
+                                        </td>
+
+                                        <td>
+
+                                            {{ $capacitacion->vigencia_hasta ?? 'Sin vigencia' }}
+
+                                        </td>
+
+                                        <td>
+
+                                            @if (!$capacitacion->vigencia_hasta)
+
+                                                <span class="badge bg-secondary">
+
+                                                    Sin vigencia
+
+                                                </span>
+
+                                            @elseif ($diasCapacitacion < 0)
+
+                                                <span class="gtri-badge-danger">
+
+                                                    Vencida
+
+                                                </span>
+
+                                            @elseif ($diasCapacitacion <= 30)
+
+                                                <span class="gtri-badge-warning">
+
+                                                    Próxima a vencer
+
+                                                </span>
+
+                                            @else
+
+                                                <span class="gtri-badge-success">
+
+                                                    Vigente
+
+                                                </span>
+
+                                            @endif
+
+                                        </td>
+
+                                        {{-- Evidencia --}}
+                                        <td class="text-center">
+
+                                            @if($capacitacion->evidencia)
+
+                                                <a
+                                                    href="{{ asset('storage/'.$capacitacion->evidencia) }}"
+                                                    target="_blank"
+                                                    class="btn btn-sm gtri-btn-secondary"
+                                                >
+
+                                                    <i class="bi bi-file-earmark-pdf me-1"></i>
+
+                                                    Ver
+
+                                                </a>
+
+                                            @else
+
+                                                <span class="text-secondary">
+
+                                                    —
+
+                                                </span>
+
+                                            @endif
+
+                                        </td>
+
+                                        {{-- DC3 --}}
+                                        <td class="text-center">
+
+                                            @if($capacitacion->dc3)
+
+                                                <a
+                                                    href="{{ asset('storage/'.$capacitacion->dc3) }}"
+                                                    target="_blank"
+                                                    class="btn btn-sm gtri-btn-secondary"
+                                                >
+
+                                                    <i class="bi bi-award me-1"></i>
+
+                                                    Ver
+
+                                                </a>
+
+                                            @else
+
+                                                <span class="text-secondary">
+
+                                                    —
+
+                                                </span>
+
+                                            @endif
+
+                                        </td>
+
+                                    </tr>
+
+                                @empty
+
+                                    <tr>
+
+                                        <td
+                                            colspan="6"
+                                            class="gtri-expediente-empty-table"
+                                        >
+
+                                            <i class="bi bi-mortarboard"></i>
+
+                                            <span>
+
+                                                Sin capacitaciones registradas
+
+                                            </span>
+
+                                        </td>
+
+                                    </tr>
+
+                                @endforelse
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
 
             </div>
 
@@ -1867,96 +1940,169 @@
 
     </div>
 
-
-    {{-- ACCIONES DEL EXPEDIENTE --}}
+    {{-- ACCIONES --}}
     <div class="gtri-section mb-0">
 
         <div class="gtri-section-title">
 
-            <span>13</span>
+            <span>08</span>
 
             Acciones del expediente
 
         </div>
 
 
-        <div class="d-flex flex-wrap gap-3">
+        <div class="row g-3">
 
-            <a
-                href="{{ route(
-                    'rh.empleados.ficha',
-                    $empleado->id
-                ) }}"
-                class="btn gtri-btn-secondary"
-                target="_blank"
-            >
+            <div class="col-xl col-md-4 col-sm-6">
 
-                <i class="bi bi-file-earmark-pdf me-1"></i>
+                <a
+                    href="{{ route(
+                        'rh.empleados.ficha',
+                        $empleado->id
+                    ) }}"
+                    class="
+                        btn
+                        gtri-btn-secondary
+                        w-100
+                        h-100
+                        d-flex
+                        align-items-center
+                        justify-content-center
+                        gap-2
+                        py-3
+                    "
+                    target="_blank"
+                >
 
-                Ficha técnica
+                    <i class="bi bi-file-earmark-pdf"></i>
 
-            </a>
+                    <span>Ficha técnica</span>
 
+                </a>
 
-            <a
-                href="{{ route(
-                    'rh.empleados.credencial',
-                    $empleado->id
-                ) }}"
-                class="btn gtri-btn-primary"
-                target="_blank"
-            >
-
-                <i class="bi bi-person-badge me-1"></i>
-
-                Credencial
-
-            </a>
+            </div>
 
 
-            <a
-                href="{{ route(
-                    'rh.uniformes.create',
-                    $empleado->id
-                ) }}"
-                class="btn btn-success"
-            >
+            <div class="col-xl col-md-4 col-sm-6">
 
-                <i class="bi bi-box-seam me-1"></i>
+                <a
+                    href="{{ route(
+                        'rh.empleados.credencial',
+                        $empleado->id
+                    ) }}"
+                    class="
+                        btn
+                        gtri-btn-secondary
+                        w-100
+                        h-100
+                        d-flex
+                        align-items-center
+                        justify-content-center
+                        gap-2
+                        py-3
+                    "
+                    target="_blank"
+                >
 
-                Registrar uniforme
+                    <i class="bi bi-person-badge text-warning"></i>
 
-            </a>
+                    <span>Credencial</span>
 
+                </a>
 
-            <a
-                href="{{ route(
-                    'rh.vigencias.create',
-                    $empleado->id
-                ) }}"
-                class="btn btn-warning"
-            >
-
-                <i class="bi bi-calendar-check me-1"></i>
-
-                Registrar vigencia
-
-            </a>
+            </div>
 
 
-            <a
-                href="{{ route(
-                    'rh.capacitaciones.create',
-                    $empleado->id
-                ) }}"
-                class="btn btn-info"
-            >
+            @if ($empleado->estado === 'activo')
 
-                <i class="bi bi-mortarboard me-1"></i>
+                <div class="col-xl col-md-4 col-sm-6">
 
-                Registrar capacitación
+                    <a
+                        href="{{ route(
+                            'rh.uniformes.create',
+                            $empleado->id
+                        ) }}"
+                        class="
+                            btn
+                            gtri-btn-secondary
+                            w-100
+                            h-100
+                            d-flex
+                            align-items-center
+                            justify-content-center
+                            gap-2
+                            py-3
+                        "
+                    >
 
-            </a>
+                        <i class="bi bi-box-seam text-success"></i>
+
+                        <span>Registrar uniforme</span>
+
+                    </a>
+
+                </div>
+
+
+                <div class="col-xl col-md-4 col-sm-6">
+
+                    <a
+                        href="{{ route(
+                            'rh.vigencias.create',
+                            $empleado->id
+                        ) }}"
+                        class="
+                            btn
+                            gtri-btn-secondary
+                            w-100
+                            h-100
+                            d-flex
+                            align-items-center
+                            justify-content-center
+                            gap-2
+                            py-3
+                        "
+                    >
+
+                        <i class="bi bi-calendar-check text-warning"></i>
+
+                        <span>Registrar vigencia</span>
+
+                    </a>
+
+                </div>
+
+
+                <div class="col-xl col-md-4 col-sm-6">
+
+                    <a
+                        href="{{ route(
+                            'rh.capacitaciones.create',
+                            $empleado->id
+                        ) }}"
+                        class="
+                            btn
+                            gtri-btn-secondary
+                            w-100
+                            h-100
+                            d-flex
+                            align-items-center
+                            justify-content-center
+                            gap-2
+                            py-3
+                        "
+                    >
+
+                        <i class="bi bi-mortarboard text-info"></i>
+
+                        <span>Registrar capacitación</span>
+
+                    </a>
+
+                </div>
+
+            @endif
 
         </div>
 

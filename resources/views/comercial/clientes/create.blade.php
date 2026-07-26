@@ -2,30 +2,89 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <h2 class="mb-4">
+    <div class="gtri-page-header">
 
-        Nuevo Cliente Comercial
+        <div>
 
-    </h2>
+            <h2 class="gtri-page-title">
 
-    <x-rh.card-rh titulo="Datos del Cliente">
+                <i class="bi bi-building-add me-2"></i>
 
-        <form
-            action="{{ route('comercial.clientes.store') }}"
-            method="POST"
+                Nuevo Cliente Comercial
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Registra la información general, de contacto y fiscal del nuevo cliente.
+
+            </p>
+
+        </div>
+
+        <a
+            href="{{ route('comercial.clientes.index') }}"
+            class="btn gtri-btn-secondary"
         >
 
-            @csrf
+            <i class="bi bi-arrow-left me-1"></i>
 
-            @include(
-                'comercial.clientes._form'
-            )
+            Regresar
 
-        </form>
+        </a>
 
-    </x-rh.card-rh>
+    </div>
+
+
+    @if($errors->any())
+
+        <div class="alert alert-danger">
+
+            <div class="d-flex align-items-center mb-2">
+
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+                <strong>
+
+                    Revisa la información ingresada
+
+                </strong>
+
+            </div>
+
+            <ul class="mb-0">
+
+                @foreach($errors->all() as $error)
+
+                    <li>
+
+                        {{ $error }}
+
+                    </li>
+
+                @endforeach
+
+            </ul>
+
+        </div>
+
+    @endif
+
+
+    <form
+        action="{{ route('comercial.clientes.store') }}"
+        method="POST"
+    >
+
+        @csrf
+
+        @include(
+            'comercial.clientes._form'
+        )
+
+    </form>
 
 </div>
 

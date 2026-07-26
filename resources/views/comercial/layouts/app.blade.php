@@ -1,177 +1,66 @@
-<!DOCTYPE html>
+@extends('layouts.gtri')
 
-<html lang="es">
+@section('titulo', 'GTRI Comercial')
 
-<head>
+@section('nombre_modulo', 'Comercial')
 
-    <meta charset="UTF-8">
+@section('nombre_sistema', 'Sistema Comercial')
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
+@section('menu')
+
+    <x-rh.sidebar-link
+        href="{{ route('comercial.dashboard') }}"
+        active="comercial.dashboard"
     >
 
-    <title>
+        <i class="bi bi-house-door me-2"></i>
 
-        Comercial
+        Inicio
 
-    </title>
+    </x-rh.sidebar-link>
 
-    @vite([
-        'resources/css/app.css',
-        'resources/js/app.js'
-    ])
-
-    <!-- BOOTSTRAP ICONS -->
-
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    <x-rh.sidebar-link
+        href="{{ route('comercial.prospectos.index') }}"
+        active="comercial.prospectos*"
     >
 
-</head>
+        <i class="bi bi-person-lines-fill me-2"></i>
 
-<body style="background: #F5F7FB;">
+        Prospectos
 
-<div class="container-fluid">
+    </x-rh.sidebar-link>
 
-    <div class="row">
+    <x-rh.sidebar-link
+        href="{{ route('comercial.clientes.index') }}"
+        active="comercial.clientes*"
+    >
 
-        <!-- SIDEBAR -->
+        <i class="bi bi-buildings me-2"></i>
 
-        <div
-            class="col-2 text-white min-vh-100 p-4 shadow"
-            style="background: #0B1220;"
-        >
+        Clientes
 
-            <h3 class="fw-bold mb-4">
+    </x-rh.sidebar-link>
 
-                Comercial
+    <x-rh.sidebar-link
+        href="{{ route('comercial.cotizaciones.index') }}"
+        active="comercial.cotizaciones*"
+    >
 
-            </h3>
+        <i class="bi bi-file-earmark-text me-2"></i>
 
-            <hr class="border-secondary">
+        Cotizaciones
 
-            <ul class="nav flex-column gap-2">
+    </x-rh.sidebar-link>
 
-                <x-rh.sidebar-link
-                    href="{{ route('comercial.dashboard') }}"
-                    active="comercial.dashboard"
-                >
+    <x-rh.sidebar-link
+        href="{{ route('comercial.contratos.index') }}"
+        active="comercial.contratos*"
+    >
 
-                    <i class="bi bi-house-door me-2"></i>
+        <i class="bi bi-file-earmark-check me-2"></i>
 
-                    Inicio
+        Contratos
 
-                </x-rh.sidebar-link>
+    </x-rh.sidebar-link>
 
-                <x-rh.sidebar-link
-                    href="{{ route('comercial.prospectos.index') }}"
-                    active="comercial.prospectos*"
-                >
-
-                    <i class="bi bi-person-lines-fill me-2"></i>
-
-                    Prospectos
-
-                </x-rh.sidebar-link>
-
-                <x-rh.sidebar-link
-                    href="{{ route('comercial.clientes.index') }}"
-                    active="comercial.clientes*"
-                >
-
-                    <i class="bi bi-buildings me-2"></i>
-
-                    Clientes
-
-                </x-rh.sidebar-link>
-
-                <x-rh.sidebar-link
-                    href="{{ route('comercial.cotizaciones.index') }}"
-                    active="comercial.cotizaciones*"
-                >
-
-                    <i class="bi bi-file-earmark-text me-2"></i>
-
-                    Contizaciones
-
-                </x-rh.sidebar-link>
-
-                <x-rh.sidebar-link
-                    href="{{ route('comercial.contratos.index') }}"
-                    active="comercial.contratos*"
-                >
-
-                    <i class="bi bi-file-earmark-check me-2"></i>
-
-                    Contratos
-
-                </x-rh.sidebar-link>
-
-            </ul>
-
-        </div>
-
-        <!-- CONTENIDO -->
-
-        <div class="col-10 p-0">
-
-            <!-- NAVBAR -->
-
-            <nav
-                class="navbar navbar-expand-lg bg-white shadow-sm px-4 py-3"
-            >
-
-                <h4 class="mb-0 fw-semibold">
-
-                    Sistema Comercial
-
-                </h4>
-
-                <div
-                    class="ms-auto d-flex align-items-center gap-3"
-                >
-
-                    <form
-                        method="POST"
-                        action="{{ route('logout') }}"
-                    >
-
-                        @csrf
-
-                        <button
-                            class="btn btn-outline-danger btn-sm rounded-3"
-                        >
-
-                            <i class="bi bi-box-arrow-right me-1"></i>
-
-                            Salir
-
-                        </button>
-
-                    </form>
-
-                </div>
-
-            </nav>
-
-            <!-- CONTENIDO -->
-
-            <div class="p-4">
-
-                @yield('contenido')
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-@stack('scripts')
-
-</body>
-
-</html>
+@endsection

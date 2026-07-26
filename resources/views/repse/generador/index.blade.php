@@ -2,83 +2,81 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    {{-- ENCABEZADO --}}
-    <div class="mb-4">
+    <!-- ENCABEZADO -->
 
-        <h4 class="fw-bold mb-1">
+    <div class="gtri-page-header">
 
-            <i class="bi bi-file-earmark-zip me-2"></i>
+        <div>
 
-            Generador Mensual REPSE
+            <h2 class="gtri-page-title">
 
-        </h4>
+                <i class="bi bi-file-earmark-zip me-2"></i>
 
-        <p class="text-muted mb-0">
+                Generador Mensual REPSE
 
-            Genera el expediente mensual REPSE correspondiente
-            a los guardias asignados a un cliente.
+            </h2>
 
-        </p>
+            <p class="gtri-page-subtitle">
+
+                Genera el expediente mensual REPSE correspondiente a los guardias asignados a un cliente.
+
+            </p>
+
+        </div>
 
     </div>
 
 
-    {{-- CARD PRINCIPAL --}}
-    <x-rh.card-rh titulo="Generar expediente mensual">
+    <form
+        method="POST"
+        action="{{ route('repse.generador.generar') }}"
+    >
 
-        <div class="mb-4">
+        @csrf
 
-            <h5 class="fw-bold">
 
-                <i class="bi bi-building me-2"></i>
+        <!-- 01 · SELECCIÓN DEL PERIODO -->
+
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>01</span>
 
                 Selección del periodo
 
-            </h5>
+            </div>
 
-            <p class="text-muted mb-2">
+            <p class="text-secondary mb-4">
 
-                Seleccione el cliente y el mes correspondiente
-                para preparar la documentación REPSE.
+                Seleccione el cliente y el mes correspondiente para preparar la documentación REPSE.
 
             </p>
 
-            <hr>
 
-        </div>
+            <div class="row g-3">
 
+                <!-- CLIENTE -->
 
-        <form
-            method="POST"
-            action="{{ route('repse.generador.generar') }}"
-        >
-
-            @csrf
-
-            <div class="row">
-
-                {{-- CLIENTE --}}
-                <div class="col-md-6 mb-4">
+                <div class="col-md-6">
 
                     <label
                         for="cliente_id"
-                        class="form-label fw-semibold"
+                        class="form-label"
                     >
 
                         Cliente
 
-                        <span class="text-danger">
-                            *
-                        </span>
+                        <span class="text-danger">*</span>
 
                     </label>
 
                     <select
                         name="cliente_id"
                         id="cliente_id"
-                        class="form-select"
+                        class="form-select gtri-input"
                         required
                     >
 
@@ -90,7 +88,10 @@
 
                         @foreach($clientes as $cliente)
 
-                            <option value="{{ $cliente->id }}">
+                            <option
+                                value="{{ $cliente->id }}"
+                                @selected(old('cliente_id') == $cliente->id)
+                            >
 
                                 {{ $cliente->razon_social }}
 
@@ -102,27 +103,25 @@
 
                     <div class="form-text">
 
-                        Solo se incluirán guardias asignados
-                        a plazas pertenecientes a este cliente.
+                        Solo se incluirán guardias asignados a plazas pertenecientes a este cliente.
 
                     </div>
 
                 </div>
 
 
-                {{-- MES --}}
-                <div class="col-md-6 mb-4">
+                <!-- MES -->
+
+                <div class="col-md-6">
 
                     <label
                         for="mes"
-                        class="form-label fw-semibold"
+                        class="form-label"
                     >
 
                         Mes del expediente
 
-                        <span class="text-danger">
-                            *
-                        </span>
+                        <span class="text-danger">*</span>
 
                     </label>
 
@@ -130,8 +129,8 @@
                         type="month"
                         name="mes"
                         id="mes"
-                        class="form-control"
-                        value="{{ now()->format('Y-m') }}"
+                        class="form-control gtri-input"
+                        value="{{ old('mes', now()->format('Y-m')) }}"
                         required
                     >
 
@@ -145,31 +144,185 @@
 
             </div>
 
+        </div>
 
-            {{-- INFORMACIÓN --}}
-            <div class="alert alert-light border mb-4">
+
+        <!-- 02 · INFORMACIÓN DEL PROCESO -->
+
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>02</span>
+
+                Contenido del expediente
+
+            </div>
+
+
+            <div class="gtri-card">
 
                 <div class="d-flex align-items-start gap-3">
 
-                    <div class="fs-3 text-primary">
+                    <div class="gtri-stat-icon">
 
-                        <i class="bi bi-info-circle"></i>
+                        <i class="bi bi-info-circle fs-3"></i>
 
                     </div>
 
                     <div>
 
-                        <strong>
+                        <h5 class="text-light mb-2">
 
-                            Contenido del expediente REPSE
+                            Generación automática del expediente REPSE
 
-                        </strong>
+                        </h5>
 
-                        <div class="text-muted mt-1">
+                        <p class="text-secondary mb-0">
 
-                            El sistema identificará únicamente a los
-                            guardias asignados a las plazas del cliente
-                            seleccionado durante el periodo indicado.
+                            El sistema identificará únicamente a los guardias asignados a las plazas del cliente seleccionado durante el periodo indicado.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- 03 · DOCUMENTACIÓN A COMPILAR -->
+
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>03</span>
+
+                Documentación a compilar
+
+            </div>
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+
+                    <div class="gtri-card h-100 d-flex align-items-center gap-3">
+
+                        <div class="gtri-stat-icon">
+
+                            <i class="bi bi-person-check fs-4"></i>
+
+                        </div>
+
+                        <div>
+
+                            <div class="fw-bold text-light">
+
+                                Altas IMSS
+
+                            </div>
+
+                            <small class="text-secondary">
+
+                                Documentación de alta de cada trabajador.
+
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="gtri-card h-100 d-flex align-items-center gap-3">
+
+                        <div class="gtri-stat-icon">
+
+                            <i class="bi bi-file-earmark-text fs-4"></i>
+
+                        </div>
+
+                        <div>
+
+                            <div class="fw-bold text-light">
+
+                                Nóminas XML / PDF
+
+                            </div>
+
+                            <small class="text-secondary">
+
+                                Comprobantes correspondientes al periodo.
+
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="gtri-card h-100 d-flex align-items-center gap-3">
+
+                        <div class="gtri-stat-icon">
+
+                            <i class="bi bi-bank fs-4"></i>
+
+                        </div>
+
+                        <div>
+
+                            <div class="fw-bold text-light">
+
+                                Pago SUA
+
+                            </div>
+
+                            <small class="text-secondary">
+
+                                Documento general correspondiente al periodo.
+
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="gtri-card h-100 d-flex align-items-center gap-3">
+
+                        <div class="gtri-stat-icon">
+
+                            <i class="bi bi-receipt fs-4"></i>
+
+                        </div>
+
+                        <div>
+
+                            <div class="fw-bold text-light">
+
+                                Constancias SAT
+
+                            </div>
+
+                            <small class="text-secondary">
+
+                                Constancias fiscales requeridas para REPSE.
+
+                            </small>
 
                         </div>
 
@@ -179,93 +332,18 @@
 
             </div>
 
-
-            {{-- DOCUMENTACIÓN --}}
-            <div class="mb-4">
-
-                <h5 class="fw-bold">
-
-                    <i class="bi bi-folder-check me-2"></i>
-
-                    Documentación a compilar
-
-                </h5>
-
-                <hr>
-
-            </div>
+        </div>
 
 
-            <div class="row g-3 mb-4">
+        <!-- 04 · ACCIONES -->
 
-                <div class="col-md-6">
+        <div class="gtri-section mb-0">
 
-                    <div class="border rounded p-3 h-100">
-
-                        <i class="bi bi-check-circle text-success me-2"></i>
-
-                        <strong>
-                            Altas IMSS
-                        </strong>
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-6">
-
-                    <div class="border rounded p-3 h-100">
-
-                        <i class="bi bi-check-circle text-success me-2"></i>
-
-                        <strong>
-                            Nóminas XML / PDF
-                        </strong>
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-6">
-
-                    <div class="border rounded p-3 h-100">
-
-                        <i class="bi bi-check-circle text-success me-2"></i>
-
-                        <strong>
-                            Pago SUA
-                        </strong>
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-6">
-
-                    <div class="border rounded p-3 h-100">
-
-                        <i class="bi bi-check-circle text-success me-2"></i>
-
-                        <strong>
-                            Constancias SAT
-                        </strong>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            {{-- BOTÓN --}}
             <div class="d-flex justify-content-end">
 
                 <button
                     type="submit"
-                    class="btn btn-primary"
+                    class="btn gtri-btn-primary"
                 >
 
                     <i class="bi bi-search me-1"></i>
@@ -276,9 +354,9 @@
 
             </div>
 
-        </form>
+        </div>
 
-    </x-rh.card-rh>
+    </form>
 
 </div>
 

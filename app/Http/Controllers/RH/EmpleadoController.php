@@ -8,6 +8,8 @@ use App\Models\RH\Empleado;
 use App\Models\Administracion\LogActividad;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class EmpleadoController extends Controller
 {
@@ -32,7 +34,6 @@ class EmpleadoController extends Controller
         );
     }
 
-
     public function create()
     {
         return view('rh.empleados.create');
@@ -40,55 +41,58 @@ class EmpleadoController extends Controller
 
     public function store(Request $request)
     {
-        $this->validarEmpleado($request);
+        $datos = $this->validarEmpleado($request);
 
-        $totalEmpleados = Empleado::count() + 1;
-        $numeroControl = 'GTRI' . str_pad($totalEmpleados, 4, '0', STR_PAD_LEFT);
-        $nombreFoto = null;
+        if (! $this->haySlotsDisponibles()) {
+
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Se alcanzó el límite de 1,000 empleados activos. Debe liberarse un slot antes de registrar uno nuevo.'
+                );
+
+        }
+        $datos['numero_control'] = $this->generarNumeroControl();
+        $datos['estado'] = 'activo';
+
+        $datos['foto'] = null;
+
         if ($request->hasFile('foto')) {
-            $nombreFoto = time() . '.' .
-                $request->foto->extension();
+
+            $nombreFoto = time() . '.' . $request->foto->extension();
+
             $request->foto->move(
                 public_path('fotos_empleados'),
                 $nombreFoto
             );
-        }
-        Empleado::create([
-            'numero_control' => $numeroControl,
-            'foto' => $nombreFoto,
-            'nombre' => $request->nombre,
-            'apellido_paterno' => $request->apellido_paterno,
-            'apellido_materno' => $request->apellido_materno,
-            'curp' => $request->curp,
-            'rfc' => $request->rfc,
-            'nss' => $request->nss,
-            'telefono' => $request->telefono,
-            'correo' => $request->correo,
-            'tipo_sangre' => $request->tipo_sangre,
-            'puesto' => $request->puesto,
-            'rango' => $request->rango,
-            'salario_base' => $request->salario_base,
-            'fecha_nacimiento' => $request->fecha_nacimiento,
-            'fecha_ingreso' => $request->fecha_ingreso,
-            'estado' => 'activo',
-            'direccion' => $request->direccion,
-            'contacto_emergencia' => $request->contacto_emergencia,
-            'telefono_emergencia' => $request->telefono_emergencia,
-        ]);
 
-        LogActividad::create([
-            'usuario' => Auth::user()->rol,
-            'accion' => 'Creó empleado ' . $numeroControl,
-        ]);
+            $datos['foto'] = $nombreFoto;
+
+        }
+
+        DB::transaction(function () use ($datos) {
+
+            $empleado = Empleado::create($datos);
+
+            LogActividad::create([
+
+                'usuario' => Auth::user()->rol,
+
+                'accion' => 'Creó empleado ' .
+                    $empleado->numero_control,
+
+            ]);
+
+        });
 
         return redirect()
-        ->route('rh.empleados')
-        ->with(
-            'success',
-            'Empleado creado correctamente'
-        );
+            ->route('rh.empleados')
+            ->with(
+                'success',
+                'Empleado creado correctamente.'
+            );
     }
-
 
     public function show($id)
     {
@@ -154,76 +158,44 @@ class EmpleadoController extends Controller
         );
     }
 
-
     public function update(Request $request, $id)
     {
-        $this->validarEmpleado($request);
         $empleado = Empleado::findOrFail($id);
-        $nombreFoto = $this->subirFoto(
+
+        $datos = $this->validarEmpleado(
+            $request,
+            $empleado->id
+        );
+
+        $datos['foto'] = $this->subirFoto(
             $request,
             $empleado->foto
         );
-        $empleado->update([
-            'nombre' => $request->nombre,
-            'apellido_paterno' => $request->apellido_paterno,
-            'apellido_materno' => $request->apellido_materno,
-            'curp' => $request->curp,
-            'rfc' => $request->rfc,
-            'nss' => $request->nss,
-            'telefono' => $request->telefono,
-            'correo' => $request->correo,
-            'tipo_sangre' => $request->tipo_sangre,
-            'puesto' => $request->puesto,
-            'rango' => $request->rango,
-            'salario_base' => $request->salario_base,
-            'fecha_nacimiento' => $request->fecha_nacimiento,
-            'fecha_ingreso' => $request->fecha_ingreso,
-            'direccion' => $request->direccion,
-            'contacto_emergencia' => $request->contacto_emergencia,
-            'telefono_emergencia' => $request->telefono_emergencia,
-            'foto' => $nombreFoto,
-        ]);
 
-        LogActividad::create([
+        DB::transaction(function () use (
+            $empleado,
+            $datos
+        ) {
 
-            'usuario' => Auth::user()->rol,
+            $empleado->update($datos);
 
-            'accion' => 'Actualizó empleado ' .
+            LogActividad::create([
 
-                $empleado->numero_control,
+                'usuario' => Auth::user()->rol,
 
-        ]);
-        return redirect()
-        ->route('rh.empleados')
-        ->with(
-            'success',
-            'Empleado actualizado correctamente'
-        );
-    }
+                'accion' =>
+                    'Actualizó empleado ' .
+                    $empleado->numero_control,
 
-    public function baja($id)
-    {
-        $empleado = Empleado::findOrFail($id);
-        $this->cambiarEstado(
-            $id,
-            'inactivo'
-        );
+            ]);
 
-        LogActividad::create([
-
-            'usuario' => Auth::user()->rol,
-
-            'accion' => 'Dio de baja empleado ' .
-
-                $empleado->numero_control,
-
-        ]);
+        });
 
         return redirect()
             ->route('rh.empleados')
             ->with(
                 'success',
-                'Empleado dado de baja correctamente'
+                'Empleado actualizado correctamente.'
             );
     }
 
@@ -241,45 +213,314 @@ class EmpleadoController extends Controller
     public function reactivar($id)
     {
         $empleado = Empleado::findOrFail($id);
-        $this->cambiarEstado($id,'activo');
+
+        if ($empleado->estado === 'activo') {
+
+            return back()->with(
+                'error',
+                'El empleado ya se encuentra activo.'
+            );
+
+        }
+
+        if (! $this->haySlotsDisponibles()) {
+
+            return back()->with(
+                'error',
+                'No existen slots disponibles para reactivar este empleado.'
+            );
+
+        }
+
+        $this->cambiarEstado(
+            $empleado->id,
+            'activo'
+        );
 
         LogActividad::create([
 
             'usuario' => Auth::user()->rol,
 
-            'accion' => 'Reactivó empleado ' .
-
+            'accion' =>
+                'Reactivó al empleado ' .
                 $empleado->numero_control,
 
         ]);
+
         return redirect()
-        ->route('rh.empleados.inactivos')
-        ->with(
-            'success',
-            'Empleado reactivado correctamente'
-        );
+            ->route('rh.empleados')
+            ->with(
+                'success',
+                'Empleado reactivado correctamente.'
+            );
     }
 
-    private function validarEmpleado($request)
+    private function validarEmpleado(Request $request, ?int $empleadoId = null): array 
     {
-        $request->validate([
-            'nombre' => 'required|max:100',
-            'apellido_paterno' => 'required|max:100',
-            'apellido_materno' => 'required|max:100',
-            'curp' => 'required|size:18',
-            'rfc' => 'required|min:12|max:13',
-            'nss' => 'required|digits:11',
-            'telefono' => 'required|digits:10',
-            'correo' => 'required|email',
-            'tipo_sangre' => 'required|max:5',
-            'puesto' => 'required|max:100',
-            'rango' => 'required|max:100',
-            'salario_base' => 'required|numeric|min:1',
-            'fecha_nacimiento' => 'required|date',
-            'fecha_ingreso' => 'required|date',
-            'direccion' => 'required|max:255',
-            'contacto_emergencia' => 'required|max:100',
-            'telefono_emergencia' => 'required|digits:10',
+
+        $request->merge([
+
+            'telefono' => $request->filled('telefono')
+                ? str_replace(
+                    [' ', '-'],
+                    '',
+                    trim($request->telefono)
+                )
+                : null,
+
+            'telefono_emergencia' => $request->filled('telefono_emergencia')
+                ? str_replace(
+                    [' ', '-'],
+                    '',
+                    trim($request->telefono_emergencia)
+                )
+                : null,
+
+            'salario_base' => $request->filled('salario_base')
+                ? str_replace(
+                    ['$', ',', ' '],
+                    '',
+                    $request->salario_base
+                )
+                : null,
+
+            'curp' => $request->filled('curp')
+                ? strtoupper(
+                    trim($request->curp)
+                )
+                : null,
+
+            'rfc' => $request->filled('rfc')
+                ? strtoupper(
+                    trim($request->rfc)
+                )
+                : null,
+
+            'nss' => $request->filled('nss')
+                ? trim($request->nss)
+                : null,
+
+        ]);
+
+        return $request->validate([
+
+            'nombre' => [
+                'required',
+                'string',
+                'max:100',
+            ],
+
+            'apellido_paterno' => [
+                'required',
+                'string',
+                'max:100',
+            ],
+
+            'apellido_materno' => [
+                'nullable',
+                'string',
+                'max:100',
+            ],
+
+            'curp' => [
+                'required',
+                'string',
+                'size:18',
+                Rule::unique(
+                    'empleados',
+                    'curp'
+                )->ignore($empleadoId),
+            ],
+
+            'rfc' => [
+                'required',
+                'string',
+                'min:12',
+                'max:13',
+                Rule::unique(
+                    'empleados',
+                    'rfc'
+                )->ignore($empleadoId),
+            ],
+
+            'nss' => [
+                'required',
+                'string',
+                'size:11',
+                Rule::unique(
+                    'empleados',
+                    'nss'
+                )->ignore($empleadoId),
+            ],
+
+            'telefono' => [
+                'required',
+                'string',
+                'max:20',
+            ],
+
+            'correo' => [
+                'nullable',
+                'email',
+                'max:150',
+                Rule::unique(
+                    'empleados',
+                    'correo'
+                )->ignore($empleadoId),
+            ],
+
+            'tipo_sangre' => [
+                'required',
+                'string',
+                'max:5',
+            ],
+
+            'puesto' => [
+                'required',
+                'string',
+                'max:100',
+            ],
+
+            'rango' => [
+                'required',
+                'string',
+                'max:100',
+            ],
+
+            'salario_base' => [
+                'required',
+                'numeric',
+                'min:0',
+            ],
+
+            'fecha_nacimiento' => [
+                'required',
+                'date',
+                'before:today',
+            ],
+
+            'fecha_ingreso' => [
+                'required',
+                'date',
+            ],
+
+            'direccion' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'contacto_emergencia' => [
+                'required',
+                'string',
+                'max:100',
+            ],
+
+            'telefono_emergencia' => [
+                'required',
+                'string',
+                'max:20',
+            ],
+
+            'foto' => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048',
+            ],
+
+        ], [
+
+            'nombre.required' =>
+                'El nombre es obligatorio.',
+
+            'apellido_paterno.required' =>
+                'El apellido paterno es obligatorio.',
+
+            'curp.required' =>
+                'La CURP es obligatoria.',
+
+            'curp.size' =>
+                'La CURP debe contener exactamente 18 caracteres.',
+
+            'curp.unique' =>
+                'La CURP ya está registrada en otro empleado.',
+
+            'rfc.required' =>
+                'El RFC es obligatorio.',
+
+            'rfc.min' =>
+                'El RFC debe contener al menos 12 caracteres.',
+
+            'rfc.max' =>
+                'El RFC no debe superar los 13 caracteres.',
+
+            'rfc.unique' =>
+                'El RFC ya está registrado en otro empleado.',
+
+            'nss.required' =>
+                'El NSS es obligatorio.',
+
+            'nss.size' =>
+                'El NSS debe contener exactamente 11 caracteres.',
+
+            'nss.unique' =>
+                'El NSS ya está registrado en otro empleado.',
+
+            'telefono.required' =>
+                'El teléfono es obligatorio.',
+
+            'correo.email' =>
+                'El correo no tiene un formato válido.',
+
+            'correo.unique' =>
+                'El correo ya está registrado en otro empleado.',
+
+            'tipo_sangre.required' =>
+                'El tipo de sangre es obligatorio.',
+
+            'puesto.required' =>
+                'El puesto es obligatorio.',
+
+            'rango.required' =>
+                'El rango es obligatorio.',
+
+            'salario_base.required' =>
+                'El salario base es obligatorio.',
+
+            'salario_base.numeric' =>
+                'El salario base debe ser numérico.',
+
+            'salario_base.min' =>
+                'El salario base no puede ser negativo.',
+
+            'fecha_nacimiento.required' =>
+                'La fecha de nacimiento es obligatoria.',
+
+            'fecha_nacimiento.before' =>
+                'La fecha de nacimiento debe ser anterior al día de hoy.',
+
+            'fecha_ingreso.required' =>
+                'La fecha de ingreso es obligatoria.',
+
+            'direccion.required' =>
+                'La dirección es obligatoria.',
+
+            'contacto_emergencia.required' =>
+                'El contacto de emergencia es obligatorio.',
+
+            'telefono_emergencia.required' =>
+                'El teléfono de emergencia es obligatorio.',
+
+            'foto.image' =>
+                'El archivo seleccionado debe ser una imagen.',
+
+            'foto.mimes' =>
+                'La fotografía debe ser JPG, JPEG, PNG o WEBP.',
+
+            'foto.max' =>
+                'La fotografía no debe superar los 2 MB.',
+
         ]);
     }
 
@@ -353,5 +594,47 @@ class EmpleadoController extends Controller
         return $pdf->stream(
             'credencial.pdf'
         );
+    }
+
+    private function generarNumeroControl(): string
+    {
+        $ultimoEmpleado = Empleado::where(
+            'numero_control',
+            'like',
+            'GTRI%'
+        )
+            ->orderByDesc('numero_control')
+            ->first();
+
+        if (!$ultimoEmpleado) {
+
+            $siguienteNumero = 1;
+
+        } else {
+
+            $ultimoNumero = (int) str_replace(
+                'GTRI',
+                '',
+                $ultimoEmpleado->numero_control
+            );
+
+            $siguienteNumero = $ultimoNumero + 1;
+
+        }
+
+        return 'GTRI' . str_pad(
+            $siguienteNumero,
+            4,
+            '0',
+            STR_PAD_LEFT
+        );
+    }
+
+    private function haySlotsDisponibles(): bool
+    {
+        return Empleado::where(
+            'estado',
+            'activo'
+        )->count() < 1000;
     }
 }

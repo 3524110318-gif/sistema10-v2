@@ -2,29 +2,88 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <h2 class="mb-4">
+    <div class="gtri-page-header">
 
-        Nuevo Contrato
+        <div>
 
-    </h2>
+            <h2 class="gtri-page-title">
 
-    <x-rh.card-rh titulo="Datos del Contrato">
+                <i class="bi bi-file-earmark-plus me-2"></i>
 
-        <form
-            enctype="multipart/form-data"
-            action="{{ route('comercial.contratos.store') }}"
-            method="POST"
+                Nuevo Contrato
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Registra un nuevo contrato comercial con sus condiciones, vigencia y documentación.
+
+            </p>
+
+        </div>
+
+        <a
+            href="{{ route('comercial.contratos.index') }}"
+            class="btn gtri-btn-secondary"
         >
 
-            @csrf
+            <i class="bi bi-arrow-left me-1"></i>
 
-            @include('comercial.contratos._form')
+            Regresar
 
-        </form>
+        </a>
 
-    </x-rh.card-rh>
+    </div>
+
+
+    @if($errors->any())
+
+        <div class="alert alert-danger">
+
+            <div class="d-flex align-items-center mb-2">
+
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+                <strong>
+
+                    Revisa la información ingresada
+
+                </strong>
+
+            </div>
+
+            <ul class="mb-0">
+
+                @foreach($errors->all() as $error)
+
+                    <li>
+
+                        {{ $error }}
+
+                    </li>
+
+                @endforeach
+
+            </ul>
+
+        </div>
+
+    @endif
+
+
+    <form
+        enctype="multipart/form-data"
+        action="{{ route('comercial.contratos.store') }}"
+        method="POST"
+    >
+
+        @csrf
+
+        @include('comercial.contratos._form')
+
+    </form>
 
 </div>
 

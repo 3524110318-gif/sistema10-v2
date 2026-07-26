@@ -24,18 +24,6 @@
 
         </div>
 
-
-        <a
-            href="{{ route('rh.empleados.show', $empleado->id) }}"
-            class="btn gtri-btn-secondary"
-        >
-
-            <i class="bi bi-arrow-left me-1"></i>
-
-            Volver
-
-        </a>
-
     </div>
 
 
@@ -430,7 +418,7 @@
 
                 <a
                     href="{{ route(
-                        'rh.empleados.show',
+                        'rh.empleados',
                         $empleado->id
                     ) }}"
                     class="btn gtri-btn-secondary"

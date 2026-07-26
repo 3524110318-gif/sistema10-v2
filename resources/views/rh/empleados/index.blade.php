@@ -58,70 +58,44 @@
 
     </div>
 
+    <form
+        method="GET"
+        action="{{ route('rh.empleados') }}"
+        class="mb-4"
+    >
 
-    {{-- BUSCADOR --}}
-    <div class="gtri-section">
+        <div class="row g-3 align-items-end">
 
-        <div class="gtri-section-title">
+            <div class="col-lg-5 col-md-7">
 
-            <span>01</span>
+                <label
+                    for="buscar"
+                    class="form-label text-light fw-semibold"
+                >
 
-            Buscar empleado
+                    Número de control
 
-        </div>
+                </label>
 
+                <input
+                    type="text"
+                    name="buscar"
+                    id="buscar"
+                    class="form-control gtri-input"
+                    value="{{ request('buscar') }}"
+                    placeholder="Ejemplo: GTRI0002"
+                >
 
-        <form method="GET">
-
-            <div class="row g-3 align-items-end">
-
-                <div class="col-lg-5 col-md-7">
-
-                    <label
-                        for="buscar"
-                        class="form-label text-light fw-semibold"
-                    >
-
-                        Número de control
-
-                    </label>
-
-
-                    <div class="input-group">
-
-                        <span
-                            class="input-group-text"
-                            style="
-                                background: #111827;
-                                border-color: rgba(255, 255, 255, .12);
-                                color: #D4AF37;
-                            "
-                        >
-
-                            <i class="bi bi-search"></i>
-
-                        </span>
+            </div>
 
 
-                        <input
-                            type="text"
-                            name="buscar"
-                            id="buscar"
-                            class="form-control gtri-input"
-                            value="{{ request('buscar') }}"
-                            placeholder="Ejemplo: GTRI0002"
-                        >
+            <div class="col-lg-4">
 
-                    </div>
-
-                </div>
-
-
-                <div class="col-auto">
+                <div class="d-flex gap-2">
 
                     <button
                         type="submit"
-                        class="btn gtri-btn-primary"
+                        class="btn gtri-btn-secondary"
                     >
 
                         <i class="bi bi-search me-1"></i>
@@ -130,12 +104,8 @@
 
                     </button>
 
-                </div>
 
-
-                @if (request('buscar'))
-
-                    <div class="col-auto">
+                    @if (request('buscar'))
 
                         <a
                             href="{{ route('rh.empleados') }}"
@@ -148,15 +118,15 @@
 
                         </a>
 
-                    </div>
+                    @endif
 
-                @endif
+                </div>
 
             </div>
 
-        </form>
+        </div>
 
-    </div>
+    </form>
 
 
     {{-- LISTADO --}}
@@ -175,7 +145,7 @@
 
             <div class="gtri-section-title mb-0">
 
-                <span>02</span>
+                <span>01</span>
 
                 Lista de empleados
 
@@ -395,22 +365,6 @@
                                             Ver
 
                                         </a>
-
-
-                                        <a
-                                            href="{{ route(
-                                                'rh.empleados.edit',
-                                                $empleado->id
-                                            ) }}"
-                                            class="btn gtri-btn-primary btn-sm px-3"
-                                        >
-
-                                            <i class="bi bi-pencil-square me-1"></i>
-
-                                            Editar
-
-                                        </a>
-
 
                                         <a
                                             href="{{ route(

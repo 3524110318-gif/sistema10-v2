@@ -1,23 +1,36 @@
-<div class="mb-4">
+@props([
+    'label',
+    'name',
+    'type' => 'text',
+    'value' => '',
+    'placeholder' => '',
+])
+
+<div>
 
     <label
-        class="form-label fw-semibold"
-        style="color: #CBD5E1;"
+        for="{{ $name }}"
+        class="form-label"
     >
+
         {{ $label }}
+
     </label>
 
     <input
         type="{{ $type }}"
         name="{{ $name }}"
         id="{{ $name }}"
-        value="{{ old($name, $value ?? '') }}"
-        class="form-control gtri-input"
+        value="{{ $value }}"
+        placeholder="{{ $placeholder }}"
+        {{ $attributes->merge([
+            'class' => 'form-control gtri-input'
+        ]) }}
     >
 
     @error($name)
 
-        <div class="invalid-feedback d-block">
+        <div class="text-danger small mt-1">
 
             {{ $message }}
 

@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Operaciones\Cliente;
 use App\Models\Operaciones\Contrato;
 use App\Models\Administracion\Cobranza;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+
 
 
 class Factura extends Model
@@ -102,7 +104,7 @@ class Factura extends Model
         );
     }
 
-    public function cobranza()
+    public function cobranza(): HasOne
     {
         return $this->hasOne(
             Cobranza::class

@@ -2,42 +2,75 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    {{-- CARD PRINCIPAL --}}
-    <x-rh.card-rh titulo="Resultado del expediente mensual REPSE">
+    <!-- ENCABEZADO -->
 
-        {{-- INFORMACIÓN DEL CLIENTE --}}
-        <div class="mb-4">
+    <div class="gtri-page-header">
 
-            <h5 class="fw-bold">
+        <div>
 
-                <i class="bi bi-building me-2"></i>
+            <h2 class="gtri-page-title">
 
-                Información del periodo
+                <i class="bi bi-file-earmark-zip me-2"></i>
 
-            </h5>
+                Resultado del Expediente Mensual REPSE
 
-            <hr>
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Revisa el cumplimiento del personal, carga la documentación mensual y genera el paquete REPSE.
+
+            </p>
 
         </div>
 
+        <a
+            href="{{ route('repse.generador.index') }}"
+            class="btn gtri-btn-secondary"
+        >
 
-        <div class="row g-3 mb-4">
+            <i class="bi bi-arrow-left me-1"></i>
+
+            Nueva búsqueda
+
+        </a>
+
+    </div>
+
+
+    <!-- 01 · INFORMACIÓN DEL PERIODO -->
+
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>01</span>
+
+            Información del periodo
+
+        </div>
+
+        <div class="row g-3">
 
             <div class="col-md-6">
 
-                <div class="border rounded p-3 h-100">
+                <div class="gtri-info-card h-100">
 
-                    <small class="text-muted d-block">
+                    <div class="gtri-info-label">
+
                         Cliente
-                    </small>
 
-                    <strong class="fs-5">
+                    </div>
+
+                    <div class="gtri-info-value fs-5 mt-2">
+
+                        <i class="bi bi-building me-2"></i>
 
                         {{ $cliente->razon_social }}
 
-                    </strong>
+                    </div>
 
                 </div>
 
@@ -46,13 +79,17 @@
 
             <div class="col-md-6">
 
-                <div class="border rounded p-3 h-100">
+                <div class="gtri-info-card h-100">
 
-                    <small class="text-muted d-block">
+                    <div class="gtri-info-label">
+
                         Periodo
-                    </small>
 
-                    <strong class="fs-5">
+                    </div>
+
+                    <div class="gtri-info-value fs-5 mt-2">
+
+                        <i class="bi bi-calendar-range me-2"></i>
 
                         {{ $inicioMes->format('d/m/Y') }}
 
@@ -60,7 +97,7 @@
 
                         {{ $finMes->format('d/m/Y') }}
 
-                    </strong>
+                    </div>
 
                 </div>
 
@@ -68,267 +105,307 @@
 
         </div>
 
+    </div>
 
-        {{-- GUARDIAS ENCONTRADOS --}}
-        <div class="mb-4">
 
-            <h5 class="fw-bold">
+    <!-- 02 · GUARDIAS ENCONTRADOS -->
 
-                <i class="bi bi-people me-2"></i>
+    <div class="gtri-section">
 
-                Guardias encontrados
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
 
-            </h5>
+            <div>
 
-            <p class="text-muted mb-2">
+                <div class="gtri-section-title mb-1">
 
-                Personal relacionado con plazas del cliente
-                durante el periodo seleccionado.
+                    <span>02</span>
 
-            </p>
+                    Guardias encontrados
 
-            <hr>
+                </div>
+
+                <p class="text-secondary mb-0">
+
+                    Personal relacionado con plazas del cliente durante el periodo seleccionado.
+
+                </p>
+
+            </div>
+
+            <div>
+
+                <span class="text-secondary">
+
+                    Total:
+
+                </span>
+
+                <span class="text-warning fw-bold">
+
+                    {{ $empleados->count() }}
+
+                </span>
+
+            </div>
 
         </div>
 
 
         @if($empleados->count() > 0)
 
-            <div class="table-responsive">
+            <div class="gtri-table-wrapper">
 
-                <table class="table table-hover align-middle">
+                <div class="table-responsive">
 
-                    <thead class="table-light">
+                    <table class="table gtri-table align-middle mb-0">
 
-                        <tr>
-
-                            <th>No. Control</th>
-
-                            <th>Empleado</th>
- 
-                            <th class="text-center">REPSE</th>
-  
-                            <th class="text-center">IMSS</th>
-  
-                            <th class="text-center">Contrato</th>
-  
-                            <th class="text-center">SSP</th>
-  
-                            <th class="text-center">SAT</th>
-  
-                            <th class="text-center">Prenómina</th>
-  
-                            <th class="text-center">Paquete REPSE</th> 
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        @foreach($empleados as $empleado)
+                        <thead>
 
                             <tr>
 
-                                <td>
+                                <th>No. Control</th>
 
-                                    {{ $empleado->numero_control }}
+                                <th>Empleado</th>
 
-                                </td>
+                                <th class="text-center">REPSE</th>
 
-                                <td>
+                                <th class="text-center">IMSS</th>
 
-                                    <div class="fw-semibold">
+                                <th class="text-center">Contrato</th>
 
-                                        {{ $empleado->nombre }}
+                                <th class="text-center">SSP</th>
 
-                                        {{ $empleado->apellido_paterno }}
+                                <th class="text-center">SAT</th>
 
-                                        {{ $empleado->apellido_materno }}
+                                <th class="text-center">Prenómina</th>
 
-                                    </div>
+                                <th class="text-center">Paquete REPSE</th>
 
-                                </td>
+                            </tr>
 
+                        </thead>
 
-                                {{-- ESTADO REPSE --}}
-                                <td class="text-center">
+                        <tbody>
 
-                                    @if(
-                                        $empleado->repse &&
-                                        $empleado->repse->cumpleRequisitos()
-                                    )
+                            @foreach($empleados as $empleado)
 
-                                        <span class="badge bg-success">
+                                <tr>
 
-                                            <i class="bi bi-check-circle me-1"></i>
+                                    <td>
 
-                                            Cumple
+                                        <span class="fw-semibold text-light">
 
-                                        </span>
-
-                                    @else
-
-                                        <span class="badge bg-danger">
-
-                                            <i class="bi bi-lock me-1"></i>
-
-                                            Bloqueado
+                                            {{ $empleado->numero_control }}
 
                                         </span>
 
-                                    @endif
+                                    </td>
 
-                                </td>
+                                    <td>
 
+                                        <div class="fw-semibold">
 
-                                {{-- IMSS --}}
-                                <td class="text-center">
+                                            {{ $empleado->nombre }}
 
-                                    @if(
-                                        $empleado->repse &&
-                                        $empleado->repse->alta_imss
-                                    )
+                                            {{ $empleado->apellido_paterno }}
 
-                                        <span class="badge bg-success">
+                                            {{ $empleado->apellido_materno }}
 
-                                            <i class="bi bi-check-lg"></i>
+                                        </div>
 
-                                        </span>
+                                    </td>
 
-                                    @else
 
-                                        <span class="badge bg-danger">
+                                    <!-- ESTADO REPSE -->
 
-                                            <i class="bi bi-x-lg"></i>
+                                    <td class="text-center">
 
-                                        </span>
+                                        @if(
+                                            $empleado->repse &&
+                                            $empleado->repse->cumpleRequisitos()
+                                        )
 
-                                    @endif
+                                            <span class="badge bg-success">
 
-                                </td>
+                                                <i class="bi bi-check-circle me-1"></i>
 
+                                                Cumple
 
-                                {{-- CONTRATO --}}
-                                <td class="text-center">
+                                            </span>
 
-                                    @if(
-                                        $empleado->repse &&
-                                        $empleado->repse->contrato_firmado
-                                    )
+                                        @else
 
-                                        <span class="badge bg-success">
+                                            <span class="badge bg-danger">
 
-                                            <i class="bi bi-check-lg"></i>
+                                                <i class="bi bi-lock me-1"></i>
 
-                                        </span>
+                                                Bloqueado
 
-                                    @else
+                                            </span>
 
-                                        <span class="badge bg-danger">
+                                        @endif
 
-                                            <i class="bi bi-x-lg"></i>
+                                    </td>
 
-                                        </span>
 
-                                    @endif
+                                    <!-- IMSS -->
 
-                                </td>
+                                    <td class="text-center">
 
+                                        @if(
+                                            $empleado->repse &&
+                                            $empleado->repse->alta_imss
+                                        )
 
-                                {{-- SSP --}}
-                                <td class="text-center">
+                                            <span class="badge bg-success">
 
-                                    @if(
-                                        $empleado->repse &&
-                                        $empleado->repse->cedula_ssp &&
-                                        $empleado->repse->estadoVigenciaCedula() === 'vigente'
-                                    )
+                                                <i class="bi bi-check-lg"></i>
 
-                                        <span class="badge bg-success">
+                                            </span>
 
-                                            Vigente
+                                        @else
 
-                                        </span>
+                                            <span class="badge bg-danger">
 
-                                    @elseif(
-                                        $empleado->repse &&
-                                        $empleado->repse->estadoVigenciaCedula() === 'por_vencer'
-                                    )
+                                                <i class="bi bi-x-lg"></i>
 
-                                        <span class="badge bg-warning text-dark">
+                                            </span>
 
-                                            Por vencer
+                                        @endif
 
-                                        </span>
+                                    </td>
 
-                                    @else
 
-                                        <span class="badge bg-danger">
+                                    <!-- CONTRATO -->
 
-                                            No válida
+                                    <td class="text-center">
 
-                                        </span>
+                                        @if(
+                                            $empleado->repse &&
+                                            $empleado->repse->contrato_firmado
+                                        )
 
-                                    @endif
+                                            <span class="badge bg-success">
 
-                                </td>
+                                                <i class="bi bi-check-lg"></i>
 
+                                            </span>
 
-                                {{-- SAT --}}
-                                <td class="text-center">
+                                        @else
 
-                                    @if(
-                                        $empleado->repse &&
-                                        $empleado->repse->constancia_fiscal &&
-                                        $empleado->repse->rfc_constancia &&
-                                        strtoupper(trim($empleado->repse->rfc_constancia)) ===
-                                        strtoupper(trim($empleado->rfc))
-                                    )
+                                            <span class="badge bg-danger">
 
-                                        <span class="badge bg-success">
+                                                <i class="bi bi-x-lg"></i>
 
-                                            Validado
+                                            </span>
 
-                                        </span>
+                                        @endif
 
-                                    @else
+                                    </td>
 
-                                        <span class="badge bg-danger">
 
-                                            No válido
+                                    <!-- SSP -->
 
-                                        </span>
+                                    <td class="text-center">
 
-                                    @endif
+                                        @if(
+                                            $empleado->repse &&
+                                            $empleado->repse->cedula_ssp &&
+                                            $empleado->repse->estadoVigenciaCedula() === 'vigente'
+                                        )
 
-                                </td>
+                                            <span class="badge bg-success">
 
-                                {{-- PRENÓMINA --}}
-                                <td class="text-center">
+                                                Vigente
 
-                                    @if($empleado->tiene_prenomina)
+                                            </span>
 
-                                        <span class="badge bg-success">
+                                        @elseif(
+                                            $empleado->repse &&
+                                            $empleado->repse->estadoVigenciaCedula() === 'por_vencer'
+                                        )
 
-                                            <i class="bi bi-check-circle me-1"></i>
+                                            <span class="badge bg-warning text-dark">
 
-                                            Disponible
+                                                Por vencer
 
-                                        </span>
+                                            </span>
 
-                                    @else
+                                        @else
 
-                                        <span class="badge bg-danger">
+                                            <span class="badge bg-danger">
 
-                                            <i class="bi bi-x-circle me-1"></i>
+                                                No válida
 
-                                            Sin prenómina
+                                            </span>
 
-                                        </span>
+                                        @endif
 
-                                    @endif
+                                    </td>
 
-                                    {{-- PAQUETE REPSE --}}
+
+                                    <!-- SAT -->
+
+                                    <td class="text-center">
+
+                                        @if(
+                                            $empleado->repse &&
+                                            $empleado->repse->constancia_fiscal &&
+                                            $empleado->repse->rfc_constancia &&
+                                            strtoupper(trim($empleado->repse->rfc_constancia)) ===
+                                            strtoupper(trim($empleado->rfc))
+                                        )
+
+                                            <span class="badge bg-success">
+
+                                                Validado
+
+                                            </span>
+
+                                        @else
+
+                                            <span class="badge bg-danger">
+
+                                                No válido
+
+                                            </span>
+
+                                        @endif
+
+                                    </td>
+
+
+                                    <!-- PRENÓMINA -->
+
+                                    <td class="text-center">
+
+                                        @if($empleado->tiene_prenomina)
+
+                                            <span class="badge bg-success">
+
+                                                <i class="bi bi-check-circle me-1"></i>
+
+                                                Disponible
+
+                                            </span>
+
+                                        @else
+
+                                            <span class="badge bg-danger">
+
+                                                <i class="bi bi-x-circle me-1"></i>
+
+                                                Sin prenómina
+
+                                            </span>
+
+                                        @endif
+
+                                    </td>
+
+
+                                    <!-- PAQUETE REPSE -->
+
                                     <td class="text-center">
 
                                         @if($empleado->paquete_repse_listo)
@@ -358,9 +435,7 @@
                                                     as $faltante
                                                 )
 
-                                                    <small
-                                                        class="d-block text-danger"
-                                                    >
+                                                    <small class="d-block text-danger">
 
                                                         <i class="bi bi-x-circle me-1"></i>
 
@@ -373,36 +448,86 @@
                                             </div>
 
                                         @endif
+
                                     </td>
 
-                                </td>
+                                </tr>
 
-                            </tr>
+                            @endforeach
 
-                        @endforeach
+                        </tbody>
 
-                    </tbody>
+                    </table>
 
-                </table>
+                </div>
 
             </div>
 
+        @else
 
-            <div class="alert alert-light border mt-4">
+            <div class="gtri-card text-center py-5">
 
-                <div class="d-flex justify-content-between align-items-center">
+                <i class="bi bi-people fs-1 text-secondary d-block mb-3"></i>
+
+                <h5 class="text-light">
+
+                    No se encontraron guardias
+
+                </h5>
+
+                <p class="text-secondary mb-0">
+
+                    No existen guardias asignados a este cliente durante el periodo seleccionado.
+
+                </p>
+
+            </div>
+
+        @endif
+
+    </div>
+
+
+    <!-- 03 · ESTADO GENERAL DEL EXPEDIENTE -->
+
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>03</span>
+
+            Estado general del expediente
+
+        </div>
+
+
+        @if(!$hayGuardias)
+
+            <div class="gtri-card">
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
 
                     <div>
 
-                        <strong>
-                            Total de guardias encontrados:
-                        </strong>
+                        <div class="gtri-info-label">
+
+                            Estado del expediente mensual
+
+                        </div>
+
+                        <span class="badge bg-secondary mt-2">
+
+                            <i class="bi bi-dash-circle me-1"></i>
+
+                            No aplica
+
+                        </span>
 
                     </div>
 
-                    <span class="badge bg-primary fs-6">
+                    <span class="badge bg-secondary">
 
-                        {{ $empleados->count() }}
+                        Sin personal asignado en el periodo
 
                     </span>
 
@@ -412,354 +537,303 @@
 
         @else
 
-            <div class="alert alert-warning">
+            <div class="gtri-card">
 
-                <i class="bi bi-exclamation-triangle me-1"></i>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
 
-                No se encontraron guardias asignados a este cliente
-                durante el periodo seleccionado.
+                    <div>
+
+                        <div class="gtri-info-label">
+
+                            Estado del expediente mensual
+
+                        </div>
+
+                        @if($paqueteGeneralListo)
+
+                            <span class="badge bg-success mt-2">
+
+                                <i class="bi bi-check-circle me-1"></i>
+
+                                Completo
+
+                            </span>
+
+                        @else
+
+                            <span class="badge bg-warning text-dark mt-2">
+
+                                <i class="bi bi-exclamation-triangle me-1"></i>
+
+                                Incompleto
+
+                            </span>
+
+                        @endif
+
+                    </div>
+
+
+                    <div>
+
+                        @if($tienePagoSua)
+
+                            <span class="badge bg-success">
+
+                                <i class="bi bi-check-circle me-1"></i>
+
+                                Pago SUA cargado
+
+                            </span>
+
+                        @else
+
+                            <span class="badge bg-danger">
+
+                                <i class="bi bi-x-circle me-1"></i>
+
+                                Falta Pago SUA
+
+                            </span>
+
+                        @endif
+
+                    </div>
+
+                </div>
 
             </div>
 
         @endif
 
-        {{-- ESTADO GENERAL DEL EXPEDIENTE --}}
-
-        <div class="mb-4">
-
-            @if(!$hayGuardias)
-
-                <div class="alert alert-secondary">
-
-                    <div class="d-flex justify-content-between align-items-center">
-
-                        <div>
-
-                            <strong>
-
-                                Estado del expediente mensual:
-
-                            </strong>
-
-                            <span class="badge bg-secondary ms-2">
-
-                                <i class="bi bi-dash-circle me-1"></i>
-
-                                No aplica
-
-                            </span>
-
-                        </div>
-
-                        <div>
-
-                            <span class="badge bg-secondary">
-
-                                Sin personal asignado en el periodo
-
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            @else
-
-                <div
-                    class="alert
-                    {{ $paqueteGeneralListo ? 'alert-success' : 'alert-warning' }}"
-                >
-
-                    <div class="d-flex justify-content-between align-items-center">
-
-                        <div>
-
-                            <strong>
-
-                                Estado del expediente mensual:
-
-                            </strong>
-
-                            @if($paqueteGeneralListo)
-
-                                <span class="badge bg-success ms-2">
-
-                                    <i class="bi bi-check-circle me-1"></i>
-
-                                    Completo
-
-                                </span>
-
-                            @else
-
-                                <span class="badge bg-warning text-dark ms-2">
-
-                                    <i class="bi bi-exclamation-triangle me-1"></i>
-
-                                    Incompleto
-
-                                </span>
-
-                            @endif
-
-                        </div>
+    </div>
 
 
-                        <div>
+    <!-- 04 · DOCUMENTACIÓN CARGADA -->
 
-                            @if($tienePagoSua)
+    <div class="gtri-section">
 
-                                <span class="badge bg-success">
+        <div class="gtri-section-title">
 
-                                    <i class="bi bi-check-circle me-1"></i>
+            <span>04</span>
 
-                                    Pago SUA cargado
-
-                                </span>
-
-                            @else
-
-                                <span class="badge bg-danger">
-
-                                    <i class="bi bi-x-circle me-1"></i>
-
-                                    Falta Pago SUA
-
-                                </span>
-
-                            @endif
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            @endif
+            Documentación cargada
 
         </div>
 
-        {{-- DOCUMENTACIÓN YA CARGADA --}}
+        <p class="text-secondary mb-4">
 
-        <div class="mb-4 mt-5">
+            Archivos registrados para este cliente y periodo.
 
-            <h5 class="fw-bold">
-
-                <i class="bi bi-folder2-open me-2"></i>
-
-                Documentación cargada
-
-            </h5>
-
-            <p class="text-muted mb-2">
-
-                Archivos registrados para este cliente y periodo.
-
-            </p>
-
-            <hr>
-
-        </div>
+        </p>
 
 
         @if($archivosRepse->count() > 0)
 
-            <div class="table-responsive mb-4">
+            <div class="gtri-table-wrapper">
 
-                <table class="table table-hover align-middle">
+                <div class="table-responsive">
 
-                    <thead class="table-light">
+                    <table class="table gtri-table align-middle mb-0">
 
-                        <tr>
-                            <th>Empleado</th>
-                            <th>Tipo</th>
-                            <th>Archivo</th>
-                            <th class="text-center">Acciones</th>
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        @foreach($archivosRepse as $archivoRepse)
+                        <thead>
 
                             <tr>
 
-                                {{-- EMPLEADO --}}
-                                <td>
+                                <th>Empleado</th>
 
-                                    @if($archivoRepse->empleado)
+                                <th>Tipo</th>
 
-                                        {{ $archivoRepse->empleado->numero_control }}
+                                <th>Archivo</th>
 
-                                        -
-
-                                        {{ $archivoRepse->empleado->nombre }}
-
-                                        {{ $archivoRepse->empleado->apellido_paterno }}
-
-                                    @else
-
-                                        <span class="badge bg-secondary">
-
-                                            Documento general
-
-                                        </span>
-
-                                    @endif
-
-                                </td>
-
-
-                                {{-- TIPO --}}
-                                <td>
-
-                                    @switch($archivoRepse->tipo)
-
-                                        @case('alta_imss')
-
-                                            <span class="badge bg-primary">
-
-                                                Alta IMSS
-
-                                            </span>
-
-                                            @break
-
-
-                                        @case('nomina_pdf')
-
-                                            <span class="badge bg-info text-dark">
-
-                                                Nómina PDF
-
-                                            </span>
-
-                                            @break
-
-
-                                        @case('nomina_xml')
-
-                                            <span class="badge bg-info text-dark">
-
-                                                Nómina XML
-
-                                            </span>
-
-                                            @break
-
-
-                                        @case('constancia_sat')
-
-                                            <span class="badge bg-success">
-
-                                                Constancia SAT
-
-                                            </span>
-
-                                            @break
-
-
-                                        @case('pago_sua')
-
-                                            <span class="badge bg-warning text-dark">
-
-                                                Pago SUA
-
-                                            </span>
-
-                                            @break
-
-                                    @endswitch
-
-                                </td>
-
-
-                                {{-- ARCHIVO --}}
-                                <td>
-
-                                    <i class="bi bi-file-earmark me-1"></i>
-
-                                    {{ basename($archivoRepse->archivo) }}
-
-                                </td>
-
-                                {{-- ACCIONES --}}
-                                <td class="text-center">
-
-                                    <form
-                                        method="POST"
-                                        action="{{ route(
-                                            'repse.generador.archivos.eliminar',
-                                            $archivoRepse
-                                        ) }}"
-                                        onsubmit="return confirm(
-                                            '¿Está seguro de eliminar este archivo?'
-                                        )"
-                                    >
-
-                                        @csrf
-                                        @method('DELETE')
-
-                                        <button
-                                            type="submit"
-                                            class="btn btn-sm btn-danger"
-                                            title="Eliminar archivo"
-                                        >
-
-                                            <i class="bi bi-trash"></i>
-
-                                        </button>
-
-                                    </form>
-
-                                </td>
+                                <th class="text-center">Acciones</th>
 
                             </tr>
 
-                        @endforeach
+                        </thead>
 
-                    </tbody>
+                        <tbody>
 
-                </table>
+                            @foreach($archivosRepse as $archivoRepse)
+
+                                <tr>
+
+                                    <td>
+
+                                        @if($archivoRepse->empleado)
+
+                                            {{ $archivoRepse->empleado->numero_control }}
+
+                                            -
+
+                                            {{ $archivoRepse->empleado->nombre }}
+
+                                            {{ $archivoRepse->empleado->apellido_paterno }}
+
+                                        @else
+
+                                            <span class="badge bg-secondary">
+
+                                                Documento general
+
+                                            </span>
+
+                                        @endif
+
+                                    </td>
+
+
+                                    <td>
+
+                                        @switch($archivoRepse->tipo)
+
+                                            @case('alta_imss')
+
+                                                <span class="badge bg-primary">
+
+                                                    Alta IMSS
+
+                                                </span>
+
+                                            @break
+
+
+                                            @case('nomina_pdf')
+
+                                                <span class="badge bg-info text-dark">
+
+                                                    Nómina PDF
+
+                                                </span>
+
+                                            @break
+
+
+                                            @case('nomina_xml')
+
+                                                <span class="badge bg-info text-dark">
+
+                                                    Nómina XML
+
+                                                </span>
+
+                                            @break
+
+
+                                            @case('constancia_sat')
+
+                                                <span class="badge bg-success">
+
+                                                    Constancia SAT
+
+                                                </span>
+
+                                            @break
+
+
+                                            @case('pago_sua')
+
+                                                <span class="badge bg-warning text-dark">
+
+                                                    Pago SUA
+
+                                                </span>
+
+                                            @break
+
+                                        @endswitch
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <i class="bi bi-file-earmark me-1 text-warning"></i>
+
+                                        {{ basename($archivoRepse->archivo) }}
+
+                                    </td>
+
+
+                                    <td class="text-center">
+
+                                        <form
+                                            method="POST"
+                                            action="{{ route(
+                                                'repse.generador.archivos.eliminar',
+                                                $archivoRepse
+                                            ) }}"
+                                            onsubmit="return confirm(
+                                                '¿Está seguro de eliminar este archivo?'
+                                            )"
+                                        >
+
+                                            @csrf
+
+                                            @method('DELETE')
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm btn-danger"
+                                                title="Eliminar archivo"
+                                            >
+
+                                                <i class="bi bi-trash"></i>
+
+                                            </button>
+
+                                        </form>
+
+                                    </td>
+
+                                </tr>
+
+                            @endforeach
+
+                        </tbody>
+
+                    </table>
+
+                </div>
 
             </div>
 
         @else
 
-            <div class="alert alert-info">
+            <div class="gtri-card text-center py-4">
 
-                <i class="bi bi-info-circle me-1"></i>
+                <i class="bi bi-folder2-open fs-2 text-secondary d-block mb-2"></i>
 
-                Todavía no hay archivos cargados para este cliente y periodo.
+                <p class="text-secondary mb-0">
+
+                    Todavía no hay archivos cargados para este cliente y periodo.
+
+                </p>
 
             </div>
 
         @endif
 
-        {{-- CARGA DE DOCUMENTACIÓN MENSUAL REPSE --}}
+    </div>
 
-        <div class="mb-4 mt-5">
 
-            <h5 class="fw-bold">
+    <!-- 05 · CARGA DE DOCUMENTACIÓN -->
 
-                <i class="bi bi-cloud-arrow-up me-2"></i>
+    <div class="gtri-section">
 
-                Documentación mensual REPSE
+        <div class="gtri-section-title">
 
-            </h5>
+            <span>05</span>
 
-            <p class="text-muted mb-2">
-
-                Cargue los documentos que serán incluidos en el ZIP mensual.
-
-            </p>
-
-            <hr>
+            Documentación mensual REPSE
 
         </div>
+
+        <p class="text-secondary mb-4">
+
+            Cargue los documentos que serán incluidos en el ZIP mensual.
+
+        </p>
 
 
         @if(session('success'))
@@ -796,14 +870,15 @@
             >
 
 
-            <div class="row">
+            <div class="row g-3">
 
-                {{-- EMPLEADO --}}
-                <div class="col-md-4 mb-3">
+                <!-- EMPLEADO -->
+
+                <div class="col-md-4">
 
                     <label
                         for="empleado_id"
-                        class="form-label fw-semibold"
+                        class="form-label"
                     >
 
                         Empleado
@@ -813,7 +888,7 @@
                     <select
                         name="empleado_id"
                         id="empleado_id"
-                        class="form-select"
+                        class="form-select gtri-input"
                     >
 
                         <option value="">
@@ -842,34 +917,32 @@
 
                     <div class="form-text">
 
-                        Para Pago SUA deje seleccionado
-                        "Documento general del periodo".
+                        Para Pago SUA deje seleccionado "Documento general del periodo".
 
                     </div>
 
                 </div>
 
 
-                {{-- TIPO DE DOCUMENTO --}}
-                <div class="col-md-4 mb-3">
+                <!-- TIPO -->
+
+                <div class="col-md-4">
 
                     <label
                         for="tipo"
-                        class="form-label fw-semibold"
+                        class="form-label"
                     >
 
                         Tipo de documento
 
-                        <span class="text-danger">
-                            *
-                        </span>
+                        <span class="text-danger">*</span>
 
                     </label>
 
                     <select
                         name="tipo"
                         id="tipo"
-                        class="form-select"
+                        class="form-select gtri-input"
                         required
                     >
 
@@ -914,19 +987,18 @@
                 </div>
 
 
-                {{-- ARCHIVO --}}
-                <div class="col-md-4 mb-3">
+                <!-- ARCHIVO -->
+
+                <div class="col-md-4">
 
                     <label
                         for="archivo"
-                        class="form-label fw-semibold"
+                        class="form-label"
                     >
 
                         Archivo
 
-                        <span class="text-danger">
-                            *
-                        </span>
+                        <span class="text-danger">*</span>
 
                     </label>
 
@@ -934,7 +1006,7 @@
                         type="file"
                         name="archivo"
                         id="archivo"
-                        class="form-control"
+                        class="form-control gtri-input"
                         required
                     >
 
@@ -949,11 +1021,11 @@
             </div>
 
 
-            <div class="d-flex justify-content-end mb-4">
+            <div class="d-flex justify-content-end mt-4">
 
                 <button
                     type="submit"
-                    class="btn btn-primary"
+                    class="btn gtri-btn-primary"
                 >
 
                     <i class="bi bi-upload me-1"></i>
@@ -966,16 +1038,21 @@
 
         </form>
 
+    </div>
 
-        {{-- BOTONES --}}
-        <div class="d-flex justify-content-end gap-2 mt-4">
+
+    <!-- 06 · ACCIONES -->
+
+    <div class="gtri-section mb-0">
+
+        <div class="d-flex justify-content-end gap-2 flex-wrap">
 
             <a
                 href="{{ route('repse.generador.index') }}"
-                class="btn btn-secondary"
+                class="btn gtri-btn-secondary"
             >
 
-                <i class="bi bi-arrow-left"></i>
+                <i class="bi bi-arrow-left me-1"></i>
 
                 Nueva búsqueda
 
@@ -1005,7 +1082,7 @@
 
                     <button
                         type="submit"
-                        class="btn btn-success"
+                        class="btn gtri-btn-primary"
                     >
 
                         <i class="bi bi-file-earmark-zip me-1"></i>
@@ -1020,7 +1097,7 @@
 
         </div>
 
-    </x-rh.card-rh>
+    </div>
 
 </div>
 

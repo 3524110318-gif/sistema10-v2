@@ -90,19 +90,104 @@ class PrenominaController extends Controller
     {
         $request->validate([
 
-            'periodo_inicio' => 'required|date',
+            'periodo_inicio' =>
+                'required|date',
 
-            'periodo_fin' => 'required|date|after_or_equal:periodo_inicio',
+            'periodo_fin' =>
+                'required|date|after_or_equal:periodo_inicio',
 
-            'estatus' => 'required',
+            'estatus' =>
+                'required|in:abierta,cerrada,autorizada',
 
-            'observaciones' => 'nullable|string',
+            'observaciones' =>
+                'nullable|string',
 
-            'empleado_id' => 'required|array',
+            'empleado_id' =>
+                'required|array|min:1',
 
-            'empleado_id.*' => 'exists:empleados,id',
+            'empleado_id.*' =>
+                'required|exists:empleados,id',
+
+            'salario_base.*' =>
+                'required|numeric|min:0',
+
+            'dias_laborados.*' =>
+                'required|integer|min:0',
+
+            'dias_incapacidad.*' =>
+                'required|integer|min:0',
+
+            'folio_imss.*' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+
+            'percepciones.*' =>
+                'required|numeric|min:0',
+
+            'deducciones.*' =>
+                'required|numeric|min:0',
+
+            'ajustes.*' =>
+                'required|numeric',
+
+            'horas_extra.*' =>
+                'required|numeric|min:0',
+
+            'justificacion.*' => [
+                'nullable',
+                'string',
+            ],
 
         ]);
+
+        foreach (
+            $request->empleado_id
+            as $i => $empleadoId
+        ) {
+
+            /*
+            FOLIO IMSS OBLIGATORIO SI EXISTE INCAPACIDAD
+            */
+
+            if (
+                ($request->dias_incapacidad[$i] ?? 0) > 0
+                &&
+                empty($request->folio_imss[$i])
+            ) {
+
+                return back()
+                    ->withInput()
+                    ->withErrors([
+
+                        "folio_imss.$i" =>
+                            'El folio IMSS es obligatorio cuando existen días de incapacidad.',
+
+                    ]);
+            }
+
+            /*
+            JUSTIFICACIÓN OBLIGATORIA SI EXISTE AJUSTE MANUAL
+            */
+
+            if (
+                (float) ($request->ajustes[$i] ?? 0) != 0
+                &&
+                empty($request->justificacion[$i])
+            ) {
+
+                return back()
+                    ->withInput()
+                    ->withErrors([
+
+                        "justificacion.$i" =>
+                            'La justificación es obligatoria cuando se realiza un ajuste manual.',
+
+                    ]);
+            }
+
+        }
 
         $prenomina = Prenomina::create([
 
@@ -118,34 +203,58 @@ class PrenominaController extends Controller
 
         foreach ($request->empleado_id as $i => $empleadoId) {
 
-            $salario = $request->salario_base[$i];
+            $salario = (float) $request->salario_base[$i];
 
-            $percepciones = $request->percepciones[$i];
+            $percepciones = (float) $request->percepciones[$i];
 
-            $deducciones = $request->deducciones[$i];
+            $deducciones = (float) $request->deducciones[$i];
 
-            $ajustes = $request->ajustes[$i];
+            $ajustes = (float) $request->ajustes[$i];
 
-            $horasExtra = $request->horas_extra[$i];
+            $horasExtra = (float) $request->horas_extra[$i];
+
+            $diasLaborados = (int) $request->dias_laborados[$i];
+
+            $diasIncapacidad = (int) $request->dias_incapacidad[$i];
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | CÁLCULO DE SALARIO PAGABLE
+            |--------------------------------------------------------------------------
+            |
+            | Los días con incapacidad IMSS se consideran en $0.
+            |
+            */
+
+            $diasPagables = max(
+                0,
+                $diasLaborados - $diasIncapacidad
+            );
+
+            $salarioDiario = $diasLaborados > 0
+                ? $salario / $diasLaborados
+                : 0;
+
+            $salarioPagable =
+                $salarioDiario * $diasPagables;
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | TOTAL NETO
+            |--------------------------------------------------------------------------
+            */
 
             $total =
-
-                $salario
-
+                $salarioPagable
                 +
-
                 $percepciones
-
                 +
-
                 $horasExtra
-
                 +
-
                 $ajustes
-
                 -
-
                 $deducciones;
 
             PrenominaDetalle::create([
@@ -154,7 +263,7 @@ class PrenominaController extends Controller
 
                 'empleado_id' => $empleadoId,
 
-                'salario_base' => $salario,
+                'salario_base' => $salarioPagable,
 
                 'dias_laborados' => $request->dias_laborados[$i],
 
@@ -180,7 +289,7 @@ class PrenominaController extends Controller
 
         LogActividad::create([
 
-            'usuario' => Auth::user()->name,
+            'usuario' => Auth::user()->rol,
 
             'accion' => 'Creó una prenómina',
 
@@ -256,6 +365,45 @@ class PrenominaController extends Controller
 
         ]);
 
+        foreach (
+            $request->empleado_id
+            as $i => $empleadoId
+        ) {
+
+            if (
+                ($request->dias_incapacidad[$i] ?? 0) > 0
+                &&
+                empty($request->folio_imss[$i])
+            ) {
+
+                return back()
+                    ->withInput()
+                    ->withErrors([
+
+                        "folio_imss.$i" =>
+                            'El folio IMSS es obligatorio cuando existen días de incapacidad.',
+
+                    ]);
+            }
+
+            if (
+                (float) ($request->ajustes[$i] ?? 0) != 0
+                &&
+                empty($request->justificacion[$i])
+            ) {
+
+                return back()
+                    ->withInput()
+                    ->withErrors([
+
+                        "justificacion.$i" =>
+                            'La justificación es obligatoria cuando se realiza un ajuste manual.',
+
+                    ]);
+            }
+
+        }
+
         $prenomina->update([
 
             'periodo_inicio' => $request->periodo_inicio,
@@ -272,34 +420,41 @@ class PrenominaController extends Controller
 
         foreach ($request->empleado_id as $i => $empleadoId) {
 
-            $salario = $request->salario_base[$i];
+            $salario = (float) $request->salario_base[$i];
 
-            $percepciones = $request->percepciones[$i];
+            $percepciones = (float) $request->percepciones[$i];
 
-            $deducciones = $request->deducciones[$i];
+            $deducciones = (float) $request->deducciones[$i];
 
-            $ajustes = $request->ajustes[$i];
+            $ajustes = (float) $request->ajustes[$i];
 
-            $horasExtra = $request->horas_extra[$i];
+            $horasExtra = (float) $request->horas_extra[$i];
+
+            $diasLaborados = (int) $request->dias_laborados[$i];
+
+            $diasIncapacidad = (int) $request->dias_incapacidad[$i];
+
+            $diasPagables = max(
+                0,
+                $diasLaborados - $diasIncapacidad
+            );
+
+            $salarioDiario = $diasLaborados > 0
+                ? $salario / $diasLaborados
+                : 0;
+
+            $salarioPagable =
+                $salarioDiario * $diasPagables;
 
             $total =
-
-                $salario
-
+                $salarioPagable
                 +
-
                 $percepciones
-
                 +
-
                 $horasExtra
-
                 +
-
                 $ajustes
-
                 -
-
                 $deducciones;
 
             PrenominaDetalle::create([
@@ -308,7 +463,7 @@ class PrenominaController extends Controller
 
                 'empleado_id' => $empleadoId,
 
-                'salario_base' => $salario,
+                'salario_base' => $salarioPagable,
 
                 'dias_laborados' => $request->dias_laborados[$i],
 

@@ -5,38 +5,118 @@
 <div class="container-fluid">
 
     <div class="gtri-page-header">
+        <div
+            class="
+                d-flex
+                flex-column
+                flex-md-row
+                justify-content-between
+                align-items-md-center
+                gap-3
+            "
+        >
 
-        <div>
+            <div>
 
-            <h2 class="gtri-page-title">
+                <h2 class="gtri-page-title">
 
-                <i class="bi bi-people me-2"></i>
+                    <i class="bi bi-people me-2"></i>
 
-                Reclutamiento
+                    Reclutamiento
 
-            </h2>
+                </h2>
 
-            <p class="gtri-page-subtitle">
+                <p class="gtri-page-subtitle">
 
-                Consulta y gestiona el proceso de selección de candidatos.
+                    Consulta y gestiona el proceso de selección de candidatos.
 
-            </p>
+                </p>
+
+            </div>
+
+            <a
+                href="{{ route('rh.prospectos.create') }}"
+                class="btn gtri-btn-primary "
+            >
+
+                <i class="bi bi-plus-circle me-1"></i>
+
+                Nuevo prospecto
+
+            </a>
+
+        </div>
+    </div>
+
+    <form
+        method="GET"
+        action="{{ route('rh.prospectos.index') }}"
+        class="mb-4"
+    >
+
+        <div class="row g-3 align-items-end">
+
+            <div class="col-lg-8">
+
+                <label
+                    for="buscar"
+                    class="form-label text-light fw-semibold"
+                >
+
+                    Buscar prospecto
+
+                </label>
+
+                <input
+                    type="text"
+                    name="buscar"
+                    id="buscar"
+                    class="form-control gtri-input"
+                    placeholder="Busca por nombre, correo, puesto solicitado o estado..."
+                    value="{{ request('buscar') }}"
+                >
+
+            </div>
+
+
+            <div class="col-lg-4">
+
+                <div class="d-flex gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn gtri-btn-secondary"
+                    >
+
+                        <i class="bi bi-search me-1"></i>
+
+                        Buscar
+
+                    </button>
+
+                    @if (request('buscar'))
+
+                        <a
+                            href="{{ route('rh.prospectos.index') }}"
+                            class="btn gtri-btn-secondary"
+                        >
+
+                            <i class="bi bi-x-circle me-1"></i>
+
+                            Limpiar
+
+                        </a>
+
+                    @endif
+
+                </div>
+
+            </div>
 
         </div>
 
+    </form>
 
-        <a
-            href="{{ route('rh.prospectos.create') }}"
-            class="btn gtri-btn-primary"
-        >
-
-            <i class="bi bi-person-plus me-1"></i>
-
-            Nuevo prospecto
-
-        </a>
-
-    </div>
 
 
     <div class="gtri-section mb-0">
@@ -248,7 +328,7 @@
 
                                             <button
                                                 type="submit"
-                                                class="btn btn-warning btn-sm"
+                                                class="btn gtri-btn-search btn-sm"
                                                 onclick="return confirm(
                                                     '¿Deseas marcar este prospecto como entrevistado?'
                                                 )"

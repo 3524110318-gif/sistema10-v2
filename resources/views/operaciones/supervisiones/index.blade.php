@@ -257,49 +257,7 @@
                                             <i class="bi bi-eye"></i>
 
                                         </a>
-
-
-                                        @if(
-                                            $supervision->resultado
-                                            !=
-                                            'correcto'
-                                        )
-
-                                            @if($supervision->incidencia)
-
-                                                <a
-                                                    href="{{ route(
-                                                        'operaciones.incidencias.index'
-                                                    ) }}"
-                                                    class="btn btn-info btn-sm"
-                                                >
-
-                                                    <i class="bi bi-eye me-1"></i>
-
-                                                    Incidencia
-
-                                                </a>
-
-                                            @else
-
-                                                <a
-                                                    href="{{ route(
-                                                        'operaciones.incidencias.create.supervision',
-                                                        $supervision
-                                                    ) }}"
-                                                    class="btn btn-danger btn-sm"
-                                                >
-
-                                                    <i class="bi bi-exclamation-triangle me-1"></i>
-
-                                                    Generar
-
-                                                </a>
-
-                                            @endif
-
-                                        @endif
-
+                                            
                                     </div>
 
                                 </td>

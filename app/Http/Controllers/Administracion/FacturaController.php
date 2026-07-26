@@ -91,6 +91,29 @@ class FacturaController extends Controller
             'estado',
             'activo'
         )
+        ->withCount([
+
+            'plazas as plazas_contratadas',
+
+            'plazas as plazas_cubiertas' => function ($query) {
+
+                $query->where(
+                    'estado',
+                    'cubierta'
+                );
+
+            },
+
+            'plazas as plazas_vacantes' => function ($query) {
+
+                $query->where(
+                    'estado',
+                    'vacante'
+                );
+
+            },
+
+        ])
         ->orderBy(
             'nombre'
         )
@@ -203,34 +226,55 @@ class FacturaController extends Controller
 
                 );
 
+                $servicio = Servicio::withCount([
+
+                    'plazas as plazas_contratadas',
+
+                    'plazas as plazas_cubiertas' => function ($query) {
+
+                        $query->where(
+                            'estado',
+                            'cubierta'
+                        );
+
+                    },
+
+                ])->findOrFail($servicioId);
+
+                $plazasContratadas =
+                    $servicio->plazas_contratadas;
+
+                $plazasCubiertas =
+                    $servicio->plazas_cubiertas;
+
                 $subtotal =
-
-                    $request->plazas_contratadas[$i]
-
+                    $plazasContratadas
                     *
-
                     $precio;
 
                 DetalleFactura::create([
 
-                    'factura_id' => $factura->id,
+                    'factura_id' =>
+                        $factura->id,
 
-                    'servicio_id' => $servicioId,
+                    'servicio_id' =>
+                        $servicioId,
 
-                    'plazas_contratadas' => $request->plazas_contratadas[$i],
+                    'plazas_contratadas' =>
+                        $plazasContratadas,
 
-                    'plazas_cubiertas' => $request->plazas_cubiertas[$i],
+                    'plazas_cubiertas' =>
+                        $plazasCubiertas,
 
-                    'precio_unitario' => $precio,
+                    'precio_unitario' =>
+                        $precio,
 
-                    'subtotal' => $subtotal,
+                    'subtotal' =>
+                        $subtotal,
 
                     'observaciones' =>
-
                         $request->detalle_observaciones[$i]
-
                         ??
-
                         null,
 
                 ]);
@@ -390,10 +434,7 @@ class FacturaController extends Controller
     /**
      * Actualizar factura.
      */
-    public function update(
-        Request $request,
-        Factura $factura
-    )
+    public function update(Request $request, Factura $factura)
     {
         $request->validate([
 
@@ -475,46 +516,64 @@ class FacturaController extends Controller
                 $i => $servicioId
 
             ) {
+                $servicio = Servicio::withCount([
 
-                $subtotal =
+                'plazas as plazas_contratadas',
 
-                    $request->plazas_contratadas[$i]
+                'plazas as plazas_cubiertas' => function ($query) {
 
-                    *
+                    $query->where(
+                        'estado',
+                        'cubierta'
+                    );
 
-                    $request->precio_unitario[$i];
+                },
 
-                DetalleFactura::create([
+            ])->findOrFail($servicioId);
 
-                    'factura_id' => $factura->id,
+            $plazasContratadas =
+                $servicio->plazas_contratadas;
 
-                    'servicio_id' => $servicioId,
+            $plazasCubiertas =
+                $servicio->plazas_cubiertas;
 
-                    'plazas_contratadas' =>
+            $precio = str_replace(
+                ',',
+                '',
+                $request->precio_unitario[$i]
+            );
 
-                        $request->plazas_contratadas[$i],
+            $subtotal =
+                $plazasContratadas
+                *
+                $precio;
 
-                    'plazas_cubiertas' =>
+            DetalleFactura::create([
 
-                        $request->plazas_cubiertas[$i],
+                'factura_id' =>
+                    $factura->id,
 
-                    'precio_unitario' =>
+                'servicio_id' =>
+                    $servicioId,
 
-                        $request->precio_unitario[$i],
+                'plazas_contratadas' =>
+                    $plazasContratadas,
 
-                    'subtotal' =>
+                'plazas_cubiertas' =>
+                    $plazasCubiertas,
 
-                        $subtotal,
+                'precio_unitario' =>
+                    $precio,
 
-                    'observaciones' =>
+                'subtotal' =>
+                    $subtotal,
 
-                        $request->detalle_observaciones[$i]
+                'observaciones' =>
+                    $request->detalle_observaciones[$i]
+                    ??
+                    null,
 
-                        ??
-
-                        null,
-
-                ]);
+            ]);
 
                 $subtotalFactura += $subtotal;
 
@@ -586,9 +645,7 @@ class FacturaController extends Controller
         /**
      * Cancelar una factura.
      */
-    public function destroy(
-        Factura $factura
-    )
+    public function destroy(Factura $factura)
     {
         $factura->update([
 

@@ -10,6 +10,8 @@ use App\Models\RH\Empleado;
 use App\Models\Operaciones\Servicio;
 use App\Models\Administracion\LogActividad;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class AsignacionActivoController extends Controller
 {
@@ -92,85 +94,130 @@ class AsignacionActivoController extends Controller
     {
         $request->validate([
 
-            'activo_id' => 'required|exists:activos,id',
+            'activo_id' => [
+                'required',
+                'exists:activos,id',
+            ],
 
-            'empleado_id' => 'required|exists:empleados,id',
+            'empleado_id' => [
+                'required',
+                'exists:empleados,id',
+            ],
 
-            'servicio_id' => 'nullable|exists:servicios,id',
+            'servicio_id' => [
+                'nullable',
+                'exists:servicios,id',
+            ],
 
-            'fecha_entrega' => 'required|date',
+            'fecha_entrega' => [
+                'required',
+                'date',
+            ],
 
-            'fecha_devolucion' => 'nullable|date',
-
-            'estado' => 'required|in:activa,devuelta',
-
-            'observaciones' => 'nullable|string',
-
-        ]);
-
-        $asignacion = AsignacionActivo::create(
-
-            $request->all()
-
-        );
-
-        $asignacion->activo->update([
-
-            'estado' => 'asignado',
-
-        ]);
-
-        LogActividad::create([
-
-            'usuario' => Auth::user()->rol,
-
-            'accion' =>
-
-            'Asignó el activo '
-
-            .
-
-            $asignacion->activo->codigo_activo
-
-            .
-
-            ' al empleado '
-
-            .
-
-            $asignacion->empleado->nombre
-
-            .
-
-            ' '
-
-            .
-
-            $asignacion->empleado->apellido_paterno,
+            'observaciones' => [
+                'nullable',
+                'string',
+            ],
 
         ]);
+
+
+        DB::transaction(function () use ($request) {
+
+            $activo = Activo::where(
+                'id',
+                $request->activo_id
+            )
+            ->lockForUpdate()
+            ->firstOrFail();
+
+
+            if ($activo->estado !== 'disponible') {
+
+                throw ValidationException::withMessages([
+
+                    'activo_id' =>
+                        'El activo seleccionado ya no está disponible para asignarse.',
+
+                ]);
+
+            }
+
+
+            $asignacion = AsignacionActivo::create([
+
+                'activo_id' =>
+                    $activo->id,
+
+                'empleado_id' =>
+                    $request->empleado_id,
+
+                'servicio_id' =>
+                    $request->servicio_id,
+
+                'fecha_entrega' =>
+                    $request->fecha_entrega,
+
+                'fecha_devolucion' =>
+                    null,
+
+                'estado' =>
+                    'activa',
+
+                'observaciones' =>
+                    $request->observaciones,
+
+            ]);
+
+
+            $activo->update([
+
+                'estado' =>
+                    'asignado',
+
+            ]);
+
+
+            $asignacion->load('empleado');
+
+
+            LogActividad::create([
+
+                'usuario' =>
+                    Auth::user()->rol,
+
+                'accion' =>
+                    'Asignó el activo '
+                    .
+                    $activo->codigo_activo
+                    .
+                    ' al empleado '
+                    .
+                    $asignacion->empleado->nombre
+                    .
+                    ' '
+                    .
+                    $asignacion->empleado->apellido_paterno,
+
+            ]);
+
+        });
+
 
         return redirect()
-
             ->route(
                 'administracion.asignaciones-activos.index'
             )
-
             ->with(
-
                 'success',
-
                 'Activo asignado correctamente.'
-
             );
     }
 
     /**
      * Mostrar asignación.
      */
-    public function show(
-        AsignacionActivo $asignaciones_activo
-    )
+    public function show(AsignacionActivo $asignaciones_activo)
     {
         return view(
 
@@ -188,9 +235,7 @@ class AsignacionActivoController extends Controller
     /**
      * Editar asignación.
      */
-    public function edit(
-        AsignacionActivo $asignaciones_activo
-    )
+    public function edit(AsignacionActivo $asignaciones_activo)
     {
         $activos = Activo::orderBy(
             'codigo_activo'
@@ -230,82 +275,93 @@ class AsignacionActivoController extends Controller
      * Actualizar asignación.
      */
     public function update(
-        Request $request,
-        AsignacionActivo $asignaciones_activo
+    Request $request,
+    AsignacionActivo $asignaciones_activo
     )
     {
         $request->validate([
 
-            'activo_id' => 'required|exists:activos,id',
+            'activo_id' => [
+                'required',
+                'exists:activos,id',
+                function ($attribute, $value, $fail) use ($asignaciones_activo) {
 
-            'empleado_id' => 'required|exists:empleados,id',
+                    if (
+                        (int) $value !==
+                        (int) $asignaciones_activo->activo_id
+                    ) {
 
-            'servicio_id' => 'nullable|exists:servicios,id',
+                        $fail(
+                            'El activo de una asignación existente no puede modificarse.'
+                        );
 
-            'fecha_entrega' => 'required|date',
+                    }
 
-            'fecha_devolucion' => 'nullable|date',
+                },
+            ],
 
-            'estado' => 'required|in:activa,devuelta',
+            'empleado_id' => [
+                'required',
+                'exists:empleados,id',
+            ],
 
-            'observaciones' => 'nullable|string',
+            'servicio_id' => [
+                'nullable',
+                'exists:servicios,id',
+            ],
+
+            'fecha_entrega' => [
+                'required',
+                'date',
+            ],
+
+            'observaciones' => [
+                'nullable',
+                'string',
+            ],
 
         ]);
 
-        $asignaciones_activo->update(
 
-            $request->all()
+        $asignaciones_activo->update([
 
-        );
+            'empleado_id' =>
+                $request->empleado_id,
 
-        if (
+            'servicio_id' =>
+                $request->servicio_id,
 
-            $request->estado == 'devuelta'
+            'fecha_entrega' =>
+                $request->fecha_entrega,
 
-        ) {
+            'observaciones' =>
+                $request->observaciones,
 
-            $asignaciones_activo
+        ]);
 
-            ->activo
-
-            ->update([
-
-                'estado' => 'disponible'
-
-            ]);
-
-        }
 
         LogActividad::create([
 
-            'usuario' => Auth::user()->rol,
+            'usuario' =>
+                Auth::user()->rol,
 
             'accion' =>
-
-            'Actualizó la asignación del activo '
-
-            .
-
-            $asignaciones_activo
-
-            ->activo
-
-            ->codigo_activo,
+                'Actualizó la asignación del activo '
+                .
+                $asignaciones_activo
+                    ->activo
+                    ->codigo_activo,
 
         ]);
 
-        return redirect()
 
+        return redirect()
             ->route(
                 'administracion.asignaciones-activos.index'
             )
-
             ->with(
-
                 'success',
-
                 'Asignación actualizada correctamente.'
-
             );
     }
 
@@ -313,9 +369,23 @@ class AsignacionActivoController extends Controller
      * Cambiar estado.
      */
     public function destroy(
-        AsignacionActivo $asignaciones_activo
+    AsignacionActivo $asignaciones_activo
     )
     {
+        if ($asignaciones_activo->estado === 'devuelta') {
+
+            return redirect()
+                ->route(
+                    'administracion.asignaciones-activos.index'
+                )
+                ->with(
+                    'success',
+                    'La devolución ya había sido registrada.'
+                );
+
+        }
+
+
         $asignaciones_activo->update([
 
             'estado' => 'devuelta',
@@ -324,46 +394,38 @@ class AsignacionActivoController extends Controller
 
         ]);
 
+
         $asignaciones_activo
+            ->activo
+            ->update([
 
-        ->activo
+                'estado' => 'disponible',
 
-        ->update([
+            ]);
 
-            'estado' => 'disponible'
-
-        ]);
 
         LogActividad::create([
 
-            'usuario' => Auth::user()->rol,
+            'usuario' =>
+                Auth::user()->rol,
 
             'accion' =>
-
-            'Registró la devolución del activo '
-
-            .
-
-            $asignaciones_activo
-
-            ->activo
-
-            ->codigo_activo,
+                'Registró la devolución del activo '
+                .
+                $asignaciones_activo
+                    ->activo
+                    ->codigo_activo,
 
         ]);
 
-        return redirect()
 
+        return redirect()
             ->route(
                 'administracion.asignaciones-activos.index'
             )
-
             ->with(
-
                 'success',
-
                 'Activo devuelto correctamente.'
-
             );
     }
 }

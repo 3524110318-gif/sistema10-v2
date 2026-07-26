@@ -18,22 +18,11 @@
 
             <p class="gtri-page-subtitle">
 
-                Registra la vigencia de un documento del empleado.
+                Registra la vigencia y evidencia de un documento del empleado.
 
             </p>
 
         </div>
-
-        <a
-            href="{{ route('rh.empleados.show', $empleado->id) }}"
-            class="btn gtri-btn-secondary"
-        >
-
-            <i class="bi bi-arrow-left me-1"></i>
-
-            Volver
-
-        </a>
 
     </div>
 
@@ -44,6 +33,10 @@
             'rh.vigencias.store',
             $empleado->id
         ) }}"
+        enctype="multipart/form-data"
+        x-data="{
+            documentoSeleccionado: @js(old('documento', ''))
+        }"
     >
 
         @csrf
@@ -176,6 +169,7 @@
 
             <div class="row g-3">
 
+                {{-- DOCUMENTO --}}
                 <div class="col-md-6">
 
                     <label
@@ -186,13 +180,22 @@
 
                         Documento
 
+                        <span class="text-danger">*</span>
+
                     </label>
 
 
                     <select
                         name="documento"
                         id="documento"
-                        class="form-select gtri-input"
+                        class="
+                            form-select
+                            gtri-input
+                            @error('documento')
+                                is-invalid
+                            @enderror
+                        "
+                        x-model="documentoSeleccionado"
                         required
                     >
 
@@ -202,67 +205,38 @@
 
                         </option>
 
-                        <option
-                            value="Carta de antecedentes"
-                            @selected(
-                                old('documento') ===
-                                'Carta de antecedentes'
-                            )
-                        >
+                        <option value="Carta de antecedentes">
 
                             Carta de antecedentes
 
                         </option>
 
-                        <option
-                            value="Examen médico"
-                            @selected(
-                                old('documento') ===
-                                'Examen médico'
-                            )
-                        >
+                        <option value="Examen médico">
 
                             Examen médico
 
                         </option>
 
-                        <option
-                            value="Cédula SSP"
-                            @selected(
-                                old('documento') ===
-                                'Cédula SSP'
-                            )
-                        >
+                        <option value="Cédula SSP">
 
                             Cédula SSP
 
                         </option>
 
-                        <option
-                            value="Licencia"
-                            @selected(
-                                old('documento') ===
-                                'Licencia'
-                            )
-                        >
+                        <option value="Licencia">
 
                             Licencia
 
                         </option>
 
-                        <option
-                            value="Otro"
-                            @selected(
-                                old('documento') ===
-                                'Otro'
-                            )
-                        >
+                        <option value="Otro">
 
                             Otro
 
                         </option>
 
                     </select>
+
 
                     @error('documento')
 
@@ -277,6 +251,7 @@
                 </div>
 
 
+                {{-- FECHA DE VENCIMIENTO --}}
                 <div class="col-md-6">
 
                     <label
@@ -287,6 +262,8 @@
 
                         Fecha de vencimiento
 
+                        <span class="text-danger">*</span>
+
                     </label>
 
 
@@ -294,12 +271,151 @@
                         type="date"
                         name="fecha_vencimiento"
                         id="fecha_vencimiento"
-                        class="form-control gtri-input"
+                        class="
+                            form-control
+                            gtri-input
+                            @error('fecha_vencimiento')
+                                is-invalid
+                            @enderror
+                        "
                         value="{{ old('fecha_vencimiento') }}"
+                        min="{{ now()->format('Y-m-d') }}"
                         required
                     >
 
+
                     @error('fecha_vencimiento')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
+
+
+                {{-- OTRO DOCUMENTO --}}
+                <div
+                    class="col-12"
+                    x-show="documentoSeleccionado === 'Otro'"
+                    x-cloak
+                >
+
+                    <label
+                        for="otro_documento"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Nombre del documento
+
+                        <span class="text-danger">*</span>
+
+                    </label>
+
+
+                    <input
+                        type="text"
+                        name="otro_documento"
+                        id="otro_documento"
+                        class="
+                            form-control
+                            gtri-input
+                            @error('otro_documento')
+                                is-invalid
+                            @enderror
+                        "
+                        value="{{ old('otro_documento') }}"
+                        maxlength="150"
+                        placeholder="Ejemplo: Licencia de conducir tipo A"
+                        x-bind:required="
+                            documentoSeleccionado === 'Otro'
+                        "
+                        x-bind:disabled="
+                            documentoSeleccionado !== 'Otro'
+                        "
+                    >
+
+
+                    <div class="form-text text-secondary">
+
+                        Escribe el nombre exacto del documento.
+
+                    </div>
+
+
+                    @error('otro_documento')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {{-- EVIDENCIA --}}
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>03</span>
+
+                Evidencia del documento
+
+            </div>
+
+
+            <div class="row g-3">
+
+                <div class="col-12">
+
+                    <label
+                        for="evidencia"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Archivo de evidencia
+
+                    </label>
+
+
+                    <input
+                        type="file"
+                        name="evidencia"
+                        id="evidencia"
+                        class="
+                            form-control
+                            gtri-input
+                            @error('evidencia')
+                                is-invalid
+                            @enderror
+                        "
+                        accept=".pdf,.jpg,.jpeg,.png"
+                    >
+
+
+                    <div class="form-text text-secondary">
+
+                        Formatos permitidos: PDF, JPG, JPEG y PNG.
+
+                        Tamaño máximo: 5 MB.
+
+                    </div>
+
+
+                    @error('evidencia')
 
                         <div class="text-danger small mt-1">
 

@@ -4,103 +4,207 @@
 
 <div class="container-fluid">
 
-    <h2 class="mb-4">
+    <!-- ENCABEZADO -->
 
-        Dashboard Comercial
+    <div class="gtri-page-header">
 
-    </h2>
+        <div>
 
-    <div class="row">
+            <h2 class="gtri-page-title">
 
-        <div class="col-md-3 mb-4">
+                <i class="bi bi-graph-up-arrow me-2"></i>
 
-            <div class="card border-0 shadow-sm">
+                Dashboard Comercial
 
-                <div class="card-body text-center">
+            </h2>
 
-                    <h6 class="text-muted">
+            <p class="gtri-page-subtitle">
 
-                        Prospectos
+                Resumen general de prospectos, clientes, cotizaciones y contratos.
 
-                    </h6>
+            </p>
 
-                    <h2 class="fw-bold text-primary">
+        </div>
 
-                        {{ $prospectos }}
+    </div>
 
-                    </h2>
+    <!-- INDICADORES PRINCIPALES -->
+
+    <div class="gtri-section">
+
+        <div class="gtri-section-title">
+
+            <span>01</span>
+
+            Indicadores principales
+
+        </div>
+
+        <div class="row g-3">
+
+            <!-- PROSPECTOS -->
+
+            <div class="col-xl-3 col-md-6">
+
+                <div class="gtri-card h-100">
+
+                    <div class="d-flex align-items-center justify-content-between">
+
+                        <div>
+
+                            <div class="gtri-info-label">
+
+                                Prospectos
+
+                            </div>
+
+                            <div class="gtri-info-value fs-2 fw-bold mt-2">
+
+                                {{ $prospectos }}
+
+                            </div>
+
+                            <small class="text-secondary">
+
+                                Oportunidades registradas
+
+                            </small>
+
+                        </div>
+
+                        <div class="gtri-stat-icon">
+
+                            <i class="bi bi-person-lines-fill fs-3"></i>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
             </div>
 
-        </div>
+            <!-- CLIENTES -->
 
-        <div class="col-md-3 mb-4">
+            <div class="col-xl-3 col-md-6">
 
-            <div class="card border-0 shadow-sm">
+                <div class="gtri-card h-100">
 
-                <div class="card-body text-center">
+                    <div class="d-flex align-items-center justify-content-between">
 
-                    <h6 class="text-muted">
+                        <div>
 
-                        Clientes
+                            <div class="gtri-info-label">
 
-                    </h6>
+                                Clientes
 
-                    <h2 class="fw-bold text-success">
+                            </div>
 
-                        {{ $clientes }}
+                            <div class="gtri-info-value fs-2 fw-bold mt-2">
 
-                    </h2>
+                                {{ $clientes }}
 
-                </div>
+                            </div>
 
-            </div>
+                            <small class="text-secondary">
 
-        </div>
+                                Clientes registrados
 
-        <div class="col-md-3 mb-4">
+                            </small>
 
-            <div class="card border-0 shadow-sm">
+                        </div>
 
-                <div class="card-body text-center">
+                        <div class="gtri-stat-icon">
 
-                    <h6 class="text-muted">
+                            <i class="bi bi-buildings fs-3"></i>
 
-                        Cotizaciones
+                        </div>
 
-                    </h6>
-
-                    <h2 class="fw-bold text-warning">
-
-                        {{ $cotizaciones }}
-
-                    </h2>
+                    </div>
 
                 </div>
 
             </div>
 
-        </div>
+            <!-- COTIZACIONES -->
 
-        <div class="col-md-3 mb-4">
+            <div class="col-xl-3 col-md-6">
 
-            <div class="card border-0 shadow-sm">
+                <div class="gtri-card h-100">
 
-                <div class="card-body text-center">
+                    <div class="d-flex align-items-center justify-content-between">
 
-                    <h6 class="text-muted">
+                        <div>
 
-                        Contratos Activos
+                            <div class="gtri-info-label">
 
-                    </h6>
+                                Cotizaciones
 
-                    <h2 class="fw-bold text-info">
+                            </div>
 
-                        {{ $contratosActivos }}
+                            <div class="gtri-info-value fs-2 fw-bold mt-2">
 
-                    </h2>
+                                {{ $cotizaciones }}
+
+                            </div>
+
+                            <small class="text-secondary">
+
+                                Cotizaciones generadas
+
+                            </small>
+
+                        </div>
+
+                        <div class="gtri-stat-icon">
+
+                            <i class="bi bi-file-earmark-text fs-3"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- CONTRATOS ACTIVOS -->
+
+            <div class="col-xl-3 col-md-6">
+
+                <div class="gtri-card h-100">
+
+                    <div class="d-flex align-items-center justify-content-between">
+
+                        <div>
+
+                            <div class="gtri-info-label">
+
+                                Contratos activos
+
+                            </div>
+
+                            <div class="gtri-info-value fs-2 fw-bold mt-2">
+
+                                {{ $contratosActivos }}
+
+                            </div>
+
+                            <small class="text-secondary">
+
+                                Contratos actualmente vigentes
+
+                            </small>
+
+                        </div>
+
+                        <div class="gtri-stat-icon">
+
+                            <i class="bi bi-file-earmark-check fs-3"></i>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
@@ -110,37 +214,63 @@
 
     </div>
 
-    <div class="card shadow-sm">
+    <!-- CONTRATOS PRÓXIMOS A VENCER -->
 
-        <div class="card-header bg-danger text-white">
+    <div class="gtri-section mb-0">
 
-            <strong>
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
 
-                Contratos próximos a vencer (60 días)
+            <div class="gtri-section-title mb-0">
 
-            </strong>
+                <span>02</span>
+
+                Contratos próximos a vencer
+
+            </div>
+
+            <span class="badge bg-danger">
+
+                Próximos 60 días
+
+            </span>
 
         </div>
 
-        <div class="card-body">
+        @if($contratosPorVencer->count())
 
-            @if($contratosPorVencer->count())
+            <div class="gtri-table-wrapper">
 
                 <div class="table-responsive">
 
-                    <table class="table table-bordered table-hover">
+                    <table class="table gtri-table align-middle mb-0">
 
-                        <thead class="table-light">
+                        <thead>
 
                             <tr>
 
-                                <th>Folio</th>
+                                <th>
 
-                                <th>Cliente</th>
+                                    Folio
 
-                                <th>Fecha de vencimiento</th>
+                                </th>
 
-                                <th>Días restantes</th>
+                                <th>
+
+                                    Cliente
+
+                                </th>
+
+                                <th>
+
+                                    Fecha de vencimiento
+
+                                </th>
+
+                                <th>
+
+                                    Días restantes
+
+                                </th>
 
                             </tr>
 
@@ -150,11 +280,24 @@
 
                             @foreach($contratosPorVencer as $contrato)
 
+                                @php
+
+                                    $diasRestantes = (int) now()->diffInDays(
+                                        $contrato->fecha_fin,
+                                        false
+                                    );
+
+                                @endphp
+
                                 <tr>
 
                                     <td>
 
-                                        {{ $contrato->folio }}
+                                        <span class="fw-semibold text-light">
+
+                                            {{ $contrato->folio }}
+
+                                        </span>
 
                                     </td>
 
@@ -166,13 +309,39 @@
 
                                     <td>
 
+                                        <i class="bi bi-calendar-event me-1 text-warning"></i>
+
                                         {{ $contrato->fecha_fin->format('d/m/Y') }}
 
                                     </td>
 
                                     <td>
 
-                                        {{ (int) now()->diffInDays($contrato->fecha_fin, false) }}
+                                        @if($diasRestantes <= 15)
+
+                                            <span class="badge bg-danger">
+
+                                                {{ $diasRestantes }} días
+
+                                            </span>
+
+                                        @elseif($diasRestantes <= 30)
+
+                                            <span class="badge bg-warning text-dark">
+
+                                                {{ $diasRestantes }} días
+
+                                            </span>
+
+                                        @else
+
+                                            <span class="badge bg-info text-dark">
+
+                                                {{ $diasRestantes }} días
+
+                                            </span>
+
+                                        @endif
 
                                     </td>
 
@@ -186,17 +355,29 @@
 
                 </div>
 
-            @else
+            </div>
 
-                <div class="alert alert-success mb-0">
+        @else
 
-                    No existen contratos próximos a vencer.
+            <div class="gtri-card text-center py-5">
 
-                </div>
+                <i class="bi bi-shield-check fs-1 text-success d-block mb-3"></i>
 
-            @endif
+                <h5 class="text-light mb-2">
 
-        </div>
+                    Sin contratos próximos a vencer
+
+                </h5>
+
+                <p class="text-secondary mb-0">
+
+                    No existen contratos con vencimiento dentro de los próximos 60 días.
+
+                </p>
+
+            </div>
+
+        @endif
 
     </div>
 

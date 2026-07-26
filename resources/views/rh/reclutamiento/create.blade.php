@@ -4,6 +4,7 @@
 
 <div class="container-fluid">
 
+    {{-- ENCABEZADO --}}
     <div class="gtri-page-header">
 
         <div>
@@ -24,18 +25,6 @@
 
         </div>
 
-
-        <a
-            href="{{ route('rh.prospectos.index') }}"
-            class="btn gtri-btn-secondary"
-        >
-
-            <i class="bi bi-arrow-left me-1"></i>
-
-            Volver
-
-        </a>
-
     </div>
 
 
@@ -47,232 +36,152 @@
         @csrf
 
 
-        {{-- DATOS PERSONALES --}}
-        <div class="gtri-section">
+        {{-- INFORMACIÓN PRINCIPAL --}}
+        <div class="row g-4">
 
-            <div class="gtri-section-title">
+            {{-- DATOS PERSONALES --}}
+            <div class="col-xl-8">
 
-                <span>01</span>
+                <div class="gtri-section h-100">
 
-                Datos personales
+                    <div class="gtri-section-title">
 
-            </div>
+                        <span>01</span>
 
+                        Datos personales
 
-            <div class="row g-3">
-
-                <div class="col-md-4">
-
-                    <label
-                        for="nombre"
-                        class="form-label fw-semibold"
-                        style="color:#CBD5E1;"
-                    >
-
-                        Nombre
-
-                    </label>
-
-                    <input
-                        type="text"
-                        name="nombre"
-                        id="nombre"
-                        class="form-control gtri-input"
-                        value="{{ old('nombre') }}"
-                        required
-                    >
-
-                    @error('nombre')
-
-                        <div class="text-danger small mt-1">
-
-                            {{ $message }}
-
-                        </div>
-
-                    @enderror
-
-                </div>
+                    </div>
 
 
-                <div class="col-md-4">
+                    <div class="row g-3">
 
-                    <label
-                        for="apellido_paterno"
-                        class="form-label fw-semibold"
-                        style="color:#CBD5E1;"
-                    >
+                        {{-- NOMBRE --}}
+                        <div class="col-12">
 
-                        Apellido paterno
+                            <label
+                                for="nombre"
+                                class="form-label fw-semibold text-light"
+                            >
 
-                    </label>
+                                Nombre
 
-                    <input
-                        type="text"
-                        name="apellido_paterno"
-                        id="apellido_paterno"
-                        class="form-control gtri-input"
-                        value="{{ old('apellido_paterno') }}"
-                        required
-                    >
+                            </label>
 
-                    @error('apellido_paterno')
+                            <input
+                                type="text"
+                                name="nombre"
+                                id="nombre"
+                                class="form-control gtri-input"
+                                placeholder="Ej. Jorge Luis"
+                                value="{{ old('nombre') }}"
+                                required
+                            >
 
-                        <div class="text-danger small mt-1">
+                            @error('nombre')
 
-                            {{ $message }}
+                                <div class="text-danger small mt-1">
+
+                                    {{ $message }}
+
+                                </div>
+
+                            @enderror
 
                         </div>
 
-                    @enderror
 
-                </div>
+                        {{-- APELLIDO PATERNO --}}
+                        <div class="col-md-6">
 
+                            <label
+                                for="apellido_paterno"
+                                class="form-label fw-semibold text-light"
+                            >
 
-                <div class="col-md-4">
+                                Apellido paterno
 
-                    <label
-                        for="apellido_materno"
-                        class="form-label fw-semibold"
-                        style="color:#CBD5E1;"
-                    >
+                            </label>
 
-                        Apellido materno
+                            <input
+                                type="text"
+                                name="apellido_paterno"
+                                id="apellido_paterno"
+                                class="form-control gtri-input"
+                                placeholder="Ej. Cortés"
+                                value="{{ old('apellido_paterno') }}"
+                                required
+                            >
 
-                    </label>
+                            @error('apellido_paterno')
 
-                    <input
-                        type="text"
-                        name="apellido_materno"
-                        id="apellido_materno"
-                        class="form-control gtri-input"
-                        value="{{ old('apellido_materno') }}"
-                    >
+                                <div class="text-danger small mt-1">
 
-                    @error('apellido_materno')
+                                    {{ $message }}
 
-                        <div class="text-danger small mt-1">
+                                </div>
 
-                            {{ $message }}
+                            @enderror
 
                         </div>
 
-                    @enderror
+
+                        {{-- APELLIDO MATERNO --}}
+                        <div class="col-md-6">
+
+                            <label
+                                for="apellido_materno"
+                                class="form-label fw-semibold text-light"
+                            >
+
+                                Apellido materno
+
+                            </label>
+
+                            <input
+                                type="text"
+                                name="apellido_materno"
+                                id="apellido_materno"
+                                class="form-control gtri-input"
+                                placeholder="Ej. Flores"
+                                value="{{ old('apellido_materno') }}"
+                            >
+
+                            @error('apellido_materno')
+
+                                <div class="text-danger small mt-1">
+
+                                    {{ $message }}
+
+                                </div>
+
+                            @enderror
+
+                        </div>
+
+                    </div>
 
                 </div>
 
             </div>
 
-        </div>
 
+            {{-- ENTREVISTA --}}
+            <div class="col-xl-4">
 
-        {{-- CONTACTO Y PUESTO --}}
-        <div class="gtri-section">
+                <div class="gtri-section h-100">
 
-            <div class="gtri-section-title">
+                    <div class="gtri-section-title">
 
-                <span>02</span>
+                        <span>02</span>
 
-                Contacto y vacante
+                        Entrevista
 
-            </div>
+                    </div>
 
-
-            <div class="row g-3">
-
-                <div class="col-md-4">
-
-                    <label
-                        for="telefono"
-                        class="form-label fw-semibold"
-                        style="color:#CBD5E1;"
-                    >
-
-                        Teléfono
-
-                    </label>
-
-                    <input
-                        type="text"
-                        name="telefono"
-                        id="telefono"
-                        class="form-control gtri-input"
-                        value="{{ old('telefono') }}"
-                    >
-
-                </div>
-
-
-                <div class="col-md-4">
-
-                    <label
-                        for="correo"
-                        class="form-label fw-semibold"
-                        style="color:#CBD5E1;"
-                    >
-
-                        Correo electrónico
-
-                    </label>
-
-                    <input
-                        type="email"
-                        name="correo"
-                        id="correo"
-                        class="form-control gtri-input"
-                        value="{{ old('correo') }}"
-                    >
-
-                </div>
-
-
-                <div class="col-md-4">
-
-                    <label
-                        for="puesto_solicitado"
-                        class="form-label fw-semibold"
-                        style="color:#CBD5E1;"
-                    >
-
-                        Puesto solicitado
-
-                    </label>
-
-                    <input
-                        type="text"
-                        name="puesto_solicitado"
-                        id="puesto_solicitado"
-                        class="form-control gtri-input"
-                        value="{{ old('puesto_solicitado') }}"
-                    >
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        {{-- ENTREVISTA --}}
-        <div class="gtri-section">
-
-            <div class="gtri-section-title">
-
-                <span>03</span>
-
-                Entrevista
-
-            </div>
-
-
-            <div class="row g-3">
-
-                <div class="col-md-6">
 
                     <label
                         for="fecha_entrevista"
-                        class="form-label fw-semibold"
-                        style="color:#CBD5E1;"
+                        class="form-label fw-semibold text-light"
                     >
 
                         Fecha de entrevista
@@ -285,6 +194,111 @@
                         id="fecha_entrevista"
                         class="form-control gtri-input"
                         value="{{ old('fecha_entrevista') }}"
+                    >
+
+
+                    <small class="text-secondary d-block mt-3">
+
+                        Selecciona la fecha programada para entrevistar al candidato.
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {{-- CONTACTO Y VACANTE --}}
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>03</span>
+
+                Contacto y vacante
+
+            </div>
+
+
+            <div class="row g-3">
+
+                {{-- TELÉFONO --}}
+                <div class="col-xl-4 col-md-6">
+
+                    <label
+                        for="telefono"
+                        class="form-label fw-semibold text-light"
+                    >
+
+                        <i class="bi bi-telephone me-1 text-warning"></i>
+
+                        Teléfono
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="telefono"
+                        id="telefono"
+                        class="form-control gtri-input"
+                        placeholder="Ej. 222 123 4567"
+                        value="{{ old('telefono') }}"
+                        inputmode="numeric"
+                        maxlength="12"
+                    >
+
+                </div>
+
+
+                {{-- CORREO --}}
+                <div class="col-xl-4 col-md-6">
+
+                    <label
+                        for="correo"
+                        class="form-label fw-semibold text-light"
+                    >
+
+                        <i class="bi bi-envelope me-1 text-warning"></i>
+
+                        Correo electrónico
+
+                    </label>
+
+                    <input
+                        type="email"
+                        name="correo"
+                        id="correo"
+                        class="form-control gtri-input"
+                        placeholder="Ej. candidato@correo.com"
+                        value="{{ old('correo') }}"
+                    >
+
+                </div>
+
+
+                {{-- PUESTO --}}
+                <div class="col-xl-4 col-md-12">
+
+                    <label
+                        for="puesto_solicitado"
+                        class="form-label fw-semibold text-light"
+                    >
+
+                        <i class="bi bi-briefcase me-1 text-warning"></i>
+
+                        Puesto solicitado
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="puesto_solicitado"
+                        id="puesto_solicitado"
+                        class="form-control gtri-input"
+                        placeholder="Ej. Guardia de Seguridad"
+                        value="{{ old('puesto_solicitado') }}"
                     >
 
                 </div>
@@ -305,12 +319,30 @@
 
             </div>
 
+
+            <label
+                for="observaciones"
+                class="form-label fw-semibold text-light"
+            >
+
+                Información adicional
+
+            </label>
+
             <textarea
                 name="observaciones"
+                id="observaciones"
                 class="form-control gtri-textarea"
                 rows="4"
-                placeholder="Escribe aquí información adicional del candidato..."
+                placeholder="Ej. Cuenta con experiencia en seguridad privada, disponibilidad inmediata y documentación completa..."
             >{{ old('observaciones') }}</textarea>
+
+
+            <small class="text-secondary d-block mt-2">
+
+                Este campo es opcional.
+
+            </small>
 
         </div>
 
@@ -318,30 +350,49 @@
         {{-- ACCIONES --}}
         <div class="gtri-section mb-0">
 
-            <div class="d-flex justify-content-end gap-2 flex-wrap">
+            <div
+                class="
+                    d-flex
+                    flex-wrap
+                    justify-content-between
+                    align-items-center
+                    gap-3
+                "
+            >
 
-                <a
-                    href="{{ route('rh.prospectos.index') }}"
-                    class="btn gtri-btn-secondary"
-                >
+                <small class="text-secondary">
 
-                    <i class="bi bi-x-circle me-1"></i>
+                    Verifica la información antes de registrar al prospecto.
 
-                    Cancelar
-
-                </a>
+                </small>
 
 
-                <button
-                    type="submit"
-                    class="btn gtri-btn-primary"
-                >
+                <div class="d-flex flex-wrap gap-2">
 
-                    <i class="bi bi-person-check me-1"></i>
+                    <a
+                        href="{{ route('rh.prospectos.index') }}"
+                        class="btn gtri-btn-secondary"
+                    >
 
-                    Registrar prospecto
+                        <i class="bi bi-x-circle me-1"></i>
 
-                </button>
+                        Cancelar
+
+                    </a>
+
+
+                    <button
+                        type="submit"
+                        class="btn gtri-btn-primary"
+                    >
+
+                        <i class="bi bi-person-check me-1"></i>
+
+                        Registrar prospecto
+
+                    </button>
+
+                </div>
 
             </div>
 

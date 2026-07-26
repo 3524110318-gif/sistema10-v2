@@ -2,28 +2,93 @@
 
 @section('contenido')
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <h2 class="mb-4">
+    <!-- ENCABEZADO -->
 
-        Nueva Cotización
+    <div class="gtri-page-header">
 
-    </h2>
+        <div>
 
-    <x-rh.card-rh titulo="Datos de la Cotización">
+            <h2 class="gtri-page-title">
 
-        <form
-            action="{{ route('comercial.cotizaciones.store') }}"
-            method="POST"
+                <i class="bi bi-file-earmark-plus me-2"></i>
+
+                Nueva Cotización
+
+            </h2>
+
+            <p class="gtri-page-subtitle">
+
+                Genera una nueva propuesta comercial para un prospecto registrado.
+
+            </p>
+
+        </div>
+
+        <a
+            href="{{ route('comercial.cotizaciones.index') }}"
+            class="btn gtri-btn-secondary"
         >
 
-            @csrf
+            <i class="bi bi-arrow-left me-1"></i>
 
-            @include('comercial.cotizaciones._form')
+            Regresar
 
-        </form>
+        </a>
 
-    </x-rh.card-rh>
+    </div>
+
+
+    <!-- ERRORES DE VALIDACIÓN -->
+
+    @if($errors->any())
+
+        <div class="alert alert-danger">
+
+            <div class="d-flex align-items-center mb-2">
+
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+                <strong>
+
+                    Revisa la información ingresada
+
+                </strong>
+
+            </div>
+
+            <ul class="mb-0">
+
+                @foreach($errors->all() as $error)
+
+                    <li>
+
+                        {{ $error }}
+
+                    </li>
+
+                @endforeach
+
+            </ul>
+
+        </div>
+
+    @endif
+
+
+    <!-- FORMULARIO -->
+
+    <form
+        action="{{ route('comercial.cotizaciones.store') }}"
+        method="POST"
+    >
+
+        @csrf
+
+        @include('comercial.cotizaciones._form')
+
+    </form>
 
 </div>
 

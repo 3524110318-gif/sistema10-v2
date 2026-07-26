@@ -48,7 +48,10 @@ class DashboardController extends Controller
 
         $expedientes_incompletos = 0;
 
-        foreach (Empleado::all() as $empleado) {
+        foreach (
+            Empleado::where('estado', 'activo')->get()
+            as $empleado
+        ) {
 
             $documentosEntregados =
                 $empleado->documentos->count();
@@ -80,7 +83,10 @@ class DashboardController extends Controller
     {
         $empleadosIncompletos = [];
 
-        foreach (Empleado::all() as $empleado) {
+        foreach (
+            Empleado::where('estado', 'activo')->get()
+            as $empleado
+        ) {
 
             $documentosEntregados =
                 $empleado->documentos

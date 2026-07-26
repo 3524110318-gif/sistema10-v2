@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
-
 use App\Models\Administracion\Producto;
 use App\Models\Administracion\CategoriaProducto;
 use App\Models\Administracion\LogActividad;
@@ -17,15 +16,49 @@ class ProductoController extends Controller
     {
         $buscar = $request->buscar;
 
-        $productos = Producto::with('categoria');
+        $productos = Producto::with('categoria')
+            ->withSum(
+                'entregasUniforme as cantidad_en_uso',
+                'cantidad'
+            )
+            ->withCount([
+
+                'activos as activos_en_bodega' => function ($query) {
+
+                    $query->where(
+                        'estado',
+                        'disponible'
+                    );
+
+                },
+
+                'activos as activos_en_uso' => function ($query) {
+
+                    $query->where(
+                        'estado',
+                        'asignado'
+                    );
+
+                },
+
+            ]);
 
         if ($buscar) {
 
-            $productos->where(
-                'nombre',
-                'like',
-                "%{$buscar}%"
-            );
+            $productos->where(function ($query) use ($buscar) {
+
+                $query->where(
+                    'nombre',
+                    'like',
+                    "%{$buscar}%"
+                )
+                ->orWhere(
+                    'codigo',
+                    'like',
+                    "%{$buscar}%"
+                );
+
+            });
 
         }
 
@@ -35,11 +68,23 @@ class ProductoController extends Controller
 
         $totalProductos = Producto::count();
 
+        $productosStockCritico = Producto::where(
+            'estado',
+            'activo'
+        )
+        ->whereColumn(
+            'stock_actual',
+            '<=',
+            'stock_minimo'
+        )
+        ->count();
+
         return view(
             'administracion.productos.index',
             compact(
                 'productos',
-                'totalProductos'
+                'totalProductos',
+                'productosStockCritico'
             )
         );
     }
@@ -131,9 +176,53 @@ class ProductoController extends Controller
             );
     }
 
-    public function show(string $id)
+    public function show(Producto $producto)
     {
-        //
+        $producto->load('categoria');
+
+        $cantidadEnUso = $producto
+            ->entregasUniforme()
+            ->sum('cantidad');
+
+        $activosEnBodega = $producto
+            ->activos()
+            ->where('estado', 'disponible')
+            ->count();
+
+        $activosEnUso = $producto
+            ->activos()
+            ->where('estado', 'asignado')
+            ->count();
+
+        if ($producto->tipo_producto === 'activo') {
+
+            $enBodega = $activosEnBodega;
+
+            $enUso = $activosEnUso;
+
+            $total = $activosEnBodega
+                + $activosEnUso;
+
+        } else {
+
+            $enBodega = $producto->stock_actual;
+
+            $enUso = $cantidadEnUso;
+
+            $total = $producto->stock_actual
+                + $cantidadEnUso;
+
+        }
+
+        return view(
+            'administracion.productos.show',
+            compact(
+                'producto',
+                'enBodega',
+                'enUso',
+                'total'
+            )
+        );
     }
 
     public function edit(Producto $producto)
@@ -180,6 +269,10 @@ class ProductoController extends Controller
             'precio_compra' => 'required|numeric|min:0',
 
             'tipo_producto' => 'required|in:consumible,activo',
+
+            'stock_maximo' => 'nullable|integer|min:0',
+
+            'precio_promedio' => 'nullable|numeric|min:0',
 
         ]);
 
@@ -250,4 +343,5 @@ class ProductoController extends Controller
                 'Estado del producto actualizado correctamente.'
             );
     }
+
 }

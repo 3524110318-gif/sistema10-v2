@@ -20,6 +20,10 @@ class Capacitacion extends Model
 
         'vigencia_hasta',
 
+        'evidencia',
+
+        'dc3',
+
     ];
 
     public function empleado()

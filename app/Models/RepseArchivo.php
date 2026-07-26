@@ -33,4 +33,29 @@ class RepseArchivo extends Model
             'cliente_id'
         );
     }
+
+    public function getTipoNombreAttribute(): string
+    {
+        return match ($this->tipo) {
+
+            'alta_imss' => 'Alta IMSS',
+
+            'nomina_pdf' => 'Nómina PDF',
+
+            'nomina_xml' => 'Nómina XML',
+
+            'constancia_sat' => 'Constancia SAT',
+
+            'pago_sua' => 'Pago SUA',
+
+            default => ucfirst(
+                str_replace(
+                    '_',
+                    ' ',
+                    $this->tipo
+                )
+            ),
+
+        };
+    }
 }

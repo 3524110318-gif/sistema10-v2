@@ -8,17 +8,71 @@ use Illuminate\Http\Request;
 use App\Models\RH\Empleado;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Administracion\LogActividad;
+use Illuminate\Support\Facades\DB;
 
 class ProspectoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $prospectos = Prospecto::latest()
-            ->paginate(10);
+        $buscar = trim(
+            $request->input('buscar', '')
+        );
+
+        $prospectos = Prospecto::query()
+            ->when(
+                $buscar !== '',
+                function ($consulta) use ($buscar) {
+
+                    $consulta->where(
+                        function ($query) use ($buscar) {
+
+                            $query
+                                ->where(
+                                    'nombre',
+                                    'like',
+                                    '%' . $buscar . '%'
+                                )
+                                ->orWhere(
+                                    'apellido_paterno',
+                                    'like',
+                                    '%' . $buscar . '%'
+                                )
+                                ->orWhere(
+                                    'apellido_materno',
+                                    'like',
+                                    '%' . $buscar . '%'
+                                )
+                                ->orWhere(
+                                    'correo',
+                                    'like',
+                                    '%' . $buscar . '%'
+                                )
+                                ->orWhere(
+                                    'puesto_solicitado',
+                                    'like',
+                                    '%' . $buscar . '%'
+                                )
+                                ->orWhere(
+                                    'estado',
+                                    'like',
+                                    '%' . $buscar . '%'
+                                );
+
+                        }
+                    );
+
+                }
+            )
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
 
         return view(
             'rh.reclutamiento.index',
-            compact('prospectos')
+            compact(
+                'prospectos',
+                'buscar'
+            )
         );
     }
 
@@ -31,45 +85,138 @@ class ProspectoController extends Controller
 
     public function store(Request $request)
     {
-        Prospecto::create([
+        $datos = $request->validate(
+            [
+                'nombre' => [
+                    'required',
+                    'string',
+                    'max:100',
+                ],
 
-            'nombre' => $request->nombre,
+                'apellido_paterno' => [
+                    'required',
+                    'string',
+                    'max:100',
+                ],
 
-            'apellido_paterno' =>
-                $request->apellido_paterno,
+                'apellido_materno' => [
+                    'nullable',
+                    'string',
+                    'max:100',
+                ],
 
-            'apellido_materno' =>
-                $request->apellido_materno,
+                'telefono' => [
+                    'nullable',
+                    'string',
+                    'max:20',
+                ],
 
-            'telefono' =>
-                $request->telefono,
+                'correo' => [
+                    'nullable',
+                    'email',
+                    'max:150',
+                    'unique:prospectos,correo',
+                ],
 
-            'correo' =>
-                $request->correo,
+                'puesto_solicitado' => [
+                    'nullable',
+                    'string',
+                    'max:150',
+                ],
 
-            'puesto_solicitado' =>
-                $request->puesto_solicitado,
+                'fecha_entrevista' => [
+                    'nullable',
+                    'date',
+                ],
 
-            'fecha_entrevista' =>
-                $request->fecha_entrevista,
+                'observaciones' => [
+                    'nullable',
+                    'string',
+                    'max:1000',
+                ],
+            ],
+            [
+                'nombre.required' =>
+                    'El nombre es obligatorio.',
 
-            'estado' =>
-                'pendiente',
+                'apellido_paterno.required' =>
+                    'El apellido paterno es obligatorio.',
 
-            'observaciones' =>
-                $request->observaciones,
+                'correo.email' =>
+                    'El correo electrónico no tiene un formato válido.',
+
+                'correo.unique' =>
+                    'Ya existe un prospecto registrado con este correo.',
+
+                'observaciones.max' =>
+                    'Las observaciones no deben superar los 1,000 caracteres.',
+            ]
+        );
+
+
+        $datos['nombre'] = trim(
+            $datos['nombre']
+        );
+
+        $datos['apellido_paterno'] = trim(
+            $datos['apellido_paterno']
+        );
+
+        $datos['apellido_materno'] =
+            ! empty($datos['apellido_materno'])
+                ? trim($datos['apellido_materno'])
+                : null;
+
+
+        $datos['telefono'] =
+            ! empty($datos['telefono'])
+                ? preg_replace(
+                    '/\D/',
+                    '',
+                    $datos['telefono']
+                )
+                : null;
+
+
+        $datos['correo'] =
+            ! empty($datos['correo'])
+                ? strtolower(
+                    trim($datos['correo'])
+                )
+                : null;
+
+
+        $datos['puesto_solicitado'] =
+            ! empty($datos['puesto_solicitado'])
+                ? trim($datos['puesto_solicitado'])
+                : null;
+
+
+        $datos['estado'] = 'pendiente';
+
+
+        $prospecto = Prospecto::create(
+            $datos
+        );
+
+
+        LogActividad::create([
+
+            'usuario' => Auth::user()->rol,
+
+            'accion' =>
+                'Registró prospecto ' .
+                $prospecto->nombre . ' ' .
+                $prospecto->apellido_paterno,
 
         ]);
 
+
         return redirect()
-
-            ->route(
-                'rh.prospectos.index'
-            )
-
+            ->route('rh.prospectos.index')
             ->with(
                 'success',
-                'Prospecto registrado'
+                'Prospecto registrado correctamente.'
             );
     }
 
@@ -110,62 +257,155 @@ class ProspectoController extends Controller
     {
         $prospecto = Prospecto::findOrFail($id);
 
-        $totalEmpleados = Empleado::count() + 1;
 
-        $numeroControl = 'GTRI' .
-            str_pad(
-                $totalEmpleados,
-                4,
-                '0',
-                STR_PAD_LEFT
+        if ($prospecto->estado !== 'aprobado') {
+
+            return back()->with(
+                'error',
+                'Solamente pueden contratarse prospectos aprobados.'
             );
 
-        Empleado::create([
+        }
 
-            'numero_control' => $numeroControl,
 
-            'nombre' => $prospecto->nombre,
+        if (! $this->haySlotsDisponibles()) {
 
-            'apellido_paterno' =>
-                $prospecto->apellido_paterno,
+            return back()->with(
+                'error',
+                'No existen espacios disponibles para contratar un nuevo empleado.'
+            );
 
-            'apellido_materno' =>
-                $prospecto->apellido_materno,
+        }
 
-            'telefono' =>
-                $prospecto->telefono,
 
-            'correo' =>
-                $prospecto->correo,
+        $telefono = preg_replace(
+            '/\D+/',
+            '',
+            $prospecto->telefono ?? ''
+        );
 
-            'puesto' =>
-                $prospecto->puesto_solicitado,
 
-            'estado' => 'activo',
+        if (strlen($telefono) !== 10) {
 
-        ]);
+            return back()->with(
+                'error',
+                'El teléfono del prospecto debe contener exactamente 10 dígitos.'
+            );
 
-        $prospecto->update([
-            'estado' => 'contratado'
-        ]);
+        }
 
-        LogActividad::create([
 
-            'usuario' => Auth::user()->rol,
+        $empleado = DB::transaction(function () use (
+            $prospecto,
+            $telefono
+        ) {
 
-            'accion' =>
-                'Contrató prospecto ' .
-                $prospecto->nombre,
+            $empleado = Empleado::create([
 
-        ]);
+                'numero_control' =>
+                    $this->generarNumeroControl(),
+
+                'nombre' =>
+                    $prospecto->nombre,
+
+                'apellido_paterno' =>
+                    $prospecto->apellido_paterno,
+
+                'apellido_materno' =>
+                    $prospecto->apellido_materno,
+
+                'telefono' =>
+                    $telefono,
+
+                'correo' =>
+                    $prospecto->correo,
+
+                'puesto' =>
+                    $prospecto->puesto_solicitado,
+
+                'fecha_ingreso' =>
+                    now()->format('Y-m-d'),
+
+                'estado' =>
+                    'activo',
+
+            ]);
+
+
+            $prospecto->update([
+                'estado' => 'contratado',
+            ]);
+
+
+            LogActividad::create([
+
+                'usuario' =>
+                    Auth::user()->rol,
+
+                'accion' =>
+                    'Contrató al prospecto ' .
+                    $prospecto->nombre .
+                    ' y creó al empleado ' .
+                    $empleado->numero_control,
+
+            ]);
+
+
+            return $empleado;
+
+        });
+
 
         return redirect()
-
-            ->route('rh.empleados')
-
+            ->route(
+                'rh.empleados.edit',
+                $empleado->id
+            )
             ->with(
                 'success',
-                'Prospecto contratado'
+                'Prospecto contratado correctamente. Completa ahora el expediente del empleado.'
             );
+    }
+
+    private function generarNumeroControl(): string
+    {
+        $ultimoEmpleado = Empleado::where(
+            'numero_control',
+            'like',
+            'GTRI%'
+        )
+            ->orderByDesc('numero_control')
+            ->first();
+
+        if (!$ultimoEmpleado) {
+
+            $siguienteNumero = 1;
+
+        } else {
+
+            $ultimoNumero = (int) str_replace(
+                'GTRI',
+                '',
+                $ultimoEmpleado->numero_control
+            );
+
+            $siguienteNumero = $ultimoNumero + 1;
+
+        }
+
+        return 'GTRI' . str_pad(
+            $siguienteNumero,
+            4,
+            '0',
+            STR_PAD_LEFT
+        );
+    }
+
+    private function haySlotsDisponibles(): bool
+    {
+        return Empleado::where(
+            'estado',
+            'activo'
+        )->count() < 1000;
     }
 }

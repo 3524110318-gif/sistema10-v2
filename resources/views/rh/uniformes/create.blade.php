@@ -24,19 +24,40 @@
 
         </div>
 
-
-        <a
-            href="{{ route('rh.empleados.show', $empleado->id) }}"
-            class="btn gtri-btn-secondary"
-        >
-
-            <i class="bi bi-arrow-left me-1"></i>
-
-            Volver
-
-        </a>
-
     </div>
+
+
+    {{-- ERRORES GENERALES --}}
+
+    @if($errors->any())
+
+        <div class="alert alert-danger">
+
+            <i class="bi bi-exclamation-triangle me-1"></i>
+
+            <strong>
+
+                No se pudo registrar la entrega.
+
+            </strong>
+
+            <ul class="mb-0 mt-2">
+
+                @foreach($errors->all() as $error)
+
+                    <li>
+
+                        {{ $error }}
+
+                    </li>
+
+                @endforeach
+
+            </ul>
+
+        </div>
+
+    @endif
 
 
     <form
@@ -50,7 +71,8 @@
         @csrf
 
 
-        {{-- INFORMACIÓN DEL EMPLEADO --}}
+        {{-- 01 · INFORMACIÓN DEL EMPLEADO --}}
+
         <div class="gtri-section">
 
             <div class="gtri-section-title">
@@ -77,7 +99,7 @@
                 "
             >
 
-                @if ($empleado->foto)
+                @if($empleado->foto)
 
                     <img
                         src="{{ asset(
@@ -163,7 +185,8 @@
         </div>
 
 
-        {{-- DATOS DE LA ENTREGA --}}
+        {{-- 02 · DATOS DE LA ENTREGA --}}
+
         <div class="gtri-section">
 
             <div class="gtri-section-title">
@@ -177,86 +200,68 @@
 
             <div class="row g-3">
 
+
+                {{-- PRODUCTO DEL INVENTARIO --}}
+
                 <div class="col-md-6">
 
                     <label
-                        for="articulo"
+                        for="producto_id"
                         class="form-label fw-semibold"
                         style="color:#CBD5E1;"
                     >
 
-                        Artículo
+                        Producto del inventario
 
                     </label>
 
 
                     <select
-                        name="articulo"
-                        id="articulo"
+                        name="producto_id"
+                        id="producto_id"
                         class="form-select gtri-input"
                         required
                     >
 
                         <option value="">
 
-                            Selecciona un artículo
+                            Selecciona un producto
 
                         </option>
 
 
-                        <option
-                            value="Botas"
-                            @selected(old('articulo') === 'Botas')
-                        >
+                        @foreach($productos as $producto)
 
-                            Botas
+                            <option
+                                value="{{ $producto->id }}"
+                                @selected(
+                                    old('producto_id') == $producto->id
+                                )
+                            >
 
-                        </option>
+                                {{ $producto->codigo }}
 
+                                -
 
-                        <option
-                            value="Camisa"
-                            @selected(old('articulo') === 'Camisa')
-                        >
+                                {{ $producto->nombre }}
 
-                            Camisa
+                                (Disponible: {{ $producto->stock_actual }})
 
-                        </option>
+                            </option>
 
-
-                        <option
-                            value="Pantalón"
-                            @selected(old('articulo') === 'Pantalón')
-                        >
-
-                            Pantalón
-
-                        </option>
-
-
-                        <option
-                            value="Chaleco"
-                            @selected(old('articulo') === 'Chaleco')
-                        >
-
-                            Chaleco
-
-                        </option>
-
-
-                        <option
-                            value="Radio"
-                            @selected(old('articulo') === 'Radio')
-                        >
-
-                            Radio
-
-                        </option>
+                        @endforeach
 
                     </select>
 
 
-                    @error('articulo')
+                    <div class="form-text">
+
+                        Solo se muestran productos consumibles activos del inventario.
+
+                    </div>
+
+
+                    @error('producto_id')
 
                         <div class="text-danger small mt-1">
 
@@ -269,7 +274,49 @@
                 </div>
 
 
-                <div class="col-md-6">
+                {{-- CANTIDAD --}}
+
+                <div class="col-md-3">
+
+                    <label
+                        for="cantidad"
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Cantidad
+
+                    </label>
+
+
+                    <input
+                        type="number"
+                        name="cantidad"
+                        id="cantidad"
+                        class="form-control gtri-input"
+                        value="{{ old('cantidad', 1) }}"
+                        min="1"
+                        placeholder="Ej. 2"
+                        required
+                    >
+
+
+                    @error('cantidad')
+
+                        <div class="text-danger small mt-1">
+
+                            {{ $message }}
+
+                        </div>
+
+                    @enderror
+
+                </div>
+
+
+                {{-- TIPO --}}
+
+                <div class="col-md-3">
 
                     <label
                         for="tipo"
@@ -331,6 +378,8 @@
                 </div>
 
 
+                {{-- FECHA --}}
+
                 <div class="col-md-6">
 
                     <label
@@ -349,7 +398,10 @@
                         name="fecha_entrega"
                         id="fecha_entrega"
                         class="form-control gtri-input"
-                        value="{{ old('fecha_entrega') }}"
+                        value="{{ old(
+                            'fecha_entrega',
+                            now()->format('Y-m-d')
+                        ) }}"
                         required
                     >
 
@@ -371,12 +423,80 @@
         </div>
 
 
-        {{-- OBSERVACIONES --}}
+        {{-- 03 · INFORMACIÓN DEL INVENTARIO --}}
+
         <div class="gtri-section">
 
             <div class="gtri-section-title">
 
                 <span>03</span>
+
+                Información del inventario
+
+            </div>
+
+
+            <div
+                class="p-4 rounded-3"
+                style="
+                    background:#111827;
+                    border:1px solid rgba(212,175,55,.25);
+                "
+            >
+
+                <div class="d-flex align-items-start gap-3">
+
+                    <div
+                        class="
+                            d-flex
+                            align-items-center
+                            justify-content-center
+                            rounded-3
+                        "
+                        style="
+                            width:48px;
+                            height:48px;
+                            min-width:48px;
+                            background:rgba(212,175,55,.12);
+                            color:#D4AF37;
+                        "
+                    >
+
+                        <i class="bi bi-boxes fs-4"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <h6 class="text-light fw-bold mb-2">
+
+                            Movimiento automático de inventario
+
+                        </h6>
+
+                        <p class="text-secondary mb-0">
+
+                            Al registrar esta entrega, la cantidad seleccionada se descontará automáticamente del stock disponible en bodega y quedará registrada como una salida de inventario vinculada a Recursos Humanos.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {{-- 04 · OBSERVACIONES --}}
+
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>04</span>
 
                 Observaciones
 
@@ -399,7 +519,7 @@
                 id="observaciones"
                 class="form-control gtri-textarea"
                 rows="4"
-                placeholder="Escribe aquí cualquier detalle sobre el artículo entregado..."
+                placeholder="Ej. Se entregaron dos camisas nuevas correspondientes al uniforme operativo..."
             >{{ old('observaciones') }}</textarea>
 
 
@@ -416,7 +536,8 @@
         </div>
 
 
-        {{-- ACCIONES --}}
+        {{-- 05 · ACCIONES --}}
+
         <div class="gtri-section mb-0">
 
             <div class="d-flex flex-wrap justify-content-end gap-2">

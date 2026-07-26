@@ -45,9 +45,6 @@ Route::middleware(['auth', 'role:rh'])->group(function ()
     Route::put('/rh/empleados/{id}',[EmpleadoController::class, 'update'])
         ->name('rh.empleados.update');
 
-    Route::put('/rh/empleados/{id}/baja',[EmpleadoController::class, 'baja'])
-        ->name('rh.empleados.baja');
-
     Route::put('/rh/empleados/{id}/reactivar',[EmpleadoController::class, 'reactivar'])
         ->name('rh.empleados.reactivar');
 
@@ -66,6 +63,15 @@ Route::middleware(['auth', 'role:rh'])->group(function ()
     Route::post('/rh/calendario',[CalendarioLaboralController::class, 'store'])
         ->name('rh.calendario.store');
 
+    Route::get('/calendario/{calendario}/editar',[CalendarioLaboralController::class, 'edit'])
+        ->name('rh.calendario.edit');
+    
+    Route::put('/calendario/{calendario}',[CalendarioLaboralController::class, 'update'])
+        ->name('rh.calendario.update');
+    
+    Route::delete('/calendario/{calendario}',[CalendarioLaboralController::class, 'destroy'])
+        ->name('rh.calendario.destroy');
+ 
     Route::get('/rh/vacaciones',[VacacionController::class, 'index'])
         ->name('rh.vacaciones.index');
 
@@ -74,6 +80,18 @@ Route::middleware(['auth', 'role:rh'])->group(function ()
 
     Route::post('/rh/vacaciones',[VacacionController::class, 'store'])
         ->name('rh.vacaciones.store');
+
+    Route::get('/rh/vacaciones/{vacacion}/edit',[VacacionController::class, 'edit'])
+        ->name('rh.vacaciones.edit');
+
+    Route::put('/rh/vacaciones/{vacacion}',[VacacionController::class, 'update'])
+        ->name('rh.vacaciones.update');
+
+    Route::delete('/rh/vacaciones/{vacacion}',[VacacionController::class, 'destroy'])
+        ->name('rh.vacaciones.destroy');
+
+    Route::patch('/rh/vacaciones/{vacacion}/cancelar',[VacacionController::class, 'cancelar'])
+        ->name('rh.vacaciones.cancelar');
 
     Route::patch('/rh/vacaciones/{vacacion}/aprobar',[VacacionController::class, 'aprobar'])
         ->name('rh.vacaciones.aprobar');

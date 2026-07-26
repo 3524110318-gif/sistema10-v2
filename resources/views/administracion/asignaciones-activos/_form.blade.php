@@ -27,40 +27,67 @@
 
                 </label>
 
-                <select
-                    name="activo_id"
-                    id="activo_id"
-                    class="form-select gtri-select"
-                    required
-                >
 
-                    <option value="">
+                @if(isset($asignacion))
 
-                        Seleccione un activo
+                    <input
+                        type="hidden"
+                        name="activo_id"
+                        value="{{ $asignacion->activo_id }}"
+                    >
 
-                    </option>
+                    <input
+                        type="text"
+                        id="activo_id"
+                        class="form-control gtri-input"
+                        value="{{ $asignacion->activo->codigo_activo }}
+                        -
+                        {{ $asignacion->activo->producto->nombre }}"
+                        readonly
+                    >
 
-                    @foreach($activos as $activo)
+                    <small class="text-secondary d-block mt-1">
 
-                        <option
-                            value="{{ $activo->id }}"
-                            @selected(
-                                old(
-                                    'activo_id',
-                                    $asignacion->activo_id ?? ''
-                                ) == $activo->id
-                            )
-                        >
+                        El activo no puede cambiarse después de crear la asignación.
 
-                            {{ $activo->codigo_activo }}
-                            -
-                            {{ $activo->producto->nombre }}
+                    </small>
+
+                @else
+
+                    <select
+                        name="activo_id"
+                        id="activo_id"
+                        class="form-select gtri-select"
+                        required
+                    >
+
+                        <option value="">
+
+                            Seleccione un activo
 
                         </option>
 
-                    @endforeach
+                        @foreach($activos as $activo)
 
-                </select>
+                            <option
+                                value="{{ $activo->id }}"
+                                @selected(
+                                    old('activo_id') == $activo->id
+                                )
+                            >
+
+                                {{ $activo->codigo_activo }}
+                                -
+                                {{ $activo->producto->nombre }}
+
+                            </option>
+
+                        @endforeach
+
+                    </select>
+
+                @endif
+
 
                 @error('activo_id')
 
@@ -213,7 +240,7 @@
 
 
             {{-- FECHA ENTREGA --}}
-            <div class="col-md-3">
+            <div class="col-md-6">
 
                 <label
                     for="fecha_entrega"
@@ -242,115 +269,16 @@
 
             </div>
 
-
-            {{-- FECHA DEVOLUCIÓN --}}
-            <div class="col-md-3">
-
-                <label
-                    for="fecha_devolucion"
-                    class="gtri-label mb-2"
-                >
-
-                    Fecha de devolución
-
-                </label>
-
-                <input
-                    type="date"
-                    name="fecha_devolucion"
-                    id="fecha_devolucion"
-                    class="form-control gtri-input"
-                    value="{{ old(
-                        'fecha_devolucion',
-                        isset($asignacion) && $asignacion->fecha_devolucion
-                            ? $asignacion->fecha_devolucion->format('Y-m-d')
-                            : ''
-                    ) }}"
-                >
-
-            </div>
-
         </div>
 
     </div>
 
-
-    {{-- 03 ESTADO --}}
+    {{-- 03 OBSERVACIONES --}}
     <div class="gtri-section">
 
         <div class="gtri-section-title">
 
             <span>03</span>
-
-            Estado de la asignación
-
-        </div>
-
-        <div class="row">
-
-            <div class="col-md-4">
-
-                <label
-                    for="estado"
-                    class="gtri-label mb-2"
-                >
-
-                    Estado
-
-                    <span class="text-danger">*</span>
-
-                </label>
-
-                <select
-                    name="estado"
-                    id="estado"
-                    class="form-select gtri-select"
-                    required
-                >
-
-                    <option
-                        value="activa"
-                        @selected(
-                            old(
-                                'estado',
-                                $asignacion->estado ?? 'activa'
-                            ) == 'activa'
-                        )
-                    >
-
-                        Activa
-
-                    </option>
-
-                    <option
-                        value="devuelta"
-                        @selected(
-                            old(
-                                'estado',
-                                $asignacion->estado ?? ''
-                            ) == 'devuelta'
-                        )
-                    >
-
-                        Devuelta
-
-                    </option>
-
-                </select>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    {{-- 04 OBSERVACIONES --}}
-    <div class="gtri-section">
-
-        <div class="gtri-section-title">
-
-            <span>04</span>
 
             Información complementaria
 
