@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use App\Services\ActividadService;
 
 class IncidenciaController extends Controller
 {
@@ -152,6 +153,15 @@ class IncidenciaController extends Controller
                     'before_or_equal:today',
                 ],
 
+                'folio_incapacidad' => [
+                    Rule::requiredIf(
+                        $request->tipo === 'incapacidad'
+                    ),
+                    'nullable',
+                    'string',
+                    'max:100',
+                ],
+
                 'descripcion' => [
                     'nullable',
                     'string',
@@ -196,11 +206,17 @@ class IncidenciaController extends Controller
                 'fecha.before_or_equal' =>
                     'La fecha de la incidencia no puede ser posterior al día de hoy.',
 
+                'folio_incapacidad.required' =>
+                    'Debes capturar el folio de la incapacidad.',
+
+                'folio_incapacidad.max' =>
+                    'El folio no debe superar los 100 caracteres.',
+
                 'descripcion.string' =>
                     'La descripción ingresada no es válida.',
 
                 'descripcion.max' =>
-                    'La descripción no debe superar los 1,000 caracteres.',
+                    'La descripción no debe superar los 2,000 caracteres.',
             ]
         );
 
@@ -256,6 +272,11 @@ class IncidenciaController extends Controller
 
                 'fecha' =>
                     $datos['fecha'],
+                
+                'folio_incapacidad' =>
+                    isset($datos['folio_incapacidad'])
+                        ? trim($datos['folio_incapacidad'])
+                        : null,
 
                 'descripcion' =>
                     isset($datos['descripcion'])
@@ -284,6 +305,230 @@ class IncidenciaController extends Controller
                 'success',
                 'Incidencia registrada correctamente.'
             );
+    }
+
+    public function edit(Incidencia $incidencia)
+    {
+        if ($incidencia->estado !== 'pendiente') {
+
+            return redirect()
+                ->route('rh.incidencias.index')
+                ->with(
+                    'error',
+                    'Solo se pueden editar incidencias pendientes.'
+                );
+        }
+
+        $empleados = Empleado::query()
+            ->where('estado', 'activo')
+            ->orderBy('nombre')
+            ->orderBy('apellido_paterno')
+            ->get();
+
+        return view(
+            'rh.incidencias.edit',
+            compact(
+                'incidencia',
+                'empleados'
+            )
+        );
+    }
+
+    public function update(
+    Request $request,
+    Incidencia $incidencia
+    )
+    {
+        if ($incidencia->estado !== 'pendiente') {
+
+            return redirect()
+                ->route('rh.incidencias.index')
+                ->with(
+                    'error',
+                    'Solo se pueden editar incidencias pendientes.'
+                );
+
+        }
+
+        $datos = $request->validate(
+
+            [
+
+                'empleado_id' => [
+                    'required',
+                    'exists:empleados,id',
+                ],
+
+                'tipo' => [
+                    'required',
+                    Rule::in([
+                        'falta',
+                        'retardo',
+                        'permiso',
+                        'incapacidad',
+                    ]),
+                ],
+
+                'fecha' => [
+                    'required',
+                    'date',
+                    'before_or_equal:today',
+                ],
+
+                'folio_incapacidad' => [
+
+                    Rule::requiredIf(
+                        $request->tipo === 'incapacidad'
+                    ),
+
+                    'nullable',
+                    'string',
+                    'max:100',
+
+                ],
+
+                'descripcion' => [
+                    'nullable',
+                    'string',
+                    'max:2000',
+                ],
+
+            ],
+
+            [
+
+                'folio_incapacidad.required' =>
+                    'El folio de incapacidad es obligatorio.',
+
+                'folio_incapacidad.max' =>
+                    'El folio no puede superar los 100 caracteres.',
+
+            ]
+
+        );
+
+
+        $duplicada = Incidencia::query()
+
+            ->where(
+                'empleado_id',
+                $datos['empleado_id']
+            )
+
+            ->where(
+                'tipo',
+                $datos['tipo']
+            )
+
+            ->where(
+                'fecha',
+                $datos['fecha']
+            )
+
+            ->whereKeyNot(
+                $incidencia->id
+            )
+
+            ->exists();
+
+
+        if ($duplicada) {
+
+            return back()
+
+                ->withInput()
+
+                ->withErrors([
+
+                    'fecha' =>
+                        'Ya existe una incidencia igual para ese empleado.',
+
+                ]);
+
+        }
+
+
+        $antes = $incidencia->getOriginal();
+
+
+        DB::transaction(function () use (
+            $incidencia,
+            $datos,
+            $antes
+        ) {
+
+            $incidencia->update([
+
+                'empleado_id' =>
+                    $datos['empleado_id'],
+
+                'tipo' =>
+                    $datos['tipo'],
+
+                'fecha' =>
+                    $datos['fecha'],
+
+                'folio_incapacidad' =>
+                    $datos['folio_incapacidad']
+                        ?? null,
+
+                'descripcion' =>
+                    isset($datos['descripcion'])
+                        ? trim($datos['descripcion'])
+                        : null,
+
+            ]);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Conserva aquí el mismo método que ya usa tu proyecto.
+            |--------------------------------------------------------------------------
+            */
+
+            ActividadService::registrar(
+
+                'Actualizó la incidencia ID '
+                . $incidencia->id,
+
+                [
+
+                    'id' => $incidencia->id,
+
+                    'tipo' => $antes['tipo'] ?? null,
+
+                    'estado' => $antes['estado'] ?? null,
+
+                    'folio' => $antes['folio'] ?? null,
+
+                ],
+
+                [
+
+                    'id' => $incidencia->id,
+
+                    'tipo' => $incidencia->tipo,
+
+                    'estado' => $incidencia->estado,
+
+                    'folio' => $incidencia->folio,
+
+                ]
+
+            );
+
+        });
+
+
+        return redirect()
+
+            ->route('rh.incidencias.index')
+
+            ->with(
+                'success',
+                'Incidencia actualizada correctamente.'
+            );
+
     }
 
     public function justificar(

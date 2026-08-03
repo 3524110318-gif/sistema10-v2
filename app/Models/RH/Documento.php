@@ -3,6 +3,7 @@
 namespace App\Models\RH;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Documento extends Model
 {
@@ -12,10 +13,14 @@ class Documento extends Model
         'entregado',
     ];
 
-    public function empleado()
+    protected $casts = [
+        'entregado' => 'boolean',
+    ];
+
+    public function empleado(): BelongsTo
     {
         return $this->belongsTo(
-            \App\Models\RH\Empleado::class
+            Empleado::class
         );
     }
 }

@@ -1,29 +1,54 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const descripcion = document.getElementById('descripcion');
-    const contador = document.getElementById('contador-palabras');
-    const formulario = document.getElementById('form-incidencia');
+    const descripcion =
+        document.getElementById('descripcion');
 
-    if (!descripcion || !contador || !formulario) {
-        return;
-    }
+    const contador =
+        document.getElementById('contador-palabras');
+
+    const formulario =
+        document.getElementById('form-incidencia');
+
+    const tipo =
+        document.getElementById('tipo');
+
+    const contenedorFolio =
+        document.getElementById('contenedor-folio');
+
+    const folioIncapacidad =
+        document.getElementById('folio_incapacidad');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CONTADOR DE PALABRAS
+    |--------------------------------------------------------------------------
+    */
 
     function contarPalabras() {
 
-        const texto = descripcion.value.trim();
+        if (!descripcion || !contador) {
+            return 0;
+        }
+
+        const texto =
+            descripcion.value.trim();
 
         const palabras =
             texto === ''
                 ? []
                 : texto.split(/\s+/);
 
-        const total = palabras.length;
+        const total =
+            palabras.length;
 
-        contador.textContent = `${total} / 300 palabras`;
+        contador.textContent =
+            `${total} / 300 palabras`;
 
         contador.classList.toggle(
             'is-limit',
-            total >= 270 && total <= 300
+            total >= 270 &&
+            total <= 300
         );
 
         contador.classList.toggle(
@@ -35,30 +60,111 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }
 
-    descripcion.addEventListener(
-        'input',
-        contarPalabras
-    );
 
-    formulario.addEventListener(
-        'submit',
-        (event) => {
+    /*
+    |--------------------------------------------------------------------------
+    | FOLIO DE INCAPACIDAD
+    |--------------------------------------------------------------------------
+    */
 
-            if (contarPalabras() > 300) {
+    function actualizarCampoFolio() {
 
-                event.preventDefault();
+        if (
+            !tipo ||
+            !contenedorFolio ||
+            !folioIncapacidad
+        ) {
+            return;
+        }
 
-                descripcion.focus();
+        const esIncapacidad =
+            tipo.value === 'incapacidad';
 
-                alert(
-                    'La descripción no debe superar las 300 palabras.'
-                );
+        contenedorFolio.style.display =
+            esIncapacidad
+                ? ''
+                : 'none';
+
+        folioIncapacidad.required =
+            esIncapacidad;
+
+        if (!esIncapacidad) {
+            folioIncapacidad.value = '';
+        }
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | EVENTOS
+    |--------------------------------------------------------------------------
+    */
+
+    if (descripcion && contador) {
+
+        descripcion.addEventListener(
+            'input',
+            contarPalabras
+        );
+
+        contarPalabras();
+
+    }
+
+
+    if (tipo) {
+
+        tipo.addEventListener(
+            'change',
+            actualizarCampoFolio
+        );
+
+        actualizarCampoFolio();
+
+    }
+
+
+    if (formulario) {
+
+        formulario.addEventListener(
+            'submit',
+            (event) => {
+
+                if (contarPalabras() > 300) {
+
+                    event.preventDefault();
+
+                    descripcion.focus();
+
+                    alert(
+                        'La descripción no debe superar las 300 palabras.'
+                    );
+
+                    return;
+
+                }
+
+                if (
+                    tipo &&
+                    tipo.value === 'incapacidad' &&
+                    folioIncapacidad &&
+                    folioIncapacidad.value.trim() === ''
+                ) {
+
+                    event.preventDefault();
+
+                    folioIncapacidad.focus();
+
+                    alert(
+                        'Debes capturar el folio de la incapacidad.'
+                    );
+
+                }
 
             }
+        );
 
-        }
-    );
-
-    contarPalabras();
+    }
 
 });

@@ -19,6 +19,7 @@
         id="{{ $name }}"
         class="form-control gtri-textarea"
         placeholder="{{ $placeholder }}"
+        rows="6"
     >{{ old($name, trim($slot ?? '')) }}</textarea>
 
 </div>

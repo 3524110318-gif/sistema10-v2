@@ -50,6 +50,76 @@
 
     </div>
 
+    <form
+        method="GET"
+        action="{{ route('rh.incidencias.index') }}"
+        class="mb-4"
+    >
+
+        <div class="row g-3 align-items-end">
+
+            <div class="col-lg-8">
+
+                <label
+                    for="buscar"
+                    class="form-label text-light fw-semibold"
+                >
+
+                    Buscar incidencia
+
+                </label>
+
+                <input
+                    type="text"
+                    name="buscar"
+                    id="buscar"
+                    class="form-control gtri-input"
+                    placeholder="Empleado, número de control, tipo, estado o fecha..."
+                    value="{{ request('buscar') }}"
+                >
+
+            </div>
+
+
+            <div class="col-lg-4">
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn gtri-btn-secondary"
+                    >
+
+                        <i class="bi bi-search me-1"></i>
+
+                        Buscar
+
+                    </button>
+
+
+                    @if (request('buscar'))
+
+                        <a
+                            href="{{ route('rh.incidencias.index') }}"
+                            class="btn gtri-btn-secondary"
+                        >
+
+                            <i class="bi bi-x-circle me-1"></i>
+
+                            Limpiar
+
+                        </a>
+
+                    @endif
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
     {{-- RESUMEN --}}
     <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-3 mb-4">
 
@@ -194,76 +264,6 @@
 
     </div>
 
-    <form
-        method="GET"
-        action="{{ route('rh.incidencias.index') }}"
-        class="mb-4"
-    >
-
-        <div class="row g-3 align-items-end">
-
-            <div class="col-lg-8">
-
-                <label
-                    for="buscar"
-                    class="form-label text-light fw-semibold"
-                >
-
-                    Buscar incidencia
-
-                </label>
-
-                <input
-                    type="text"
-                    name="buscar"
-                    id="buscar"
-                    class="form-control gtri-input"
-                    placeholder="Empleado, número de control, tipo, estado o fecha..."
-                    value="{{ request('buscar') }}"
-                >
-
-            </div>
-
-
-            <div class="col-lg-4">
-
-                <div class="d-flex flex-wrap gap-2">
-
-                    <button
-                        type="submit"
-                        class="btn gtri-btn-secondary"
-                    >
-
-                        <i class="bi bi-search me-1"></i>
-
-                        Buscar
-
-                    </button>
-
-
-                    @if (request('buscar'))
-
-                        <a
-                            href="{{ route('rh.incidencias.index') }}"
-                            class="btn gtri-btn-secondary"
-                        >
-
-                            <i class="bi bi-x-circle me-1"></i>
-
-                            Limpiar
-
-                        </a>
-
-                    @endif
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </form>
-
 
     {{-- CONTENIDO PRINCIPAL --}}
     <div class="gtri-section mb-0">
@@ -387,42 +387,25 @@
                                 {{-- EMPLEADO --}}
                                 <td>
 
-                                    <div class="d-flex align-items-center gap-3">
+                                    <div>
 
-                                        <div class="gtri-table-avatar">
+                                        <span class="text-light fw-semibold d-block">
 
-                                            {{ strtoupper(
-                                                substr(
-                                                    $incidencia->empleado->nombre,
-                                                    0,
-                                                    1
-                                                )
-                                            ) }}
+                                            {{ $incidencia->empleado->nombre }}
 
-                                        </div>
+                                            {{ $incidencia->empleado->apellido_paterno }}
 
+                                            {{ $incidencia->empleado->apellido_materno }}
 
-                                        <div>
+                                        </span>
 
-                                            <span class="text-light fw-semibold d-block">
+                                        <small class="text-secondary">
 
-                                                {{ $incidencia->empleado->nombre }}
+                                            <i class="bi bi-person-badge me-1"></i>
 
-                                                {{ $incidencia->empleado->apellido_paterno }}
+                                            {{ $incidencia->empleado->numero_control }}
 
-                                                {{ $incidencia->empleado->apellido_materno }}
-
-                                            </span>
-
-                                            <small class="text-secondary">
-
-                                                <i class="bi bi-person-badge me-1"></i>
-
-                                                {{ $incidencia->empleado->numero_control }}
-
-                                            </small>
-
-                                        </div>
+                                        </small>
 
                                     </div>
 
@@ -504,68 +487,56 @@
                                             class="
                                                 d-flex
                                                 justify-content-center
+                                                align-items-center
                                                 gap-2
-                                                flex-nowrap
                                             "
                                         >
 
+                                            {{-- EDITAR --}}
+                                            <a
+                                                href="{{ route('rh.incidencias.edit', $incidencia->id) }}"
+                                                class="btn gtri-btn-secondary btn-sm gtri-btn-icon"
+                                                title="Editar incidencia"
+                                            >
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+
+                                            {{-- JUSTIFICAR --}}
                                             <form
                                                 method="POST"
-                                                action="{{ route(
-                                                    'rh.incidencias.justificar',
-                                                    $incidencia->id
-                                                ) }}"
+                                                action="{{ route('rh.incidencias.justificar', $incidencia->id) }}"
+                                                class="mb-0"
                                             >
-
                                                 @csrf
                                                 @method('PATCH')
 
-
                                                 <button
                                                     type="submit"
-                                                    class="btn btn-outline-success btn-sm"
+                                                    class="btn gtri-btn-secondary btn-sm gtri-btn-icon"
                                                     title="Justificar incidencia"
-                                                    onclick="return confirm(
-                                                        '¿Seguro que deseas justificar esta incidencia?'
-                                                    )"
+                                                    onclick="return confirm('¿Seguro que deseas justificar esta incidencia?')"
                                                 >
-
-                                                    <i class="bi bi-check-circle me-1"></i>
-
-                                                    Justificar
-
+                                                    <i class="bi bi-check-circle"></i>
                                                 </button>
-
                                             </form>
 
-
+                                            {{-- INJUSTIFICAR --}}
                                             <form
                                                 method="POST"
-                                                action="{{ route(
-                                                    'rh.incidencias.injustificar',
-                                                    $incidencia->id
-                                                ) }}"
+                                                action="{{ route('rh.incidencias.injustificar', $incidencia->id) }}"
+                                                class="mb-0"
                                             >
-
                                                 @csrf
                                                 @method('PATCH')
 
-
                                                 <button
                                                     type="submit"
-                                                    class="btn btn-outline-danger btn-sm"
+                                                    class="btn gtri-btn-secondary btn-sm gtri-btn-icon"
                                                     title="Marcar como injustificada"
-                                                    onclick="return confirm(
-                                                        '¿Seguro que deseas marcar esta incidencia como injustificada?'
-                                                    )"
+                                                    onclick="return confirm('¿Seguro que deseas marcar esta incidencia como injustificada?')"
                                                 >
-
-                                                    <i class="bi bi-x-circle me-1"></i>
-
-                                                    Injustificar
-
+                                                    <i class="bi bi-x-circle"></i>
                                                 </button>
-
                                             </form>
 
                                         </div>

@@ -16,6 +16,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     'button[type="submit"]'
                 );
 
+                if (!boton || boton.disabled) {
+                    return;
+                }
+
                 const textoOriginal = boton.innerHTML;
 
                 boton.disabled = true;
@@ -23,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 boton.innerHTML = `
                     <span
                         class="spinner-border spinner-border-sm me-1"
+                        aria-hidden="true"
                     ></span>
 
                     Procesando...
@@ -33,8 +38,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     const respuesta = await fetch(
                         formulario.action,
                         {
-                            method: formulario.method,
-                            body: new FormData(formulario),
+                            method:
+                                formulario.method.toUpperCase(),
+
+                            body:
+                                new FormData(formulario),
+
                             headers: {
                                 'X-Requested-With':
                                     'XMLHttpRequest',
@@ -45,11 +54,32 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     );
 
+                    const resultado =
+                        await respuesta.json();
+
                     if (!respuesta.ok) {
 
-                        throw new Error(
-                            'No fue posible actualizar el documento.'
-                        );
+                        let mensaje =
+                            resultado.message
+                            || 'No fue posible actualizar el documento.';
+
+                        if (resultado.errors) {
+
+                            const primerError =
+                                Object.values(
+                                    resultado.errors
+                                )[0];
+
+                            if (
+                                Array.isArray(primerError)
+                                && primerError.length > 0
+                            ) {
+                                mensaje = primerError[0];
+                            }
+
+                        }
+
+                        throw new Error(mensaje);
 
                     }
 
@@ -59,9 +89,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     boton.disabled = false;
 
-                    boton.innerHTML = textoOriginal;
+                    boton.innerHTML =
+                        textoOriginal;
 
-                    alert(error.message);
+                    alert(
+                        error.message
+                        || 'Ocurrió un error al actualizar el documento.'
+                    );
 
                 }
 

@@ -13,6 +13,8 @@ use App\Http\Controllers\RH\VigenciaController;
 use App\Http\Controllers\RH\CapacitacionController;
 use App\Http\Controllers\RH\ProspectoController;
 use App\Http\Controllers\RH\BajaEmpleadoController;
+use App\Http\Controllers\RH\ContratoRHController;
+use App\Http\Controllers\RH\DevolucionUniformeController;
 
 /*
 | DASHBOARD RH
@@ -108,6 +110,16 @@ Route::middleware(['auth', 'role:rh'])->group(function ()
     Route::post('/rh/incidencias',[IncidenciaController::class, 'store'])
         ->name('rh.incidencias.store');
 
+Route::get(
+    '/rh/incidencias/{incidencia}/edit',
+    [IncidenciaController::class, 'edit']
+)->name('rh.incidencias.edit');
+
+Route::put(
+    '/rh/incidencias/{incidencia}',
+    [IncidenciaController::class, 'update']
+)->name('rh.incidencias.update');
+
     Route::patch('/rh/incidencias/{incidencia}/justificar',[IncidenciaController::class, 'justificar'])
         ->name('rh.incidencias.justificar');
 
@@ -129,17 +141,104 @@ Route::middleware(['auth', 'role:rh'])->group(function ()
     Route::post('/rh/empleados/{empleado}/uniformes',[EntregaUniformeController::class, 'store'])
         ->name('rh.uniformes.store');
 
-    Route::get('/rh/empleados/{empleado}/vigencias/create',[VigenciaController::class, 'create'])
-        ->name('rh.vigencias.create');
+Route::get(
+    '/uniformes/{entregaUniforme}/devolucion',
+    [DevolucionUniformeController::class, 'create']
+)->name('uniformes.devolucion.create');
 
-    Route::post('/rh/empleados/{empleado}/vigencias',[VigenciaController::class, 'store'])
-        ->name('rh.vigencias.store');
+Route::post(
+    '/uniformes/{entregaUniforme}/devolucion',
+    [DevolucionUniformeController::class, 'store']
+)->name('uniformes.devolucion.store');
+
+
+
+    Route::get(
+    '/rh/vigencias',
+    [VigenciaController::class, 'index']
+)->name('rh.vigencias.index');
+
+
+Route::get(
+    '/rh/empleados/{empleado}/vigencias/create',
+    [VigenciaController::class, 'create']
+)->name('rh.vigencias.create');
+
+
+Route::post(
+    '/rh/empleados/{empleado}/vigencias',
+    [VigenciaController::class, 'store']
+)->name('rh.vigencias.store');
+
+
+Route::get(
+    '/rh/vigencias/{vigencia}/edit',
+    [VigenciaController::class, 'edit']
+)->name('rh.vigencias.edit');
+
+
+Route::put(
+    '/rh/vigencias/{vigencia}',
+    [VigenciaController::class, 'update']
+)->name('rh.vigencias.update');
+
+
+        Route::get(
+    '/capacitaciones',
+    [CapacitacionController::class, 'index']
+)->name('rh.capacitaciones.index');
 
     Route::get('/rh/empleados/{empleado}/capacitaciones/create',[CapacitacionController::class, 'create'])
         ->name('rh.capacitaciones.create');
 
     Route::post('/rh/empleados/{empleado}/capacitaciones',[CapacitacionController::class, 'store'])
         ->name('rh.capacitaciones.store');
+    Route::get(
+    '/rh/capacitaciones/{capacitacion}/edit',
+    [CapacitacionController::class, 'edit']
+)->name('rh.capacitaciones.edit');
+
+Route::put(
+    '/rh/capacitaciones/{capacitacion}',
+    [CapacitacionController::class, 'update']
+)->name('rh.capacitaciones.update');
+
+
+
+Route::get(
+    '/rh/contratos',
+    [ContratoRHController::class, 'index']
+)->name('rh.contratos.index');
+
+Route::get(
+    '/rh/contratos/create',
+    [ContratoRHController::class, 'create']
+)->name('rh.contratos.create');
+
+Route::post(
+    '/rh/contratos',
+    [ContratoRHController::class, 'store']
+)->name('rh.contratos.store');
+
+Route::get(
+    '/rh/contratos/{contrato}/renovar',
+    [ContratoRHController::class, 'renovar']
+)->name('rh.contratos.renovar');
+
+Route::post(
+    '/rh/contratos/{contrato}/renovar',
+    [ContratoRHController::class, 'guardarRenovacion']
+)->name('rh.contratos.guardarRenovacion');
+
+Route::patch(
+    '/rh/contratos/{contrato}/cancelar',
+    [ContratoRHController::class, 'cancelar']
+)->name('rh.contratos.cancelar');
+
+Route::get(
+    '/rh/contratos/{contrato}',
+    [ContratoRHController::class, 'show']
+)->name('rh.contratos.show');
 
     Route::get('/rh/prospectos',[ProspectoController::class, 'index'])
         ->name('rh.prospectos.index');
@@ -167,6 +266,11 @@ Route::middleware(['auth', 'role:rh'])->group(function ()
 
     Route::post('/rh/empleados/{empleado}/baja',[BajaEmpleadoController::class, 'store'])
         ->name('rh.bajas.store');
+
+    Route::get(
+    '/bajas/{baja}',
+    [BajaEmpleadoController::class, 'show']
+)->name('rh.bajas.show');
 
     }
 );

@@ -11,15 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('documentos', function (Blueprint $table) {
+        Schema::create('log_actividads', function (Blueprint $table) {
+
             $table->id();
-            $table->foreignId('empleado_id')
-                ->constrained()
-                ->onDelete('cascade');
-            $table->string('nombre');
-            $table->string('archivo');
-            $table->string('tipo')->nullable();
+
+            // Rol o usuario que realizó la acción
+            $table->string('usuario', 100);
+
+            // Descripción completa de la acción
+            $table->text('accion');
+
             $table->timestamps();
+
         });
     }
 
@@ -28,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('documentos');
+        Schema::dropIfExists('log_actividads');
     }
 };

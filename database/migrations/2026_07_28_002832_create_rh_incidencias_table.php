@@ -12,22 +12,45 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rh_incidencias', function (Blueprint $table) {
+
             $table->id();
+
             $table->foreignId('empleado_id')
                 ->constrained('empleados')
-                ->onDelete('cascade');
+                ->cascadeOnDelete();
+
             $table->enum('tipo', [
                 'falta',
                 'retardo',
                 'permiso',
-                'incapacidad',]);
+                'incapacidad',
+            ]);
+
             $table->date('fecha');
-            $table->text('descripcion')->nullable();
+
+            $table->string('folio_incapacidad')
+                ->nullable();
+
+            $table->text('descripcion')
+                ->nullable();
+
             $table->enum('estado', [
                 'pendiente',
                 'justificada',
-                'injustificada',])->default('pendiente');
+                'injustificada',
+            ])->default('pendiente');
+
             $table->timestamps();
+
+            $table->unique(
+                [
+                    'empleado_id',
+                    'tipo',
+                    'fecha',
+                ],
+                'rh_incidencias_unica'
+            );
+
         });
     }
 

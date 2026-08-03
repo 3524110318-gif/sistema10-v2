@@ -34,6 +34,17 @@
 
     </x-rh.sidebar-link>
 
+    <x-rh.sidebar-link
+        href="{{ route('rh.contratos.index') }}"
+        active="rh.contratos.*"
+    >
+
+        <i class="bi bi-file-earmark-text me-2"></i>
+
+        Contratos
+
+    </x-rh.sidebar-link>
+
 
     {{-- VACACIONES --}}
     <x-rh.sidebar-link
@@ -60,7 +71,6 @@
 
     </x-rh.sidebar-link>
 
-
     {{-- CALENDARIO LABORAL --}}
     <x-rh.sidebar-link
         href="{{ route('rh.calendario.index') }}"
@@ -83,6 +93,29 @@
         <i class="bi bi-exclamation-triangle me-2"></i>
 
         Incidencias
+
+    </x-rh.sidebar-link>
+
+        {{-- CAPACITACIONES --}}
+    <x-rh.sidebar-link
+        href="{{ route('rh.capacitaciones.index') }}"
+        active="rh.capacitaciones*"
+    >
+
+        <i class="bi bi-mortarboard me-2"></i>
+
+        Capacitaciones
+
+    </x-rh.sidebar-link>
+
+    <x-rh.sidebar-link
+        href="{{ route('rh.vigencias.index') }}"
+        active="rh.vigencias*"
+    >
+
+        <i class="bi bi-calendar2-check me-2"></i>
+
+        Vigencias
 
     </x-rh.sidebar-link>
 

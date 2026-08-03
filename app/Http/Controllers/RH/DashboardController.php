@@ -3,36 +3,26 @@
 namespace App\Http\Controllers\RH;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\RH\Empleado;
 use App\Models\RH\Vacacion;
 use App\Models\RH\Incidencia;
-use App\Models\RH\Documento;
 
 class DashboardController extends Controller
 {
     /**
      * DASHBOARD PRINCIPAL RH
      */
-     public function index()
+    public function index()
     {
-
         $empleados_activos = Empleado::where(
-
             'estado',
-
             'activo'
-
         )->count();
 
         $empleados_inactivos = Empleado::where(
-
             'estado',
-
             'inactivo'
-
         )->count();
-
 
         $total_empleados = Empleado::count();
 
@@ -46,26 +36,35 @@ class DashboardController extends Controller
             'pendiente'
         )->count();
 
-        $expedientes_incompletos = 0;
 
-        foreach (
-            Empleado::where('estado', 'activo')->get()
-            as $empleado
+        /*
+        |--------------------------------------------------------------------------
+        | EXPEDIENTES INCOMPLETOS
+        |--------------------------------------------------------------------------
+        | withCount evita consultar los documentos empleado por empleado.
+        */
+
+        $totalDocumentosRequeridos = count(
+            Empleado::DOCUMENTOS_RH
+        );
+
+        $expedientes_incompletos = Empleado::where(
+            'estado',
+            'activo'
+        )
+        ->withCount('documentos')
+        ->get()
+        ->filter(function ($empleado) use (
+            $totalDocumentosRequeridos
         ) {
 
-            $documentosEntregados =
-                $empleado->documentos->count();
+            return $empleado->documentos_count
+                < $totalDocumentosRequeridos;
 
-            if (
-                $documentosEntregados
-                <
-                count(Empleado::DOCUMENTOS_RH)
-            ) {
+        })
+        ->count();
 
-                $expedientes_incompletos++;
 
-            }
-        }
         return view(
             'rh.dashboard.index',
             compact(
@@ -79,27 +78,43 @@ class DashboardController extends Controller
         );
     }
 
+
+    /**
+     * MOSTRAR EXPEDIENTES INCOMPLETOS
+     */
     public function expedientesIncompletos()
     {
+        /*
+        |--------------------------------------------------------------------------
+        | CARGA ANTICIPADA
+        |--------------------------------------------------------------------------
+        | with('documentos') evita una consulta por cada empleado.
+        */
+
+        $empleados = Empleado::with('documentos')
+            ->where(
+                'estado',
+                'activo'
+            )
+            ->orderBy('nombre')
+            ->get();
+
+
         $empleadosIncompletos = [];
 
-        foreach (
-            Empleado::where('estado', 'activo')->get()
-            as $empleado
-        ) {
+        foreach ($empleados as $empleado) {
 
-            $documentosEntregados =
-                $empleado->documentos
-                    ->pluck('nombre')
-                    ->toArray();
+            $documentosEntregados = $empleado
+                ->documentos
+                ->pluck('nombre')
+                ->toArray();
 
-            $documentosFaltantes =
-                array_diff(
-                    Empleado::DOCUMENTOS_RH,
-                    $documentosEntregados
-                );
+            $documentosFaltantes = array_diff(
+                Empleado::DOCUMENTOS_RH,
+                $documentosEntregados
+            );
 
-            if (count($documentosFaltantes) > 0) {
+            if (! empty($documentosFaltantes)) {
 
                 $empleadosIncompletos[] = [
 
@@ -111,6 +126,7 @@ class DashboardController extends Controller
 
             }
         }
+
 
         return view(
             'rh.dashboard.expedientes-incompletos',

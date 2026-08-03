@@ -255,17 +255,18 @@
                                 </td>
 
 
-                                <td>
+                                <td class="text-center">
 
                                     <div class="d-flex justify-content-center gap-2">
 
+                                        {{-- VER: SIEMPRE DISPONIBLE --}}
                                         <a
                                             href="{{ route(
                                                 'administracion.prenominas.show',
                                                 $prenomina
                                             ) }}"
-                                            class="btn btn-sm gtri-btn-secondary"
-                                            title="Ver detalle"
+                                            class="btn btn-outline-light btn-sm"
+                                            title="Ver prenómina"
                                         >
 
                                             <i class="bi bi-eye"></i>
@@ -273,45 +274,61 @@
                                         </a>
 
 
-                                        <a
-                                            href="{{ route(
-                                                'administracion.prenominas.edit',
-                                                $prenomina
-                                            ) }}"
-                                            class="btn btn-sm gtri-btn-secondary"
-                                            title="Editar Prenómina"
-                                        >
+                                        {{-- EDITAR: SOLO CUANDO ESTÁ ABIERTA --}}
+                                        @if($prenomina->estatus === 'abierta')
 
-                                            <i class="bi bi-pencil"></i>
-
-                                        </a>
-
-
-                                        <form
-                                            action="{{ route(
-                                                'administracion.prenominas.destroy',
-                                                $prenomina
-                                            ) }}"
-                                            method="POST"
-                                        >
-
-                                            @csrf
-                                            @method('DELETE')
-
-                                            <button
-                                                type="submit"
-                                                class="btn btn-sm btn-outline-danger"
-                                                onclick="return confirm(
-                                                    '¿Eliminar esta prenómina?'
-                                                )"
-                                                title="Eliminar Prenómina"
+                                            <a
+                                                href="{{ route(
+                                                    'administracion.prenominas.edit',
+                                                    $prenomina
+                                                ) }}"
+                                                class="btn btn-outline-primary btn-sm"
+                                                title="Editar prenómina"
                                             >
 
-                                                <i class="bi bi-trash"></i>
+                                                <i class="bi bi-pencil"></i>
 
-                                            </button>
+                                            </a>
 
-                                        </form>
+                                        @endif
+
+
+                                        {{-- ELIMINAR: ABIERTA O CERRADA --}}
+                                        @if(
+                                            $prenomina->estatus === 'abierta'
+                                            ||
+                                            $prenomina->estatus === 'cerrada'
+                                        )
+
+                                            <form
+                                                action="{{ route(
+                                                    'administracion.prenominas.destroy',
+                                                    $prenomina
+                                                ) }}"
+                                                method="POST"
+                                                class="d-inline"
+                                                onsubmit="return confirm(
+                                                    '¿Seguro que deseas eliminar esta prenómina?'
+                                                );"
+                                            >
+
+                                                @csrf
+
+                                                @method('DELETE')
+
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-outline-danger btn-sm"
+                                                    title="Eliminar prenómina"
+                                                >
+
+                                                    <i class="bi bi-trash"></i>
+
+                                                </button>
+
+                                            </form>
+
+                                        @endif
 
                                     </div>
 

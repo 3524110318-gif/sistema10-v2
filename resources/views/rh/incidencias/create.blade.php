@@ -228,6 +228,57 @@
 
                         </div>
 
+                        {{-- FOLIO DE INCAPACIDAD --}}
+                        <div
+                            class="col-12 col-lg-6"
+                            id="contenedor-folio"
+                            style="display: none;"
+                        >
+
+                            <label
+                                for="folio_incapacidad"
+                                class="form-label gtri-form-label"
+                            >
+
+                                <i class="bi bi-file-earmark-medical me-2"></i>
+
+                                Folio de incapacidad
+
+                            </label>
+
+                            <input
+                                type="text"
+                                name="folio_incapacidad"
+                                id="folio_incapacidad"
+                                class="
+                                    form-control
+                                    gtri-input
+                                    @error('folio_incapacidad') is-invalid @enderror
+                                "
+                                value="{{ old('folio_incapacidad') }}"
+                                placeholder="Ej. IMSS-123456789"
+                            >
+
+                            <div class="gtri-field-help">
+
+                                Captura el folio proporcionado por la institución médica.
+
+                            </div>
+
+                            @error('folio_incapacidad')
+
+                                <div class="invalid-feedback d-block">
+
+                                    <i class="bi bi-exclamation-circle me-1"></i>
+
+                                    {{ $message }}
+
+                                </div>
+
+                            @enderror
+
+                        </div>
+
 
                         {{-- FECHA --}}
                         <div class="col-12 col-lg-6">

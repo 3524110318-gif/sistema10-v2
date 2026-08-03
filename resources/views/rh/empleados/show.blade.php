@@ -1,6 +1,9 @@
 @extends('rh.layouts.app')
 
 @section('contenido')
+@php
+    use Illuminate\Support\Facades\Storage;
+@endphp
 
 <div class="container-fluid">
 
@@ -1078,16 +1081,16 @@
                     data-bs-target="#capacitaciones"
                     type="button"
                     role="tab"
+                    aria-controls="capacitaciones"
+                    aria-selected="false"
                 >
 
-                    <i class="bi bi-mortarboard"></i>
+                    <i class="bi bi-mortarboard me-1"></i>
 
                     Capacitaciones
 
                     <span>
-
                         {{ $capacitaciones->count() }}
-
                     </span>
 
                 </button>
@@ -1391,10 +1394,15 @@
 
                                     <th>Observaciones</th>
 
+                                    <th>Resguardo</th>
+
+                                    <th class="text-end">
+                                        Acciones
+                                    </th>
+
                                 </tr>
 
                             </thead>
-
 
                             <tbody>
 
@@ -1412,7 +1420,6 @@
 
                                         </td>
 
-
                                         <td>
 
                                             <i class="bi bi-box-seam me-2 text-warning"></i>
@@ -1421,13 +1428,11 @@
 
                                         </td>
 
-
                                         <td>
 
                                             {{ $uniforme->cantidad }}
 
                                         </td>
-
 
                                         <td>
 
@@ -1441,19 +1446,95 @@
 
                                         </td>
 
-
                                         <td>
 
                                             {{ $uniforme->fecha_entrega?->format('d/m/Y') }}
 
                                         </td>
 
-
                                         <td>
 
                                             {{ $uniforme->observaciones
                                                 ?: 'Sin observaciones'
                                             }}
+
+                                        </td>
+
+                                        <td>
+
+                                            @if ($uniforme->pdf_resguardo)
+
+                                                <a
+                                                    href="{{ Storage::url(
+                                                        $uniforme->pdf_resguardo
+                                                    ) }}"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    title="Consultar resguardo PDF"
+                                                >
+
+                                                    <i class="bi bi-file-earmark-pdf me-1"></i>
+
+                                                    Ver PDF
+
+                                                </a>
+
+                                            @else
+
+                                                <span class="text-secondary">
+
+                                                    Sin PDF
+
+                                                </span>
+
+                                            @endif
+
+                                        </td>
+
+                                        <td class="text-end">
+
+                                            @php
+
+                                                $cantidadDevuelta =
+                                                    $uniforme->devoluciones?->sum('cantidad')
+                                                    ?? 0;
+
+                                                $cantidadPendiente =
+                                                    $uniforme->cantidad
+                                                    -
+                                                    $cantidadDevuelta;
+
+                                            @endphp
+
+                                            @if ($cantidadPendiente > 0)
+
+                                                <a
+                                                    href="{{ route(
+                                                        'uniformes.devolucion.create',
+                                                        $uniforme
+                                                    ) }}"
+                                                    class="btn btn-sm btn-outline-warning"
+                                                    title="Registrar devolución"
+                                                >
+
+                                                    <i class="bi bi-arrow-return-left me-1"></i>
+
+                                                    Devolver
+
+                                                </a>
+
+                                            @else
+
+                                                <span class="badge text-bg-success">
+
+                                                    <i class="bi bi-check-circle me-1"></i>
+
+                                                    Devuelto
+
+                                                </span>
+
+                                            @endif
 
                                         </td>
 
@@ -1464,16 +1545,14 @@
                                     <tr>
 
                                         <td
-                                            colspan="6"
+                                            colspan="8"
                                             class="gtri-expediente-empty-table"
                                         >
 
                                             <i class="bi bi-box"></i>
 
                                             <span>
-
                                                 Sin uniformes registrados
-
                                             </span>
 
                                         </td>
@@ -1739,6 +1818,8 @@
                 class="tab-pane fade"
                 id="capacitaciones"
                 role="tabpanel"
+                aria-labelledby="capacitaciones-tab"
+                tabindex="0"
             >
 
                 <div class="gtri-table-wrapper">
@@ -1759,9 +1840,13 @@
 
                                     <th>Estado</th>
 
-                                    <th class="text-center">Evidencia</th>
+                                    <th class="text-center">
+                                        Evidencia
+                                    </th>
 
-                                    <th class="text-center">DC3</th>
+                                    <th class="text-center">
+                                        DC3
+                                    </th>
 
                                 </tr>
 
@@ -1773,18 +1858,24 @@
 
                                     @php
 
-                                        $diasCapacitacion =
-                                            $capacitacion->vigencia_hasta
-                                                ? now()->diffInDays(
-                                                    $capacitacion->vigencia_hasta,
-                                                    false
-                                                )
-                                                : null;
+                                        $vigencia = $capacitacion->vigencia_hasta
+                                            ? \Carbon\Carbon::parse(
+                                                $capacitacion->vigencia_hasta
+                                            )
+                                            : null;
+
+                                        $diasRestantes = $vigencia
+                                            ? today()->diffInDays(
+                                                $vigencia,
+                                                false
+                                            )
+                                            : null;
 
                                     @endphp
 
                                     <tr>
 
+                                        {{-- CURSO --}}
                                         <td>
 
                                             <i class="bi bi-mortarboard me-2 text-warning"></i>
@@ -1793,29 +1884,37 @@
 
                                         </td>
 
+
+                                        {{-- CALIFICACIÓN --}}
                                         <td>
 
-                                            {{ $capacitacion->calificacion ?? '-' }}
+                                            {{ $capacitacion->calificacion ?? '—' }}
 
                                         </td>
 
+
+                                        {{-- VIGENCIA --}}
                                         <td>
 
-                                            {{ $capacitacion->vigencia_hasta ?? 'Sin vigencia' }}
+                                            {{ $vigencia
+                                                ? $vigencia->format('d/m/Y')
+                                                : 'Sin vigencia' }}
 
                                         </td>
 
+
+                                        {{-- ESTADO --}}
                                         <td>
 
-                                            @if (!$capacitacion->vigencia_hasta)
+                                            @if (!$vigencia)
 
-                                                <span class="badge bg-secondary">
+                                                <span class="gtri-badge-secondary">
 
                                                     Sin vigencia
 
                                                 </span>
 
-                                            @elseif ($diasCapacitacion < 0)
+                                            @elseif ($diasRestantes < 0)
 
                                                 <span class="gtri-badge-danger">
 
@@ -1823,7 +1922,7 @@
 
                                                 </span>
 
-                                            @elseif ($diasCapacitacion <= 30)
+                                            @elseif ($diasRestantes <= 30)
 
                                                 <span class="gtri-badge-warning">
 
@@ -1843,18 +1942,24 @@
 
                                         </td>
 
-                                        {{-- Evidencia --}}
+
+                                        {{-- EVIDENCIA --}}
                                         <td class="text-center">
 
-                                            @if($capacitacion->evidencia)
+                                            @if ($capacitacion->evidencia)
 
                                                 <a
-                                                    href="{{ asset('storage/'.$capacitacion->evidencia) }}"
+                                                    href="{{ asset(
+                                                        'storage/' .
+                                                        $capacitacion->evidencia
+                                                    ) }}"
                                                     target="_blank"
+                                                    rel="noopener noreferrer"
                                                     class="btn btn-sm gtri-btn-secondary"
+                                                    title="Ver evidencia"
                                                 >
 
-                                                    <i class="bi bi-file-earmark-pdf me-1"></i>
+                                                    <i class="bi bi-file-earmark me-1"></i>
 
                                                     Ver
 
@@ -1863,24 +1968,28 @@
                                             @else
 
                                                 <span class="text-secondary">
-
                                                     —
-
                                                 </span>
 
                                             @endif
 
                                         </td>
 
+
                                         {{-- DC3 --}}
                                         <td class="text-center">
 
-                                            @if($capacitacion->dc3)
+                                            @if ($capacitacion->dc3)
 
                                                 <a
-                                                    href="{{ asset('storage/'.$capacitacion->dc3) }}"
+                                                    href="{{ asset(
+                                                        'storage/' .
+                                                        $capacitacion->dc3
+                                                    ) }}"
                                                     target="_blank"
+                                                    rel="noopener noreferrer"
                                                     class="btn btn-sm gtri-btn-secondary"
+                                                    title="Ver constancia DC3"
                                                 >
 
                                                     <i class="bi bi-award me-1"></i>
@@ -1892,9 +2001,7 @@
                                             @else
 
                                                 <span class="text-secondary">
-
                                                     —
-
                                                 </span>
 
                                             @endif
@@ -1915,9 +2022,7 @@
                                             <i class="bi bi-mortarboard"></i>
 
                                             <span>
-
                                                 Sin capacitaciones registradas
-
                                             </span>
 
                                         </td>

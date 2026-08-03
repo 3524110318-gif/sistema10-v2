@@ -6,177 +6,220 @@
 
     <meta charset="UTF-8">
 
-    <title>Credencial GTRI</title>
+    <title>
+        Credencial GTRI
+    </title>
 
     <style>
 
+        /*
+        |--------------------------------------------------------------------------
+        | TAMAÑO DE CREDENCIAL VERTICAL CR80
+        |--------------------------------------------------------------------------
+        |
+        | Ancho: 53.98 mm
+        | Alto: 85.60 mm
+        |
+        */
+
         @page {
-            margin: 20px;
+            size: 53.98mm 85.60mm;
+            margin: 0;
         }
 
         * {
             box-sizing: border-box;
         }
 
+        html,
         body {
+            width: 53.98mm;
+            height: 85.60mm;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             font-family: DejaVu Sans, Arial, sans-serif;
-            background: #E5E7EB;
+            background: #000000;
         }
 
-        .contenedor {
-            width: 100%;
-            text-align: center;
-        }
+        /*
+        |--------------------------------------------------------------------------
+        | ESTRUCTURA GENERAL
+        |--------------------------------------------------------------------------
+        */
 
-        .credencial {
-            display: inline-block;
+        .pagina {
             position: relative;
-            vertical-align: top;
-            width: 310px;
-            height: 500px;
-            margin: 0 8px;
+            width: 53.98mm;
+            height: 85.60mm;
+            margin: 0;
+            padding: 0;
             overflow: hidden;
-            border-radius: 25px;
-            background: #090909;
-            border: 2px solid #D4AF37;
-            color: white;
+            background: #050505;
+            color: #FFFFFF;
         }
 
-        .linea-dorada {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 8px;
-            background: #D4AF37;
+        .salto-pagina {
+            page-break-after: always;
         }
 
-        .linea-azul {
-            position: absolute;
-            top: 8px;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: #005DAA;
-        }
-
-        /* FRENTE */
+        /*
+        |--------------------------------------------------------------------------
+        | FRENTE
+        |--------------------------------------------------------------------------
+        */
 
         .frente {
             position: relative;
+            width: 100%;
             height: 100%;
-            padding: 45px 25px 30px;
+            text-align: center;
+            background: #050505;
+        }
+
+        .logo-contenedor {
+            position: absolute;
+            top: 7mm;
+            left: 4mm;
+            width: 45.98mm;
+            height: 54mm;
             text-align: center;
         }
 
         .logo {
-            width: 205px;
-            height: auto;
-            max-height: 270px;
-            object-fit: contain;
+            width: 43mm;
+            max-height: 52mm;
+        }
+
+        .empresa-contenedor {
+            position: absolute;
+            left: 2.5mm;
+            right: 2.5mm;
+            bottom: 8mm;
+            text-align: center;
         }
 
         .empresa {
-            margin-top: 25px;
+            margin: 0;
             color: #D4AF37;
-            font-size: 21px;
+            font-size: 13pt;
             font-weight: bold;
-            letter-spacing: 2px;
+            line-height: 1.1;
+            letter-spacing: 0.5pt;
+            white-space: nowrap;
         }
 
         .descripcion {
-            margin-top: 8px;
-            color: #D1D5DB;
-            font-size: 14px;
-            letter-spacing: 3px;
+            margin-top: 2mm;
+            color: #D6D6D6;
+            font-size: 7.5pt;
+            font-weight: normal;
+            letter-spacing: 1.5pt;
+            white-space: nowrap;
         }
 
-        .linea-inferior {
-            position: absolute;
-            bottom: 25px;
-            left: 25px;
-            right: 25px;
-            height: 2px;
-            background: #D4AF37;
-        }
-
-        /* REVERSO */
+        /*
+        |--------------------------------------------------------------------------
+        | REVERSO
+        |--------------------------------------------------------------------------
+        */
 
         .reverso {
             position: relative;
+            width: 100%;
             height: 100%;
-            padding: 42px 25px 25px;
+            background: #050505;
+            color: #FFFFFF;
+        }
+
+        .reverso-contenido {
+            position: absolute;
+            top: 9mm;
+            left: 5mm;
+            right: 5mm;
+        }
+
+        .titulo-empleado {
+            margin-bottom: 1.5mm;
+            color: #D4AF37;
+            font-size: 12pt;
+            font-weight: bold;
+            line-height: 1.2;
             text-align: left;
         }
 
-        .nombre {
-            color: #D4AF37;
-            font-size: 20px;
-            font-weight: bold;
+        .cargo {
+            margin-bottom: 7mm;
+            color: #FFFFFF;
+            font-size: 8pt;
             line-height: 1.3;
+            text-align: left;
         }
 
-        .puesto {
-            margin-top: 5px;
-            color: white;
-            font-size: 14px;
-        }
-
-        .contactos {
+        .separador {
             width: 100%;
-            margin-top: 35px;
+            height: 0.4mm;
+            margin-bottom: 6mm;
+            background: #D4AF37;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | DATOS DE CONTACTO
+        |--------------------------------------------------------------------------
+        */
+
+        .tabla-contacto {
+            width: 100%;
             border-collapse: collapse;
         }
 
-        .contactos td {
+        .tabla-contacto td {
+            padding: 2.5mm 0;
             border: none;
-            padding: 11px 2px;
-            vertical-align: middle;
+            vertical-align: top;
         }
 
-        .icono {
-            width: 42px;
+        .etiqueta {
+            width: 13mm;
             color: #D4AF37;
-            font-size: 12px;
+            font-size: 6.7pt;
             font-weight: bold;
-            text-align: center;
+            text-transform: uppercase;
         }
 
         .dato {
-            color: white;
-            font-size: 12px;
+            color: #FFFFFF;
+            font-size: 7pt;
+            line-height: 1.35;
+            word-wrap: break-word;
         }
 
-        .qr-contenedor {
-            margin-top: 24px;
-            text-align: center;
-        }
+        /*
+        |--------------------------------------------------------------------------
+        | PIE DEL REVERSO
+        |--------------------------------------------------------------------------
+        */
 
-        .qr-marco {
-            display: inline-block;
-            padding: 8px;
-            border: 2px solid #D4AF37;
-            border-radius: 14px;
-            background: #111111;
-        }
-
-        .qr {
-            width: 145px;
-            height: 145px;
-            object-fit: contain;
-        }
-
-        .aviso {
+        .marca-reverso {
             position: absolute;
-            bottom: 18px;
-            left: 20px;
-            right: 20px;
-            color: #9CA3AF;
-            font-size: 8px;
-            line-height: 1.5;
+            left: 4mm;
+            right: 4mm;
+            bottom: 7mm;
             text-align: center;
+        }
+
+        .marca-reverso-titulo {
+            color: #D4AF37;
+            font-size: 8.5pt;
+            font-weight: bold;
+            letter-spacing: 0.5pt;
+        }
+
+        .marca-reverso-subtitulo {
+            margin-top: 1.5mm;
+            color: #BFC3C9;
+            font-size: 5.8pt;
+            letter-spacing: 1pt;
         }
 
     </style>
@@ -185,155 +228,113 @@
 
 <body>
 
-    <div class="contenedor">
+    {{-- ============================================================= --}}
+    {{-- FRENTE DE LA CREDENCIAL --}}
+    {{-- ============================================================= --}}
 
-        {{-- FRENTE --}}
-        <div class="credencial">
+    <div class="pagina frente salto-pagina">
 
-            <div class="linea-dorada"></div>
+        <div class="logo-contenedor">
 
-            <div class="linea-azul"></div>
+            <img
+                src="{{ public_path('images/logo-gtri.png') }}"
+                class="logo"
+                alt="Logo GTRI"
+            >
 
-
-            <div class="frente">
-
-                <img
-                    src="{{ public_path('images/logo-gtri.png') }}"
-                    class="logo"
-                    alt="Logo GTRI"
-                >
+        </div>
 
 
-                <div class="empresa">
+        <div class="empresa-contenedor">
 
-                    GTRI S.A. DE C.V.
+            <div class="empresa">
 
-                </div>
+                GTRI S.A. DE C.V.
 
-
-                <div class="descripcion">
-
-                    SEGURIDAD PRIVADA
-
-                </div>
+            </div>
 
 
-                <div class="linea-inferior"></div>
+            <div class="descripcion">
+
+                SEGURIDAD PRIVADA
 
             </div>
 
         </div>
 
-
-        {{-- REVERSO --}}
-        <div class="credencial">
-
-            <div class="linea-dorada"></div>
-
-            <div class="linea-azul"></div>
+    </div>
 
 
-            <div class="reverso">
+    {{-- ============================================================= --}}
+    {{-- REVERSO DE LA CREDENCIAL --}}
+    {{-- ============================================================= --}}
 
-                <div class="nombre">
+    <div class="pagina reverso">
 
-                    {{ $empleado->nombre }}
+        <div class="reverso-contenido">
 
-                    {{ $empleado->apellido_paterno }}
+            <div class="titulo-empleado">
 
-                    {{ $empleado->apellido_materno }}
-
-                </div>
-
-
-                <div class="puesto">
-
-                    {{ $empleado->puesto }}
-
-                </div>
-
-
-                <table class="contactos">
-
-                    <tr>
-
-                        <td class="icono">
-
-                            TEL.
-
-                        </td>
-
-                        <td class="dato">
-
-                            322 215 88 09
-
-                        </td>
-
-                    </tr>
-
-
-                    <tr>
-
-                        <td class="icono">
-
-                            @
-
-                        </td>
-
-                        <td class="dato">
-
-                            ventas.gtri@gmail.com
-
-                        </td>
-
-                    </tr>
-
-
-                    <tr>
-
-                        <td class="icono">
-
-                            WEB
-
-                        </td>
-
-                        <td class="dato">
-
-                            www.gtriseguridad.com
-
-                        </td>
-
-                    </tr>
-
-                </table>
-
-
-                <div class="qr-contenedor">
-
-                    <div class="qr-marco">
-
-                        <img
-                            src="{{ public_path('images/qr-gtri.png') }}"
-                            class="qr"
-                            alt="Código QR GTRI"
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <div class="aviso">
-
-                    Esta credencial es propiedad de GTRI S.A. de C.V.
-
-                    <br>
-
-                    En caso de extravío, favor de reportarla a Recursos Humanos.
-
-                </div>
+                {{ mb_strtoupper(
+                    trim(
+                        $empleado->nombre . ' ' .
+                        $empleado->apellido_paterno . ' ' .
+                        $empleado->apellido_materno
+                    )
+                ) }}
 
             </div>
+
+
+            <div class="cargo">
+
+                {{ $empleado->puesto ?: 'Sin cargo registrado' }}
+
+            </div>
+
+
+            <div class="separador"></div>
+
+
+            <table class="tabla-contacto">
+
+                <tr>
+
+                    <td class="icono">
+                        ☎
+                    </td>
+
+                    <td class="dato">
+                        {{ $empleado->telefono ?: 'No registrado' }}
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td class="icono">
+                        ✉
+                    </td>
+
+                    <td class="dato">
+                        ventas.gtri@gmail.com
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td class="icono">
+                        🌐
+                    </td>
+
+                    <td class="dato">
+                        www.gtriseguridad.com
+                    </td>
+
+                </tr>
+
+            </table>
 
         </div>
 

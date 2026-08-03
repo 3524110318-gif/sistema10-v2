@@ -533,6 +533,105 @@
 
     </div>
 
+<div class="col-12">
+
+    <div class="gtri-section">
+
+        <div class="gtri-section-header">
+
+            <div>
+
+                <span class="gtri-section-number">
+                    04
+                </span>
+
+                <h5 class="gtri-section-title">
+                    Configuración de deducción
+                </h5>
+
+            </div>
+
+        </div>
+
+        <div class="row g-3">
+
+            <div class="col-12 col-md-6">
+
+                <div class="form-check form-switch mt-3">
+
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        role="switch"
+                        id="genera_deduccion"
+                        name="genera_deduccion"
+                        value="1"
+                        @checked(old('genera_deduccion'))
+                    >
+
+                    <label
+                        class="form-check-label"
+                        for="genera_deduccion"
+                    >
+                        Genera deducción de nómina
+                    </label>
+
+                </div>
+
+                <small class="text-secondary">
+                    Activa esta opción cuando el producto deba cobrarse o descontarse al empleado.
+                </small>
+
+            </div>
+
+            <div class="col-12 col-md-6">
+
+                <label
+                    for="monto_deduccion"
+                    class="form-label"
+                >
+                    Monto de deducción
+                </label>
+
+                <div class="input-group">
+
+                    <span class="input-group-text">
+                        $
+                    </span>
+
+                    <input
+                        type="number"
+                        name="monto_deduccion"
+                        id="monto_deduccion"
+                        class="form-control @error('monto_deduccion') is-invalid @enderror"
+                        value="{{ old('monto_deduccion') }}"
+                        min="0"
+                        step="0.01"
+                        placeholder="Ej. 550.00"
+                    >
+
+                    @error('monto_deduccion')
+
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+
+                    @enderror
+
+                </div>
+
+                <small class="text-secondary">
+                    Déjalo vacío cuando el producto no genere deducción.
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 
     {{-- ========================================= --}}
     {{-- 04 INFORMACIÓN COMPLEMENTARIA --}}

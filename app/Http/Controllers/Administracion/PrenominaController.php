@@ -9,6 +9,8 @@ use App\Models\Administracion\Prenomina;
 use App\Models\Administracion\PrenominaDetalle;
 use App\Models\Administracion\LogActividad;
 use App\Models\RH\Empleado;
+use App\Models\RH\EntregaUniforme;
+use Illuminate\Support\Facades\DB;
 
 class PrenominaController extends Controller
 {
@@ -58,31 +60,52 @@ class PrenominaController extends Controller
     public function create()
     {
         $empleados = Empleado::where(
-
             'estado',
-
             'activo'
-
         )
+            ->orderBy('nombre')
+            ->get();
 
-        ->orderBy(
+        $entregasDeducibles = EntregaUniforme::query()
+            ->with([
+                'producto:id,nombre,genera_deduccion,monto_deduccion',
+            ])
+            ->whereNull(
+                'prenomina_detalle_id'
+            )
+            ->whereHas(
+                'producto',
+                function ($query) {
 
-            'nombre'
+                    $query->where(
+                        'genera_deduccion',
+                        true
+                    )
+                        ->whereNotNull(
+                            'monto_deduccion'
+                        )
+                        ->where(
+                            'monto_deduccion',
+                            '>',
+                            0
+                        );
 
-        )
-
-        ->get();
+                }
+            )
+            ->get([
+                'id',
+                'empleado_id',
+                'producto_id',
+                'cantidad',
+                'fecha_entrega',
+            ]);
 
         return view(
-
             'administracion.prenominas.create',
-
             compact(
-
-                'empleados'
-
+                'empleados',
+                'entregasDeducibles'
             )
-
         );
     }
 
@@ -147,10 +170,6 @@ class PrenominaController extends Controller
             as $i => $empleadoId
         ) {
 
-            /*
-            FOLIO IMSS OBLIGATORIO SI EXISTE INCAPACIDAD
-            */
-
             if (
                 ($request->dias_incapacidad[$i] ?? 0) > 0
                 &&
@@ -167,10 +186,6 @@ class PrenominaController extends Controller
                     ]);
             }
 
-            /*
-            JUSTIFICACIÓN OBLIGATORIA SI EXISTE AJUSTE MANUAL
-            */
-
             if (
                 (float) ($request->ajustes[$i] ?? 0) != 0
                 &&
@@ -186,168 +201,337 @@ class PrenominaController extends Controller
 
                     ]);
             }
-
         }
 
-        $prenomina = Prenomina::create([
+        DB::transaction(function () use ($request) {
 
-            'periodo_inicio' => $request->periodo_inicio,
+            $prenomina = Prenomina::create([
 
-            'periodo_fin' => $request->periodo_fin,
+                'periodo_inicio' =>
+                    $request->periodo_inicio,
 
-            'estatus' => $request->estatus,
+                'periodo_fin' =>
+                    $request->periodo_fin,
 
-            'observaciones' => $request->observaciones,
+                'estatus' =>
+                    $request->estatus,
 
-        ]);
-
-        foreach ($request->empleado_id as $i => $empleadoId) {
-
-            $salario = (float) $request->salario_base[$i];
-
-            $percepciones = (float) $request->percepciones[$i];
-
-            $deducciones = (float) $request->deducciones[$i];
-
-            $ajustes = (float) $request->ajustes[$i];
-
-            $horasExtra = (float) $request->horas_extra[$i];
-
-            $diasLaborados = (int) $request->dias_laborados[$i];
-
-            $diasIncapacidad = (int) $request->dias_incapacidad[$i];
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | CÁLCULO DE SALARIO PAGABLE
-            |--------------------------------------------------------------------------
-            |
-            | Los días con incapacidad IMSS se consideran en $0.
-            |
-            */
-
-            $diasPagables = max(
-                0,
-                $diasLaborados - $diasIncapacidad
-            );
-
-            $salarioDiario = $diasLaborados > 0
-                ? $salario / $diasLaborados
-                : 0;
-
-            $salarioPagable =
-                $salarioDiario * $diasPagables;
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | TOTAL NETO
-            |--------------------------------------------------------------------------
-            */
-
-            $total =
-                $salarioPagable
-                +
-                $percepciones
-                +
-                $horasExtra
-                +
-                $ajustes
-                -
-                $deducciones;
-
-            PrenominaDetalle::create([
-
-                'prenomina_id' => $prenomina->id,
-
-                'empleado_id' => $empleadoId,
-
-                'salario_base' => $salarioPagable,
-
-                'dias_laborados' => $request->dias_laborados[$i],
-
-                'dias_incapacidad' => $request->dias_incapacidad[$i],
-
-                'folio_imss' => $request->folio_imss[$i] ?: null,
-
-                'percepciones' => $percepciones,
-
-                'deducciones' => $deducciones,
-
-                'ajustes' => $ajustes,
-
-                'horas_extra' => $horasExtra,
-
-                'justificacion' => $request->justificacion[$i] ?: null,
-
-                'total_neto' => $total,
+                'observaciones' =>
+                    $request->observaciones,
 
             ]);
 
-        }
+            foreach (
+                $request->empleado_id
+                as $i => $empleadoId
+            ) {
 
-        LogActividad::create([
+                $salario =
+                    (float) $request->salario_base[$i];
 
-            'usuario' => Auth::user()->rol,
+                $percepciones =
+                    (float) $request->percepciones[$i];
 
-            'accion' => 'Creó una prenómina',
+                $deduccionesManuales =
+                    (float) $request->deducciones[$i];
 
-        ]);
+                $ajustes =
+                    (float) $request->ajustes[$i];
+
+                $horasExtra =
+                    (float) $request->horas_extra[$i];
+
+                $diasLaborados =
+                    (int) $request->dias_laborados[$i];
+
+                $diasIncapacidad =
+                    (int) $request->dias_incapacidad[$i];
+
+                /*
+                |--------------------------------------------------------------------------
+                | BUSCAR ENTREGAS PENDIENTES DE DEDUCCIÓN
+                |--------------------------------------------------------------------------
+                */
+
+                $entregasPendientes =
+                    EntregaUniforme::query()
+                        ->with('producto')
+                        ->where(
+                            'empleado_id',
+                            $empleadoId
+                        )
+                        ->whereNull(
+                            'prenomina_detalle_id'
+                        )
+                        ->whereBetween(
+                            'fecha_entrega',
+                            [
+                                $request->periodo_inicio,
+                                $request->periodo_fin,
+                            ]
+                        )
+                        ->whereHas(
+                            'producto',
+                            function ($query) {
+
+                                $query->where(
+                                    'genera_deduccion',
+                                    true
+                                )
+                                ->whereNotNull(
+                                    'monto_deduccion'
+                                )
+                                ->where(
+                                    'monto_deduccion',
+                                    '>',
+                                    0
+                                );
+
+                            }
+                        )
+                        ->lockForUpdate()
+                        ->get();
+
+                $deduccionesUniforme =
+                    $entregasPendientes->sum(
+                        function (
+                            EntregaUniforme $entrega
+                        ) {
+
+                            return
+                                (float) $entrega->cantidad
+                                *
+                                (float) $entrega
+                                    ->producto
+                                    ->monto_deduccion;
+
+                        }
+                    );
+
+                $deduccionesTotales =
+                    $deduccionesManuales
+                    +
+                    $deduccionesUniforme;
+
+                /*
+                |--------------------------------------------------------------------------
+                | CÁLCULO DE SALARIO
+                |--------------------------------------------------------------------------
+                */
+
+                $diasPagables = max(
+                    0,
+                    $diasLaborados
+                    -
+                    $diasIncapacidad
+                );
+
+                $salarioDiario =
+                    $diasLaborados > 0
+                        ? $salario / $diasLaborados
+                        : 0;
+
+                $salarioPagable =
+                    $salarioDiario
+                    *
+                    $diasPagables;
+
+                $total =
+                    $salarioPagable
+                    +
+                    $percepciones
+                    +
+                    $horasExtra
+                    +
+                    $ajustes
+                    -
+                    $deduccionesTotales;
+
+                $detalle = PrenominaDetalle::create([
+
+                    'prenomina_id' =>
+                        $prenomina->id,
+
+                    'empleado_id' =>
+                        $empleadoId,
+
+                    'salario_base' =>
+                        $salarioPagable,
+
+                    'dias_laborados' =>
+                        $diasLaborados,
+
+                    'dias_incapacidad' =>
+                        $diasIncapacidad,
+
+                    'folio_imss' =>
+                        !empty($request->folio_imss[$i])
+                            ? $request->folio_imss[$i]
+                            : null,
+
+                    'percepciones' =>
+                        $percepciones,
+
+                    'deducciones' =>
+                        $deduccionesTotales,
+
+                    'ajustes' =>
+                        $ajustes,
+
+                    'horas_extra' =>
+                        $horasExtra,
+
+                    'justificacion' =>
+                        !empty($request->justificacion[$i])
+                            ? $request->justificacion[$i]
+                            : null,
+
+                    'total_neto' =>
+                        $total,
+
+                ]);
+
+                /*
+                |--------------------------------------------------------------------------
+                | MARCAR ENTREGA COMO APLICADA
+                |--------------------------------------------------------------------------
+                */
+
+                if ($entregasPendientes->isNotEmpty()) {
+
+                    EntregaUniforme::whereIn(
+                        'id',
+                        $entregasPendientes->pluck('id')
+                    )
+                        ->update([
+
+                            'prenomina_detalle_id' =>
+                                $detalle->id,
+
+                            'deduccion_aplicada_at' =>
+                                now(),
+
+                        ]);
+                }
+            }
+
+            LogActividad::create([
+
+                'usuario' =>
+                    Auth::user()->rol,
+
+                'accion' =>
+                    'Creó una prenómina',
+
+            ]);
+
+        });
 
         return redirect()
-
             ->route(
-
                 'administracion.prenominas.index'
-
             )
-
             ->with(
-
                 'success',
-
                 'Prenómina registrada correctamente.'
-
             );
     }
 
     public function edit(Prenomina $prenomina)
     {
-        $prenomina->load(
+        /*
+        |--------------------------------------------------------------------------
+        | SOLO LAS PRENÓMINAS ABIERTAS PUEDEN EDITARSE
+        |--------------------------------------------------------------------------
+        */
 
-            'detalles'
+        if ($prenomina->estatus !== 'abierta') {
 
-        );
+            return redirect()
+                ->route(
+                    'administracion.prenominas.index'
+                )
+                ->with(
+                    'error',
+                    'Solo las prenóminas abiertas pueden editarse.'
+                );
+
+        }
+
+        $prenomina->load('detalles.empleado');
 
         $empleados = Empleado::where(
-
             'estado',
-
             'activo'
-
         )
+            ->orderBy('nombre')
+            ->get();
 
-        ->orderBy(
+        $entregasDeducibles = EntregaUniforme::query()
+            ->with([
+                'producto:id,nombre,genera_deduccion,monto_deduccion',
+            ])
+            ->where(function ($query) use ($prenomina) {
 
-            'nombre'
+                $query->whereNull('prenomina_detalle_id')
+                    ->orWhereHas(
+                        'prenominaDetalle',
+                        function ($detalleQuery) use ($prenomina) {
 
-        )
+                            $detalleQuery->where(
+                                'prenomina_id',
+                                $prenomina->id
+                            );
 
-        ->get();
+                        }
+                    );
+
+            })
+            ->whereHas(
+                'producto',
+                function ($query) {
+
+                    $query->where(
+                        'genera_deduccion',
+                        true
+                    )
+                        ->whereNotNull(
+                            'monto_deduccion'
+                        )
+                        ->where(
+                            'monto_deduccion',
+                            '>',
+                            0
+                        );
+
+                }
+            )
+            ->get([
+                'id',
+                'empleado_id',
+                'producto_id',
+                'cantidad',
+                'fecha_entrega',
+                'prenomina_detalle_id',
+            ]);
 
         return view(
-
             'administracion.prenominas.edit',
-
             compact(
-
                 'prenomina',
-
-                'empleados'
-
+                'empleados',
+                'entregasDeducibles'
             )
+        );
+    }
 
+    public function show(Prenomina $prenomina)
+    {
+        $prenomina->load('detalles.empleado');
+
+        return view(
+            'administracion.prenominas.show',
+            compact('prenomina')
         );
     }
 
@@ -509,6 +693,25 @@ class PrenominaController extends Controller
 
     public function destroy(Prenomina $prenomina)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | LAS PRENÓMINAS AUTORIZADAS NO PUEDEN ELIMINARSE
+        |--------------------------------------------------------------------------
+        */
+
+        if ($prenomina->estatus === 'autorizada') {
+
+            return redirect()
+                ->route(
+                    'administracion.prenominas.index'
+                )
+                ->with(
+                    'error',
+                    'Una prenómina autorizada no puede eliminarse.'
+                );
+
+        }
+
         $prenomina->delete();
 
         LogActividad::create([
@@ -520,15 +723,21 @@ class PrenominaController extends Controller
         ]);
 
         return redirect()
-
             ->route(
                 'administracion.prenominas.index'
             )
-
             ->with(
                 'success',
                 'Prenómina eliminada correctamente.'
             );
+    }
+
+    public function entregasUniforme()
+    {
+        return $this->hasMany(
+            \App\Models\RH\EntregaUniforme::class,
+            'prenomina_detalle_id'
+        );
     }
 
 }

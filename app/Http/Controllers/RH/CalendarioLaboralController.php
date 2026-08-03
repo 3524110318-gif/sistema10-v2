@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use App\Services\ActividadService;
 
 class CalendarioLaboralController extends Controller
 {
@@ -164,17 +165,32 @@ class CalendarioLaboralController extends Controller
                         : null,
             ]);
 
-            LogActividad::create([
-                'usuario' =>
-                    Auth::user()->rol,
+            ActividadService::registrar(
 
-                'accion' =>
-                    'Registró el día ' .
-                    $dia->fecha .
-                    ' como ' .
-                    $dia->tipo .
-                    ' en el calendario laboral',
-            ]);
+                'Registró el día '
+                . $dia->fecha
+                . ' como '
+                . $dia->tipo
+                . ' en el calendario laboral',
+
+                null,
+
+                [
+
+                    'id' => $dia->id,
+
+                    'fecha' =>
+                        $dia->fecha,
+
+                    'tipo' =>
+                        $dia->tipo,
+
+                    'descripcion' =>
+                        $dia->descripcion,
+
+                ]
+
+            );
 
         });
 

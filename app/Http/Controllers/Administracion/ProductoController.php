@@ -128,6 +128,18 @@ class ProductoController extends Controller
 
             'precio_promedio' => 'nullable|numeric|min:0',
 
+            'genera_deduccion' => [
+                'nullable',
+                'boolean',
+            ],
+
+            'monto_deduccion' => [
+                'nullable',
+                'numeric',
+                'min:0',
+                'required_if:genera_deduccion,1',
+            ],
+
         ]);
 
         $producto = Producto::create([
@@ -157,6 +169,14 @@ class ProductoController extends Controller
 
             'precio_promedio' =>
                 $request->precio_promedio ?? $request->precio_compra,
+            
+            'genera_deduccion' =>
+                $request->boolean('genera_deduccion'),
+
+            'monto_deduccion' =>
+                $request->boolean('genera_deduccion')
+                    ? $request->input('monto_deduccion')
+                    : null,
 
         ]);
 

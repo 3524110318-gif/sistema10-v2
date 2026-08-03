@@ -3,20 +3,29 @@
 namespace App\Http\Controllers\Operaciones;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Operaciones\IncidenciaOperativa;
 use App\Models\Operaciones\Servicio;
 use App\Models\Operaciones\Supervision;
+use App\Services\ActividadService;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class IncidenciaOperativaController extends Controller
 {
     public function index()
     {
         $incidencias = IncidenciaOperativa::with([
+
             'servicio',
+
             'supervision.asignacion.empleado',
+
             'supervision.asignacion.plaza',
-        ])->latest()->get();
+
+        ])
+        ->latest()
+        ->get();
 
         return view(
             'operaciones.incidencias.index',
@@ -44,11 +53,14 @@ class IncidenciaOperativaController extends Controller
 
     public function create()
     {
-        $servicios = Servicio::all();
+        $servicios = Servicio::orderBy('nombre')->get();
 
         $supervisiones = Supervision::with([
+
             'asignacion.empleado',
-            'asignacion.plaza'
+
+            'asignacion.plaza',
+
         ])
         ->latest()
         ->get();
@@ -62,7 +74,9 @@ class IncidenciaOperativaController extends Controller
         );
     }
 
-    public function createDesdeSupervision(Supervision $supervision)
+    public function createDesdeSupervision(
+        Supervision $supervision
+    )
     {
         if ($supervision->incidencia)
         {
@@ -75,18 +89,27 @@ class IncidenciaOperativaController extends Controller
                     'Esta supervisión ya tiene una incidencia registrada.'
                 );
         }
+
         return view(
             'operaciones.incidencias.create',
             [
 
-                'supervision' => $supervision,
+                'supervision' =>
+                    $supervision,
 
-                'servicios' => Servicio::all(),
+                'servicios' =>
+                    Servicio::orderBy('nombre')->get(),
 
-                'supervisiones' => Supervision::with([
-                    'asignacion.empleado',
-                    'asignacion.plaza'
-                ])->latest()->get(),
+                'supervisiones' =>
+                    Supervision::with([
+
+                        'asignacion.empleado',
+
+                        'asignacion.plaza',
+
+                    ])
+                    ->latest()
+                    ->get(),
 
             ]
         );
@@ -94,45 +117,239 @@ class IncidenciaOperativaController extends Controller
 
     public function store(Request $request)
     {
-        IncidenciaOperativa::create([
+        $datos = $request->validate(
+            [
 
-            'servicio_id' =>
-                $request->servicio_id,
+                'servicio_id' => [
+                    'required',
+                    'integer',
+                    'exists:servicios,id',
+                ],
 
-            'supervision_id' =>
-                $request->supervision_id,
+                'supervision_id' => [
+                    'nullable',
+                    'integer',
+                    'exists:supervisions,id',
+                    'unique:incidencia_operativas,supervision_id',
+                ],
 
-            'tipo' =>
-                $request->tipo,
+                'tipo' => [
+                    'required',
+                    Rule::in([
 
-            'descripcion' =>
-                $request->descripcion,
+                        'ausencia',
 
-            'folio_fisico' =>
-                $request->folio_fisico,
+                        'retardo',
 
-            'estado' =>
-                'abierta',
+                        'cliente',
 
-        ]);
+                        'robo',
+
+                        'accidente',
+
+                        'novedad',
+
+                    ]),
+                ],
+
+                'descripcion' => [
+                    'required',
+                    'string',
+                ],
+
+                'folio_fisico' => [
+                    Rule::requiredIf(
+                        in_array(
+                            $request->tipo,
+                            [
+                                'robo',
+                                'accidente',
+                            ],
+                            true
+                        )
+                    ),
+                    'nullable',
+                    'string',
+                    'max:100',
+                ],
+
+            ],
+            [
+
+                'servicio_id.required' =>
+                    'Debes seleccionar un servicio.',
+
+                'servicio_id.exists' =>
+                    'El servicio seleccionado no existe.',
+
+                'supervision_id.exists' =>
+                    'La supervisión seleccionada no existe.',
+
+                'supervision_id.unique' =>
+                    'La supervisión seleccionada ya tiene una incidencia registrada.',
+
+                'tipo.required' =>
+                    'Debes seleccionar el tipo de incidencia.',
+
+                'tipo.in' =>
+                    'El tipo de incidencia seleccionado no es válido.',
+
+                'descripcion.required' =>
+                    'Debes escribir la descripción de la incidencia.',
+
+                'folio_fisico.required' =>
+                    'El folio físico es obligatorio para robos y accidentes.',
+
+                'folio_fisico.max' =>
+                    'El folio físico no debe superar los 100 caracteres.',
+
+            ]
+        );
+
+        $cantidadPalabras = str_word_count(
+            strip_tags($datos['descripcion'])
+        );
+
+        if ($cantidadPalabras > 300)
+        {
+            throw ValidationException::withMessages(
+                [
+
+                    'descripcion' =>
+                        'La descripción no puede superar las 300 palabras. Actualmente contiene '
+                        . $cantidadPalabras
+                        . ' palabras.',
+
+                ]
+            );
+        }
+
+        $incidencia = IncidenciaOperativa::create(
+            [
+
+                'servicio_id' =>
+                    $datos['servicio_id'],
+
+                'supervision_id' =>
+                    $datos['supervision_id'] ?? null,
+
+                'tipo' =>
+                    $datos['tipo'],
+
+                'descripcion' =>
+                    $datos['descripcion'],
+
+                'folio_fisico' =>
+                    $datos['folio_fisico'] ?? null,
+
+                'estado' =>
+                    'abierta',
+
+            ]
+        );
+
+        ActividadService::registrar(
+
+            'Registró la incidencia operativa ID '
+            . $incidencia->id,
+
+            null,
+
+            [
+
+                'id' =>
+                    $incidencia->id,
+
+                'servicio_id' =>
+                    $incidencia->servicio_id,
+
+                'supervision_id' =>
+                    $incidencia->supervision_id,
+
+                'tipo' =>
+                    $incidencia->tipo,
+
+                'folio_fisico' =>
+                    $incidencia->folio_fisico,
+
+                'estado' =>
+                    $incidencia->estado,
+
+            ]
+
+        );
 
         return redirect()
             ->route(
                 'operaciones.incidencias.index'
+            )
+            ->with(
+                'success',
+                'La incidencia se registró correctamente.'
             );
     }
 
-    public function cerrar(IncidenciaOperativa $incidencia)
+    public function cerrar(
+        IncidenciaOperativa $incidencia
+    )
     {
-        $incidencia->update([
+        if ($incidencia->estado === 'cerrada')
+        {
+            return redirect()
+                ->route(
+                    'operaciones.incidencias.index'
+                )
+                ->with(
+                    'error',
+                    'La incidencia ya se encuentra cerrada.'
+                );
+        }
 
-            'estado' => 'cerrada'
+        $valorAnterior = [
 
-        ]);
+            'id' =>
+                $incidencia->id,
+
+            'estado' =>
+                $incidencia->estado,
+
+        ];
+
+        $incidencia->update(
+            [
+
+                'estado' =>
+                    'cerrada',
+
+            ]
+        );
+
+        ActividadService::registrar(
+
+            'Cerró la incidencia operativa ID '
+            . $incidencia->id,
+
+            $valorAnterior,
+
+            [
+
+                'id' =>
+                    $incidencia->id,
+
+                'estado' =>
+                    'cerrada',
+
+            ]
+
+        );
 
         return redirect()
             ->route(
                 'operaciones.incidencias.index'
+            )
+            ->with(
+                'success',
+                'La incidencia se cerró correctamente.'
             );
     }
 }

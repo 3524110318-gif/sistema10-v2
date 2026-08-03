@@ -29,6 +29,7 @@
 
     <form
         method="POST"
+        enctype="multipart/form-data"
         action="{{ route(
             'rh.bajas.store',
             $empleado->id
@@ -36,6 +37,31 @@
     >
 
         @csrf
+        @if ($errors->any())
+
+            <div class="alert alert-danger">
+
+                <div class="fw-bold mb-2">
+
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+
+                    Corrige lo siguiente:
+
+                </div>
+
+                <ul class="mb-0">
+
+                    @foreach ($errors->all() as $error)
+
+                        <li>{{ $error }}</li>
+
+                    @endforeach
+
+                </ul>
+
+            </div>
+
+        @endif
 
 
         <div class="gtri-section">
@@ -184,16 +210,6 @@
                         value="{{ old('fecha_baja') }}"
                         required
                     >
-
-                    @error('fecha_baja')
-
-                        <div class="text-danger small mt-1">
-
-                            {{ $message }}
-
-                        </div>
-
-                    @enderror
 
                 </div>
 
@@ -368,12 +384,68 @@
 
         </div>
 
-
         <div class="gtri-section">
 
             <div class="gtri-section-title">
 
                 <span>04</span>
+
+                Evidencias documentales
+
+            </div>
+
+            <div class="row g-4">
+
+                <div class="col-md-6">
+
+                    <label
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Carta de renuncia (PDF o Imagen)
+
+                    </label>
+
+                    <input
+                        type="file"
+                        name="archivo_carta_renuncia"
+                        class="form-control gtri-input"
+                        accept=".pdf,.jpg,.jpeg,.png,.webp"
+                    >
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label
+                        class="form-label fw-semibold"
+                        style="color:#CBD5E1;"
+                    >
+
+                        Finiquito firmado (PDF o Imagen)
+
+                    </label>
+
+                    <input
+                        type="file"
+                        name="archivo_finiquito"
+                        class="form-control gtri-input"
+                        accept=".pdf,.jpg,.jpeg,.png,.webp"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>05</span>
 
                 Observaciones
 
@@ -398,16 +470,6 @@
                 rows="5"
                 placeholder="Escribe aquí cualquier información adicional..."
             >{{ old('observaciones') }}</textarea>
-
-            @error('observaciones')
-
-                <div class="text-danger small mt-1">
-
-                    {{ $message }}
-
-                </div>
-
-            @enderror
 
         </div>
 

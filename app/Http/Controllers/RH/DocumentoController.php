@@ -6,18 +6,63 @@ use App\Http\Controllers\Controller;
 use App\Models\Administracion\LogActividad;
 use App\Models\RH\Documento;
 use App\Models\RH\Empleado;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Http\JsonResponse;
+use App\Services\ActividadService;
 
 class DocumentoController extends Controller
 {
+    /**
+     * Marcar documento como entregado.
+     */
     public function store(
         Request $request,
         Empleado $empleado
-    ) {
-        $datos = $this->validarDocumento($request);
+    ): JsonResponse|RedirectResponse {
+
+        $datos = $this->validarDocumento(
+            $request
+        );
+
+        $documentoExistente = Documento::where(
+            'empleado_id',
+            $empleado->id
+        )
+            ->where(
+                'nombre',
+                $datos['nombre']
+            )
+            ->first();
+
+        if (
+            $documentoExistente
+            && $documentoExistente->entregado
+        ) {
+
+            if ($request->expectsJson()) {
+
+                return response()->json([
+                    'success' => true,
+                    'message' =>
+                        'El documento ya estaba marcado como entregado.',
+                ]);
+
+            }
+
+            return redirect()
+                ->route(
+                    'rh.empleados.show',
+                    $empleado->id
+                )
+                ->with(
+                    'info',
+                    'El documento ya estaba marcado como entregado.'
+                );
+        }
 
         DB::transaction(function () use (
             $datos,
@@ -26,24 +71,55 @@ class DocumentoController extends Controller
 
             Documento::updateOrCreate(
                 [
-                    'empleado_id' => $empleado->id,
-                    'nombre' => $datos['nombre'],
+                    'empleado_id' =>
+                        $empleado->id,
+
+                    'nombre' =>
+                        $datos['nombre'],
                 ],
                 [
                     'entregado' => true,
                 ]
             );
 
-            LogActividad::create([
-                'usuario' => Auth::user()->rol,
-                'accion' =>
-                    'Marcó como entregado el documento "' .
-                    $datos['nombre'] .
-                    '" del empleado ' .
-                    $empleado->numero_control,
-            ]);
+            ActividadService::registrar(
+
+                'Marcó como entregado el documento "'
+                . $datos['nombre']
+                . '" del empleado '
+                . $empleado->numero_control,
+
+                null,
+
+                [
+
+                    'empleado_id' =>
+                        $empleado->id,
+
+                    'numero_control' =>
+                        $empleado->numero_control,
+
+                    'documento' =>
+                        $datos['nombre'],
+
+                    'estado' =>
+                        'entregado',
+
+                ]
+
+            );
 
         });
+
+        if ($request->expectsJson()) {
+
+            return response()->json([
+                'success' => true,
+                'message' =>
+                    'Documento marcado como entregado.',
+            ]);
+
+        }
 
         return redirect()
             ->route(
@@ -56,29 +132,63 @@ class DocumentoController extends Controller
             );
     }
 
+    /**
+     * Marcar documento como pendiente.
+     */
     public function pendiente(
         Request $request,
         Empleado $empleado
-    ) {
-        $datos = $this->validarDocumento($request);
+    ): JsonResponse|RedirectResponse {
+
+        $datos = $this->validarDocumento(
+            $request
+        );
+
+        $documento = Documento::where(
+            'empleado_id',
+            $empleado->id
+        )
+            ->where(
+                'nombre',
+                $datos['nombre']
+            )
+            ->first();
+
+        if (! $documento) {
+
+            if ($request->expectsJson()) {
+
+                return response()->json([
+                    'success' => true,
+                    'message' =>
+                        'El documento ya estaba marcado como pendiente.',
+                ]);
+
+            }
+
+            return redirect()
+                ->route(
+                    'rh.empleados.show',
+                    $empleado->id
+                )
+                ->with(
+                    'info',
+                    'El documento ya estaba marcado como pendiente.'
+                );
+        }
 
         DB::transaction(function () use (
+            $documento,
             $datos,
             $empleado
         ) {
 
-            Documento::where(
-                'empleado_id',
-                $empleado->id
-            )
-                ->where(
-                    'nombre',
-                    $datos['nombre']
-                )
-                ->delete();
+            $documento->delete();
 
             LogActividad::create([
-                'usuario' => Auth::user()->rol,
+                'usuario' =>
+                    Auth::user()->rol,
+
                 'accion' =>
                     'Marcó como pendiente el documento "' .
                     $datos['nombre'] .
@@ -87,6 +197,16 @@ class DocumentoController extends Controller
             ]);
 
         });
+
+        if ($request->expectsJson()) {
+
+            return response()->json([
+                'success' => true,
+                'message' =>
+                    'Documento marcado como pendiente.',
+            ]);
+
+        }
 
         return redirect()
             ->route(
@@ -99,9 +219,13 @@ class DocumentoController extends Controller
             );
     }
 
+    /**
+     * Validar documento autorizado para RH.
+     */
     private function validarDocumento(
         Request $request
     ): array {
+
         return $request->validate(
             [
                 'nombre' => [

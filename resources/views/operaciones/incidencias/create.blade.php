@@ -525,9 +525,13 @@
                         placeholder="Ejemplo: INC-2026-001"
                     >
 
-                    <small class="text-secondary d-block mt-2">
+                    <small
+                        id="mensaje-folio"
+                        class="text-secondary d-block mt-2"
+                    >
 
-                        Opcional, si existe un reporte físico relacionado.
+                        Obligatorio para robos y accidentes.
+                        Opcional para los demás tipos.
 
                     </small>
 
@@ -572,6 +576,25 @@
                     ? $supervision->observaciones
                     : ''
             ) }}</textarea>
+
+            <div class="d-flex justify-content-between mt-2">
+
+                <small class="text-secondary">
+
+                    Máximo 300 palabras.
+
+                </small>
+
+                <small
+                    id="contador-palabras"
+                    class="text-secondary"
+                >
+
+                    0 / 300
+
+                </small>
+
+            </div>
 
         </div>
 

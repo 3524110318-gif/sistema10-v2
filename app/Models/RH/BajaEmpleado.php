@@ -3,6 +3,7 @@
 namespace App\Models\RH;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class BajaEmpleado extends Model
 {
@@ -24,9 +25,33 @@ class BajaEmpleado extends Model
 
         'carta_renuncia',
 
+        'archivo_carta_renuncia',
+
         'finiquito_entregado',
 
+        'archivo_finiquito',
+
         'observaciones',
+
+        'user_id',
+
+    ];
+
+    protected $casts = [
+
+        'fecha_baja' => 'date',
+
+        'uniforme_devuelto' => 'boolean',
+
+        'botas_devueltas' => 'boolean',
+
+        'credencial_devuelta' => 'boolean',
+
+        'radio_devuelto' => 'boolean',
+
+        'carta_renuncia' => 'boolean',
+
+        'finiquito_entregado' => 'boolean',
 
     ];
 
@@ -34,6 +59,14 @@ class BajaEmpleado extends Model
     {
         return $this->belongsTo(
             Empleado::class
+        );
+    }
+
+    public function usuario()
+    {
+        return $this->belongsTo(
+            User::class,
+            'user_id'
         );
     }
 }

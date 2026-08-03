@@ -109,6 +109,17 @@ Route::middleware(['auth', 'role:operaciones'])->group(function ()
         Route::post('/asignaciones',[AsignacionController::class, 'store'])
             ->name('operaciones.asignaciones.store');
 
+        Route::patch(
+            '/asignaciones/{asignacion}/finalizar',
+            [
+                AsignacionController::class,
+                'finalizar'
+            ]
+        )
+        ->name(
+            'operaciones.asignaciones.finalizar'
+        );
+
 
 
 

@@ -7,6 +7,8 @@ use App\Models\Operaciones\Asignacion;
 use App\Models\Operaciones\PlazaOperativa;
 use App\Models\RH\Empleado;
 use Illuminate\Http\Request;
+use App\Services\ActividadService;
+use Illuminate\Support\Facades\DB;
 
 class AsignacionController extends Controller
 {
@@ -292,6 +294,107 @@ class AsignacionController extends Controller
             ->with(
                 'success',
                 'Empleado asignado correctamente.'
+            );
+    }
+
+    public function finalizar(
+    Asignacion $asignacion
+    )
+    {
+        if ($asignacion->estado === 'finalizada')
+        {
+            return redirect()
+                ->route(
+                    'operaciones.asignaciones.index'
+                )
+                ->with(
+                    'error',
+                    'La asignación ya se encuentra finalizada.'
+                );
+        }
+
+        DB::transaction(function () use ($asignacion)
+        {
+            $valorAnterior = [
+
+                'id' =>
+                    $asignacion->id,
+
+                'empleado_id' =>
+                    $asignacion->empleado_id,
+
+                'plaza_operativa_id' =>
+                    $asignacion->plaza_operativa_id,
+
+                'fecha_inicio' =>
+                    $asignacion->fecha_inicio,
+
+                'fecha_fin' =>
+                    $asignacion->fecha_fin,
+
+                'estado' =>
+                    $asignacion->estado,
+
+            ];
+
+            $asignacion->update([
+
+                'fecha_fin' =>
+                    now()->toDateString(),
+
+                'estado' =>
+                    'finalizada',
+
+            ]);
+
+            $asignacion
+                ->plaza()
+                ->update([
+
+                    'estado' =>
+                        'vacante',
+
+                ]);
+
+            ActividadService::registrar(
+
+                'Finalizó la asignación ID '
+                . $asignacion->id,
+
+                $valorAnterior,
+
+                [
+
+                    'id' =>
+                        $asignacion->id,
+
+                    'empleado_id' =>
+                        $asignacion->empleado_id,
+
+                    'plaza_operativa_id' =>
+                        $asignacion->plaza_operativa_id,
+
+                    'fecha_inicio' =>
+                        $asignacion->fecha_inicio,
+
+                    'fecha_fin' =>
+                        $asignacion->fecha_fin,
+
+                    'estado' =>
+                        $asignacion->estado,
+
+                ]
+
+            );
+        });
+
+        return redirect()
+            ->route(
+                'operaciones.asignaciones.index'
+            )
+            ->with(
+                'success',
+                'La asignación se finalizó y la plaza quedó disponible.'
             );
     }
 }

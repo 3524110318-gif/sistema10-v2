@@ -535,6 +535,118 @@
 
         </div>
 
+        {{-- 05 · FIRMA DE CONFORMIDAD --}}
+
+        <div class="gtri-section">
+
+            <div class="gtri-section-title">
+
+                <span>05</span>
+
+                Firma de conformidad
+
+            </div>
+
+            <div
+                class="p-4 rounded-3"
+                style="
+                    background:#111827;
+                    border:1px solid rgba(212,175,55,.25);
+                "
+            >
+
+                <div class="mb-3">
+
+                    <h6 class="text-light fw-bold mb-2">
+
+                        Firma del colaborador
+
+                    </h6>
+
+                    <p class="text-secondary mb-0">
+
+                        El colaborador confirma mediante su firma que recibió correctamente
+                        el uniforme, equipo o accesorio descrito en esta entrega.
+
+                    </p>
+
+                </div>
+
+                <div
+                    class="rounded-3 overflow-hidden"
+                    style="
+                        background:#FFFFFF;
+                        border:2px dashed #D4AF37;
+                    "
+                >
+
+                    <canvas
+                        id="firmaCanvas"
+                        width="900"
+                        height="250"
+                        style="
+                            width:100%;
+                            height:250px;
+                            display:block;
+                            cursor:crosshair;
+                            touch-action:none;
+                        "
+                    ></canvas>
+
+                </div>
+
+                <input
+                    type="hidden"
+                    name="firma"
+                    id="firma"
+                    value="{{ old('firma') }}"
+                >
+
+                <div
+                    class="
+                        d-flex
+                        justify-content-between
+                        align-items-center
+                        flex-wrap
+                        gap-3
+                        mt-3
+                    "
+                >
+
+                    <small class="text-secondary">
+
+                        Puede firmar utilizando mouse, pantalla táctil o S-Pen.
+
+                    </small>
+
+                    <button
+                        type="button"
+                        id="limpiarFirma"
+                        class="btn gtri-btn-secondary"
+                    >
+
+                        <i class="bi bi-eraser me-1"></i>
+
+                        Limpiar firma
+
+                    </button>
+
+                </div>
+
+                @error('firma')
+
+                    <div class="text-danger small mt-2">
+
+                        {{ $message }}
+
+                    </div>
+
+                @enderror
+
+            </div>
+
+        </div>
+
 
         {{-- 05 · ACCIONES --}}
 

@@ -61,6 +61,76 @@
 
     </div>
 
+    <form
+        method="GET"
+        action="{{ route('rh.calendario.index') }}"
+        class="mb-4"
+    >
+
+        <div class="row g-3 align-items-end">
+
+            <div class="col-lg-8">
+
+                <label
+                    for="buscar"
+                    class="form-label text-light fw-semibold"
+                >
+
+                    Buscar fecha
+
+                </label>
+
+                <input
+                    type="text"
+                    name="buscar"
+                    id="buscar"
+                    class="form-control gtri-input"
+                    placeholder="Busca por fecha, tipo o descripción..."
+                    value="{{ request('buscar') }}"
+                >
+
+            </div>
+
+
+            <div class="col-lg-4">
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn gtri-btn-secondary"
+                    >
+
+                        <i class="bi bi-search me-1"></i>
+
+                        Buscar
+
+                    </button>
+
+
+                    @if (request('buscar'))
+
+                        <a
+                            href="{{ route('rh.calendario.index') }}"
+                            class="btn gtri-btn-secondary"
+                        >
+
+                            <i class="bi bi-x-circle me-1"></i>
+
+                            Limpiar
+
+                        </a>
+
+                    @endif
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
     <div class="gtri-section">
 
         {{-- INDICADORES --}}
@@ -354,76 +424,6 @@
 
     </div>
 
-    <form
-        method="GET"
-        action="{{ route('rh.calendario.index') }}"
-        class="mb-4"
-    >
-
-        <div class="row g-3 align-items-end">
-
-            <div class="col-lg-8">
-
-                <label
-                    for="buscar"
-                    class="form-label text-light fw-semibold"
-                >
-
-                    Buscar fecha
-
-                </label>
-
-                <input
-                    type="text"
-                    name="buscar"
-                    id="buscar"
-                    class="form-control gtri-input"
-                    placeholder="Busca por fecha, tipo o descripción..."
-                    value="{{ request('buscar') }}"
-                >
-
-            </div>
-
-
-            <div class="col-lg-4">
-
-                <div class="d-flex flex-wrap gap-2">
-
-                    <button
-                        type="submit"
-                        class="btn gtri-btn-secondary"
-                    >
-
-                        <i class="bi bi-search me-1"></i>
-
-                        Buscar
-
-                    </button>
-
-
-                    @if (request('buscar'))
-
-                        <a
-                            href="{{ route('rh.calendario.index') }}"
-                            class="btn gtri-btn-secondary"
-                        >
-
-                            <i class="bi bi-x-circle me-1"></i>
-
-                            Limpiar
-
-                        </a>
-
-                    @endif
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </form>
-
     {{-- DÍAS REGISTRADOS --}}
     <div class="gtri-section mb-0">
 
@@ -637,10 +637,10 @@
                                                 'rh.calendario.edit',
                                                 $dia
                                             ) }}"
-                                            class="btn btn-sm gtri-btn-search"
-                                        >
+                                                class="btn gtri-btn-secondary btn-sm px-3"
+                                            >
 
-                                            <i class="bi bi-pencil-square me-1"></i>
+                                                <i class="bi bi-folder2-open me-1"></i>
 
                                             Editar
 

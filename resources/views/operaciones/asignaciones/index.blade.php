@@ -92,13 +92,15 @@
 
                     <colgroup>
 
-                        <col style="width:32%">
+                        <col style="width:27%">
 
-                        <col style="width:28%">
+                        <col style="width:23%">
 
-                        <col style="width:20%">
+                        <col style="width:17%">
 
-                        <col style="width:20%">
+                        <col style="width:15%">
+
+                        <col style="width:18%">
 
                     </colgroup>
 
@@ -111,9 +113,11 @@
 
                             <th>Plaza</th>
 
-                            <th>Fecha de inicio</th>
+                            <th>Vigencia</th>
 
                             <th>Estado</th>
+
+                            <th class="text-end">Acciones</th>
 
                         </tr>
 
@@ -165,16 +169,30 @@
                                 </td>
 
 
-                                {{-- FECHA --}}
+                                {{-- VIGENCIA --}}
                                 <td>
 
-                                    <span class="text-light">
+                                    <span class="text-light d-block">
 
                                         <i class="bi bi-calendar3 me-1 text-warning"></i>
+
+                                        Inicio:
 
                                         {{ $asignacion->fecha_inicio }}
 
                                     </span>
+
+                                    @if($asignacion->fecha_fin)
+
+                                        <small class="text-secondary d-block mt-1">
+
+                                            Fin:
+
+                                            {{ $asignacion->fecha_fin }}
+
+                                        </small>
+
+                                    @endif
 
                                 </td>
 
@@ -182,7 +200,7 @@
                                 {{-- ESTADO --}}
                                 <td>
 
-                                    @if($asignacion->estado === 'activo')
+                                    @if($asignacion->estado === 'activa')
 
                                         <span class="badge bg-success">
 
@@ -192,23 +210,13 @@
 
                                         </span>
 
-                                    @elseif($asignacion->estado === 'finalizado')
+                                    @elseif($asignacion->estado === 'finalizada')
 
                                         <span class="badge bg-secondary">
 
                                             <i class="bi bi-check2-square me-1"></i>
 
                                             Finalizado
-
-                                        </span>
-
-                                    @elseif($asignacion->estado === 'cancelado')
-
-                                        <span class="badge bg-danger">
-
-                                            <i class="bi bi-x-circle me-1"></i>
-
-                                            Cancelado
 
                                         </span>
 
@@ -226,6 +234,54 @@
 
                                 </td>
 
+                                {{-- ACCIONES --}}
+                                <td class="text-end">
+
+                                    @if($asignacion->estado === 'activa')
+
+                                        <form
+                                            method="POST"
+                                            action="{{ route(
+                                                'operaciones.asignaciones.finalizar',
+                                                $asignacion
+                                            ) }}"
+                                            class="d-inline"
+                                            onsubmit="
+                                                return confirm(
+                                                    '¿Deseas finalizar esta asignación? La plaza volverá a quedar vacante.'
+                                                );
+                                            "
+                                        >
+
+                                            @csrf
+
+                                            @method('PATCH')
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm gtri-btn-secondary"
+                                            >
+
+                                                <i class="bi bi-check2-circle me-1"></i>
+
+                                                Finalizar
+
+                                            </button>
+
+                                        </form>
+
+                                    @else
+
+                                        <span class="text-secondary">
+
+                                            Sin acciones
+
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
                             </tr>
 
                         @empty
@@ -233,7 +289,7 @@
                             <tr>
 
                                 <td
-                                    colspan="4"
+                                    colspan="5"
                                     class="text-center py-5"
                                 >
 

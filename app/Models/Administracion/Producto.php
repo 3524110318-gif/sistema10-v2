@@ -30,6 +30,8 @@ class Producto extends Model
         'precio_promedio',
         'estado',
         'tipo_producto',
+        'genera_deduccion',
+        'monto_deduccion',
     ];
 
     /**
@@ -42,6 +44,8 @@ class Producto extends Model
             'precio_promedio' => 'decimal:2',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
+            'genera_deduccion' => 'boolean',
+            'monto_deduccion' => 'decimal:2',
         ];
     }
 

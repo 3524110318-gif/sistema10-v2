@@ -285,6 +285,39 @@ body {
 /* BOTONES                                            */
 /* ================================================== */
 
+
+.gtri-btn-icon{
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gtri-btn-icon i{
+    font-size: 1rem;
+    margin: 0 !important;
+}
+.gtri-btn-table {
+    padding: .25rem .55rem;
+    font-size: .78rem;
+    line-height: 1.2;
+    border-radius: .4rem;
+    min-width: auto;
+}
+
+.gtri-btn-table i {
+    font-size: .8rem;
+}
+.gtri-btn-action{
+    min-width: 130px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: .4rem;
+}
+
 .gtri-btn-primary {
     padding: 10px 22px;
 

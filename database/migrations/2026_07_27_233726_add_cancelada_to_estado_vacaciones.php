@@ -14,19 +14,25 @@ return new class extends Migration
                 'aprobada',
                 'rechazada',
                 'cancelada'
-            ) NOT NULL
+            ) NOT NULL DEFAULT 'pendiente'
         ");
     }
 
     public function down(): void
     {
+        DB::table('vacaciones')
+            ->where('estado', 'cancelada')
+            ->update([
+                'estado' => 'pendiente',
+            ]);
+
         DB::statement("
             ALTER TABLE vacaciones
             MODIFY estado ENUM(
                 'pendiente',
                 'aprobada',
                 'rechazada'
-            ) NOT NULL
+            ) NOT NULL DEFAULT 'pendiente'
         ");
     }
 };

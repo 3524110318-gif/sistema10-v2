@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\RH\CalendarioLaboral;
+use App\Services\ActividadService;
+
 
 class VacacionController extends Controller
 {
@@ -171,41 +173,61 @@ class VacacionController extends Controller
             ]
         );
 
-
         $fechaInicio = Carbon::parse(
             $datos['fecha_inicio']
-        );
+        )->startOfDay();
 
         $fechaFin = Carbon::parse(
             $datos['fecha_fin']
-        );
-
-        $totalDiasPeriodo =
-            $fechaInicio->diffInDays(
-                $fechaFin
-            ) + 1;
+        )->startOfDay();
 
 
-        $diasNoLaborables = CalendarioLaboral::whereBetween(
-            'fecha',
-            [
-                $fechaInicio->format('Y-m-d'),
-                $fechaFin->format('Y-m-d'),
-            ]
-        )
-            ->whereIn(
-                'tipo',
-                [
-                    'festivo',
-                    'descanso',
-                ]
-            )
-            ->count();
+        $diasVacaciones = 0;
+
+        $fechaActual = $fechaInicio->copy();
 
 
-        $datos['dias'] =
-            $totalDiasPeriodo -
-            $diasNoLaborables;
+        while ($fechaActual->lte($fechaFin)) {
+
+            $diaCalendario = CalendarioLaboral::whereDate(
+                'fecha',
+                $fechaActual->format('Y-m-d')
+            )->first();
+
+
+            $esFinDeSemana =
+                $fechaActual->isSaturday() ||
+                $fechaActual->isSunday();
+
+
+            $esNoLaborable =
+                $diaCalendario &&
+                in_array(
+                    $diaCalendario->tipo,
+                    [
+                        'festivo',
+                        'descanso',
+                    ],
+                    true
+                );
+
+
+            if (
+                !$esFinDeSemana &&
+                !$esNoLaborable
+            ) {
+
+                $diasVacaciones++;
+
+            }
+
+
+            $fechaActual->addDay();
+
+        }
+
+
+        $datos['dias'] = $diasVacaciones;
 
 
         if ($datos['dias'] <= 0) {
@@ -214,7 +236,7 @@ class VacacionController extends Controller
                 ->withInput()
                 ->with(
                     'error',
-                    'El periodo seleccionado solamente contiene días festivos o de descanso.'
+                    'El periodo seleccionado no contiene días laborables.'
                 );
 
         }
@@ -341,18 +363,41 @@ class VacacionController extends Controller
             ]);
 
 
-            LogActividad::create([
+            ActividadService::registrar(
 
-                'usuario' =>
-                    Auth::user()->rol,
+            'Registró solicitud de vacaciones de '
+            . $vacacion->dias
+            . ' días para el empleado '
+            . $empleado->numero_control,
 
-                'accion' =>
-                    'Registró solicitud de vacaciones de ' .
-                    $vacacion->dias .
-                    ' días para el empleado ' .
+            null,
+
+            [
+
+                'id' =>
+                    $vacacion->id,
+
+                'empleado_id' =>
+                    $empleado->id,
+
+                'numero_control' =>
                     $empleado->numero_control,
 
-            ]);
+                'dias' =>
+                    $vacacion->dias,
+
+                'fecha_inicio' =>
+                    $vacacion->fecha_inicio,
+
+                'fecha_fin' =>
+                    $vacacion->fecha_fin,
+
+                'estado' =>
+                    $vacacion->estado,
+
+            ]
+
+        );
 
         });
 
@@ -440,6 +485,24 @@ class VacacionController extends Controller
                 $fechaFin
             ) + 1;
 
+        $totalDiasRegistrados = CalendarioLaboral::whereBetween(
+            'fecha',
+            [
+                $fechaInicio->format('Y-m-d'),
+                $fechaFin->format('Y-m-d'),
+            ]
+        )->count();
+
+        if ($totalDiasRegistrados !== $totalDiasPeriodo) {
+
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'El calendario laboral no está completo para el periodo seleccionado. Registra primero todos los días antes de solicitar vacaciones.'
+                );
+
+        }
 
         $diasNoLaborables = CalendarioLaboral::whereBetween(
             'fecha',

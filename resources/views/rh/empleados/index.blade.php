@@ -8,7 +8,7 @@
 
 
     {{-- ENCABEZADO --}}
-    <div class="gtri-page-header">
+    <div class="gtri-page-header gtri-expediente-header">
 
         <div>
 
@@ -324,6 +324,16 @@
 
                                         </span>
 
+                                    @elseif ($empleado->estado == 'pendiente')
+
+                                        <span class="badge bg-warning text-dark">
+
+                                            <i class="bi bi-clock-history me-1"></i>
+
+                                            Pendiente
+
+                                        </span>
+
                                     @else
 
                                         <span class="gtri-badge-danger">
@@ -352,33 +362,53 @@
                                         "
                                     >
 
-                                        <a
-                                            href="{{ route(
-                                                'rh.empleados.show',
-                                                $empleado->id
-                                            ) }}"
-                                            class="btn gtri-btn-secondary btn-sm px-3"
-                                        >
+                                        @if ($empleado->estado === 'pendiente')
 
-                                            <i class="bi bi-folder2-open me-1"></i>
+                                            <a
+                                                href="{{ route(
+                                                    'rh.empleados.edit',
+                                                    $empleado->id
+                                                ) }}"
+                                                class="btn btn-warning btn-sm px-3"
+                                            >
 
-                                            Ver
+                                                <i class="bi bi-pencil-square me-1"></i>
 
-                                        </a>
+                                                Completar expediente
 
-                                        <a
-                                            href="{{ route(
-                                                'rh.bajas.create',
-                                                $empleado->id
-                                            ) }}"
-                                            class="btn btn-danger btn-sm px-3"
-                                        >
+                                            </a>
 
-                                            <i class="bi bi-person-dash me-1"></i>
+                                        @else
 
-                                            Baja
+                                            <a
+                                                href="{{ route(
+                                                    'rh.empleados.show',
+                                                    $empleado->id
+                                                ) }}"
+                                                class="btn gtri-btn-secondary btn-sm px-3"
+                                            >
 
-                                        </a>
+                                                <i class="bi bi-folder2-open me-1"></i>
+
+                                                Ver
+
+                                            </a>
+
+                                            <a
+                                                href="{{ route(
+                                                    'rh.bajas.create',
+                                                    $empleado->id
+                                                ) }}"
+                                                class="btn btn-danger btn-sm px-3"
+                                            >
+
+                                                <i class="bi bi-person-dash me-1"></i>
+
+                                                Baja
+
+                                            </a>
+
+                                        @endif
 
                                     </div>
 

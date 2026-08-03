@@ -9,6 +9,8 @@ use App\Models\RH\Empleado;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Administracion\LogActividad;
 use Illuminate\Support\Facades\DB;
+use App\Services\ActividadService;
+
 
 class ProspectoController extends Controller
 {
@@ -222,86 +224,175 @@ class ProspectoController extends Controller
 
     public function entrevistar($id)
     {
-        $prospecto = Prospecto::findOrFail($id);
+        return DB::transaction(function () use ($id) {
 
-        $prospecto->update([
-            'estado' => 'entrevistado'
-        ]);
+            $prospecto = Prospecto::query()
+                ->lockForUpdate()
+                ->findOrFail($id);
 
-        return back();
+            if ($prospecto->estado !== 'pendiente') {
+
+                return back()->with(
+                    'error',
+                    'Solamente los prospectos pendientes pueden pasar a entrevista.'
+                );
+            }
+
+            $prospecto->update([
+                'estado' => 'entrevistado',
+            ]);
+
+            LogActividad::create([
+                'usuario' => Auth::user()->rol,
+
+                'accion' =>
+                    'Marcó como entrevistado al prospecto ' .
+                    $prospecto->nombre . ' ' .
+                    $prospecto->apellido_paterno,
+            ]);
+
+            return back()->with(
+                'success',
+                'El prospecto fue marcado como entrevistado.'
+            );
+        });
     }
 
     public function aprobar($id)
     {
-        $prospecto = Prospecto::findOrFail($id);
+        return DB::transaction(function () use ($id) {
 
-        $prospecto->update([
-            'estado' => 'aprobado'
-        ]);
+            $prospecto = Prospecto::query()
+                ->lockForUpdate()
+                ->findOrFail($id);
 
-        return back();
+            if ($prospecto->estado !== 'entrevistado') {
+
+                return back()->with(
+                    'error',
+                    'Solamente los prospectos entrevistados pueden aprobarse.'
+                );
+            }
+
+            $prospecto->update([
+                'estado' => 'aprobado',
+            ]);
+
+            ActividadService::registrar(
+
+                'Aprobó al prospecto '
+                . $prospecto->nombre
+                . ' '
+                . $prospecto->apellido_paterno,
+
+                [
+
+                    'id' => $prospecto->id,
+
+                    'estado' =>
+                        'pendiente',
+
+                ],
+
+                [
+
+                    'id' => $prospecto->id,
+
+                    'nombre' =>
+                        $prospecto->nombre,
+
+                    'apellido_paterno' =>
+                        $prospecto->apellido_paterno,
+
+                    'estado' =>
+                        'aprobado',
+
+                ]
+
+            );
+
+            return back()->with(
+                'success',
+                'El prospecto fue aprobado correctamente.'
+            );
+        });
     }
 
     public function rechazar($id)
     {
-        $prospecto = Prospecto::findOrFail($id);
+        return DB::transaction(function () use ($id) {
 
-        $prospecto->update([
-            'estado' => 'rechazado'
-        ]);
+            $prospecto = Prospecto::query()
+                ->lockForUpdate()
+                ->findOrFail($id);
 
-        return back();
+            if ($prospecto->estado !== 'entrevistado') {
+
+                return back()->with(
+                    'error',
+                    'Solamente los prospectos entrevistados pueden rechazarse.'
+                );
+            }
+
+            $prospecto->update([
+                'estado' => 'rechazado',
+            ]);
+
+            LogActividad::create([
+                'usuario' => Auth::user()->rol,
+
+                'accion' =>
+                    'Rechazó al prospecto ' .
+                    $prospecto->nombre . ' ' .
+                    $prospecto->apellido_paterno,
+            ]);
+
+            return back()->with(
+                'success',
+                'El prospecto fue rechazado.'
+            );
+        });
     }
 
     public function contratar($id)
     {
-        $prospecto = Prospecto::findOrFail($id);
+        $resultado = DB::transaction(function () use ($id) {
 
+            $prospecto = Prospecto::query()
+                ->lockForUpdate()
+                ->findOrFail($id);
 
-        if ($prospecto->estado !== 'aprobado') {
+            if ($prospecto->estado !== 'aprobado') {
 
-            return back()->with(
-                'error',
-                'Solamente pueden contratarse prospectos aprobados.'
+                return [
+                    'error' =>
+                        'Solamente pueden contratarse prospectos aprobados.',
+                ];
+            }
+
+            if (! $this->haySlotsDisponibles()) {
+
+                return [
+                    'error' =>
+                        'No existen espacios disponibles para contratar un nuevo empleado.',
+                ];
+            }
+
+            $telefono = preg_replace(
+                '/\D+/',
+                '',
+                $prospecto->telefono ?? ''
             );
 
-        }
+            if (strlen($telefono) !== 10) {
 
-
-        if (! $this->haySlotsDisponibles()) {
-
-            return back()->with(
-                'error',
-                'No existen espacios disponibles para contratar un nuevo empleado.'
-            );
-
-        }
-
-
-        $telefono = preg_replace(
-            '/\D+/',
-            '',
-            $prospecto->telefono ?? ''
-        );
-
-
-        if (strlen($telefono) !== 10) {
-
-            return back()->with(
-                'error',
-                'El teléfono del prospecto debe contener exactamente 10 dígitos.'
-            );
-
-        }
-
-
-        $empleado = DB::transaction(function () use (
-            $prospecto,
-            $telefono
-        ) {
+                return [
+                    'error' =>
+                        'El teléfono del prospecto debe contener exactamente 10 dígitos.',
+                ];
+            }
 
             $empleado = Empleado::create([
-
                 'numero_control' =>
                     $this->generarNumeroControl(),
 
@@ -326,35 +417,47 @@ class ProspectoController extends Controller
                 'fecha_ingreso' =>
                     now()->format('Y-m-d'),
 
+                /*
+                |--------------------------------------------------------------------------
+                | Todavía no se considera empleado activo
+                |--------------------------------------------------------------------------
+                */
+
                 'estado' =>
-                    'activo',
-
+                    'pendiente',
             ]);
-
 
             $prospecto->update([
                 'estado' => 'contratado',
             ]);
 
-
             LogActividad::create([
-
                 'usuario' =>
                     Auth::user()->rol,
 
                 'accion' =>
                     'Contrató al prospecto ' .
-                    $prospecto->nombre .
+                    $prospecto->nombre . ' ' .
+                    $prospecto->apellido_paterno .
                     ' y creó al empleado ' .
-                    $empleado->numero_control,
-
+                    $empleado->numero_control .
+                    ' con expediente pendiente',
             ]);
 
-
-            return $empleado;
-
+            return [
+                'empleado' => $empleado,
+            ];
         });
 
+        if (isset($resultado['error'])) {
+
+            return back()->with(
+                'error',
+                $resultado['error']
+            );
+        }
+
+        $empleado = $resultado['empleado'];
 
         return redirect()
             ->route(
@@ -363,25 +466,25 @@ class ProspectoController extends Controller
             )
             ->with(
                 'success',
-                'Prospecto contratado correctamente. Completa ahora el expediente del empleado.'
+                'Prospecto contratado correctamente. Completa la información del empleado para activarlo.'
             );
     }
 
     private function generarNumeroControl(): string
     {
-        $ultimoEmpleado = Empleado::where(
-            'numero_control',
-            'like',
-            'GTRI%'
-        )
+        $ultimoEmpleado = Empleado::query()
+            ->where(
+                'numero_control',
+                'like',
+                'GTRI%'
+            )
+            ->lockForUpdate()
             ->orderByDesc('numero_control')
             ->first();
 
-        if (!$ultimoEmpleado) {
+        $siguienteNumero = 1;
 
-            $siguienteNumero = 1;
-
-        } else {
+        if ($ultimoEmpleado) {
 
             $ultimoNumero = (int) str_replace(
                 'GTRI',
@@ -389,8 +492,8 @@ class ProspectoController extends Controller
                 $ultimoEmpleado->numero_control
             );
 
-            $siguienteNumero = $ultimoNumero + 1;
-
+            $siguienteNumero =
+                $ultimoNumero + 1;
         }
 
         return 'GTRI' . str_pad(
@@ -403,9 +506,14 @@ class ProspectoController extends Controller
 
     private function haySlotsDisponibles(): bool
     {
-        return Empleado::where(
-            'estado',
-            'activo'
-        )->count() < 1000;
+        return Empleado::query()
+            ->whereIn(
+                'estado',
+                [
+                    'pendiente',
+                    'activo',
+                ]
+            )
+            ->count() < 1000;
     }
 }

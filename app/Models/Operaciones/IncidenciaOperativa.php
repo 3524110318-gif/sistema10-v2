@@ -38,17 +38,15 @@ class IncidenciaOperativa extends Model
         );
     }
 
-    public function cerrar(IncidenciaOperativa $incidencia)
+    public function requiereFolioFisico(): bool
     {
-        $incidencia->update([
-
-            'estado' => 'cerrada'
-
-        ]);
-
-        return redirect()
-            ->route(
-                'operaciones.incidencias.index'
-            );
+        return in_array(
+            $this->tipo,
+            [
+                'robo',
+                'accidente',
+            ],
+            true
+        );
     }
 }

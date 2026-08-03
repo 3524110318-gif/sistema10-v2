@@ -13,6 +13,19 @@ document.addEventListener(
             return;
         }
 
+        const entregasDeducibles =
+            window.entregasDeducibles || [];
+
+        const periodoInicio =
+            document.getElementById(
+                'periodo_inicio'
+            );
+
+        const periodoFin =
+            document.getElementById(
+                'periodo_fin'
+            );
+
         function obtenerNumero(valor){
 
             return parseFloat(
@@ -102,6 +115,12 @@ document.addEventListener(
                 body.appendChild(
                     fila
                 );
+
+                calcularDeduccionAutomatica(
+                    fila
+                );
+
+                calcularTotales();
 
             }
 
@@ -197,9 +216,7 @@ document.addEventListener(
 
                 ){
 
-                    formatearInput(
-                        e.target
-                    );
+                    
 
                     calcularFila(
 
@@ -276,6 +293,128 @@ document.addEventListener(
             }
 
         );
+
+        function calcularDeduccionAutomatica(fila){
+
+            const empleadoSelect =
+                fila.querySelector(
+                    'select[name="empleado_id[]"]'
+                );
+
+            const campoDeduccion =
+                fila.querySelector(
+                    '.deducciones'
+                );
+
+            if(
+                !empleadoSelect
+                ||
+                !campoDeduccion
+            ){
+                return;
+            }
+
+            const empleadoId =
+                parseInt(
+                    empleadoSelect.value
+                ) || 0;
+
+            const inicio =
+                periodoInicio
+                    ? periodoInicio.value
+                    : '';
+
+            const fin =
+                periodoFin
+                    ? periodoFin.value
+                    : '';
+
+            if(
+                !empleadoId
+                ||
+                !inicio
+                ||
+                !fin
+            ){
+
+                campoDeduccion.value =
+                    '0.00';
+
+                calcularFila(fila);
+
+                calcularTotales();
+
+                return;
+            }
+
+            const totalDeduccion =
+                entregasDeducibles
+                .filter(
+                    function(entrega){
+
+                        const fechaEntrega =
+                            String(
+                                entrega.fecha_entrega
+                            ).substring(
+                                0,
+                                10
+                            );
+
+                        return (
+                            parseInt(
+                                entrega.empleado_id
+                            ) === empleadoId
+                            &&
+                            fechaEntrega >= inicio
+                            &&
+                            fechaEntrega <= fin
+                        );
+
+                    }
+                )
+                .reduce(
+                    function(
+                        total,
+                        entrega
+                    ){
+
+                        const cantidad =
+                            parseFloat(
+                                entrega.cantidad
+                            ) || 0;
+
+                        const monto =
+                            parseFloat(
+                                entrega.producto
+                                    ?.monto_deduccion
+                            ) || 0;
+
+                        return total
+                            +
+                            (
+                                cantidad
+                                *
+                                monto
+                            );
+
+                    },
+                    0
+                );
+
+            campoDeduccion.value =
+                totalDeduccion.toLocaleString(
+                    'en-US',
+                    {
+                        minimumFractionDigits:2,
+                        maximumFractionDigits:2
+                    }
+                );
+
+            calcularFila(fila);
+
+            calcularTotales();
+
+        }
 
         function calcularFila(fila){
 
@@ -508,6 +647,105 @@ document.addEventListener(
             );
 
         }
+
+        body.addEventListener(
+
+            'change',
+
+            function(e){
+
+                if(
+
+                    e.target.matches(
+                        'select[name="empleado_id[]"]'
+                    )
+
+                ){
+
+                    const fila =
+                        e.target.closest(
+                            'tr'
+                        );
+
+                    calcularDeduccionAutomatica(
+                        fila
+                    );
+
+                }
+
+            }
+
+        );
+
+        if(periodoInicio){
+
+            periodoInicio.addEventListener(
+
+                'change',
+
+                function(){
+
+                    Array.from(
+                        body.rows
+                    ).forEach(
+
+                        function(fila){
+
+                            calcularDeduccionAutomatica(
+                                fila
+                            );
+
+                        }
+
+                    );
+
+                }
+
+            );
+
+        }
+
+        if(periodoFin){
+
+            periodoFin.addEventListener(
+
+                'change',
+
+                function(){
+
+                    Array.from(
+                        body.rows
+                    ).forEach(
+
+                        function(fila){
+
+                            calcularDeduccionAutomatica(
+                                fila
+                            );
+
+                        }
+
+                    );
+
+                }
+
+            );
+
+        }
+
+        Array.from(
+            body.rows
+        ).forEach(
+
+            function(fila){
+
+                calcularDeduccionAutomatica(
+                    fila
+                );
+
+            }
+
+        );
 
         calcularTotales();
 

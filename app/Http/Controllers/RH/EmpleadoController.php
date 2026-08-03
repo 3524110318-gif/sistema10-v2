@@ -10,16 +10,22 @@ use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use App\Services\ActividadService;
 
 class EmpleadoController extends Controller
 {
     public function index(Request $request)
     {
         $buscar = $request->buscar;
-        $empleados = Empleado::where(
+        
+        $empleados = Empleado::whereIn(
             'estado',
-            'activo'
+            [
+                'activo',
+                'pendiente',
+            ]
         );
+        
         if ($buscar) {
             $empleados->where(
                 'numero_control',
@@ -43,55 +49,156 @@ class EmpleadoController extends Controller
     {
         $datos = $this->validarEmpleado($request);
 
-        if (! $this->haySlotsDisponibles()) {
+        $fotoNueva = null;
+        $bloqueoObtenido = false;
+
+        try {
+
+            /*
+            |--------------------------------------------------------------------------
+            | BLOQUEO DE MYSQL
+            |--------------------------------------------------------------------------
+            |
+            | Evita que dos usuarios registren empleados al mismo tiempo y ambos
+            | calculen el mismo número de control o utilicen el último slot.
+            |
+            */
+
+            $resultadoBloqueo = DB::selectOne(
+                "SELECT GET_LOCK('gtri_empleados_control', 10) AS obtenido"
+            );
+
+            $bloqueoObtenido =
+                isset($resultadoBloqueo->obtenido)
+                && (int) $resultadoBloqueo->obtenido === 1;
+
+            if (! $bloqueoObtenido) {
+
+                return back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'El registro de empleados está ocupado. Intente nuevamente.'
+                    );
+
+            }
+
+            if (! $this->haySlotsDisponibles()) {
+
+                return back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Se alcanzó el límite de 1,000 empleados activos. Debe liberarse un slot antes de registrar uno nuevo.'
+                    );
+
+            }
+
+            $datos['numero_control'] =
+                $this->generarNumeroControl();
+
+            $datos['estado'] = 'activo';
+            $datos['foto'] = null;
+
+            if ($request->hasFile('foto')) {
+
+                $fotoNueva = uniqid('empleado_', true)
+                    . '.'
+                    . $request->file('foto')->extension();
+
+                $request->file('foto')->move(
+                    public_path('fotos_empleados'),
+                    $fotoNueva
+                );
+
+                $datos['foto'] = $fotoNueva;
+
+            }
+
+            DB::transaction(function () use ($datos) {
+
+                $empleado = Empleado::create($datos);
+
+                ActividadService::registrar(
+
+                    'Registró al empleado '
+                    . $empleado->numero_control
+                    . ' - '
+                    . $empleado->nombre
+                    . ' '
+                    . $empleado->apellido_paterno,
+
+                    null,
+
+                    [
+                        'id' => $empleado->id,
+
+                        'numero_control' =>
+                            $empleado->numero_control,
+
+                        'nombre' =>
+                            $empleado->nombre,
+
+                        'apellido_paterno' =>
+                            $empleado->apellido_paterno,
+
+                        'apellido_materno' =>
+                            $empleado->apellido_materno,
+
+                        'puesto' =>
+                            $empleado->puesto,
+
+                        'estado' =>
+                            $empleado->estado,
+                    ]
+
+                );
+
+            });
+
+            return redirect()
+                ->route('rh.empleados')
+                ->with(
+                    'success',
+                    'Empleado creado correctamente.'
+                );
+
+        } catch (\Throwable $e) {
+
+            if ($fotoNueva) {
+
+                $rutaFotoNueva = public_path(
+                    'fotos_empleados/' . $fotoNueva
+                );
+
+                if (file_exists($rutaFotoNueva)) {
+
+                    unlink($rutaFotoNueva);
+
+                }
+
+            }
+
+            report($e);
 
             return back()
                 ->withInput()
                 ->with(
                     'error',
-                    'Se alcanzó el límite de 1,000 empleados activos. Debe liberarse un slot antes de registrar uno nuevo.'
+                    'No fue posible registrar al empleado.'
                 );
 
-        }
-        $datos['numero_control'] = $this->generarNumeroControl();
-        $datos['estado'] = 'activo';
+        } finally {
 
-        $datos['foto'] = null;
+            if ($bloqueoObtenido) {
 
-        if ($request->hasFile('foto')) {
+                DB::select(
+                    "SELECT RELEASE_LOCK('gtri_empleados_control')"
+                );
 
-            $nombreFoto = time() . '.' . $request->foto->extension();
-
-            $request->foto->move(
-                public_path('fotos_empleados'),
-                $nombreFoto
-            );
-
-            $datos['foto'] = $nombreFoto;
+            }
 
         }
-
-        DB::transaction(function () use ($datos) {
-
-            $empleado = Empleado::create($datos);
-
-            LogActividad::create([
-
-                'usuario' => Auth::user()->rol,
-
-                'accion' => 'Creó empleado ' .
-                    $empleado->numero_control,
-
-            ]);
-
-        });
-
-        return redirect()
-            ->route('rh.empleados')
-            ->with(
-                'success',
-                'Empleado creado correctamente.'
-            );
     }
 
     public function show($id)
@@ -99,7 +206,11 @@ class EmpleadoController extends Controller
         $empleado = Empleado::with([
             'documentos',
             'vacacionesEmpleado',
-            'incidencias'
+            'incidencias',
+            'uniformes.producto',
+            'uniformes.devoluciones',
+            'vigencias',
+            'capacitaciones',
         ])->findOrFail($id);
 
         $documentos = $empleado->documentos;
@@ -122,9 +233,14 @@ class EmpleadoController extends Controller
             'rh.empleados.show',
             [
                 'empleado' => $empleado,
+
                 'documentos' => $documentos,
-                'documentosRH' => Empleado::DOCUMENTOS_RH,
-                'porcentajeDocumentos' => $porcentajeDocumentos,
+
+                'documentosRH' =>
+                    Empleado::DOCUMENTOS_RH,
+
+                'porcentajeDocumentos' =>
+                    $porcentajeDocumentos,
 
                 'vacaciones' => $empleado
                     ->vacacionesEmpleado
@@ -167,43 +283,224 @@ class EmpleadoController extends Controller
             $empleado->id
         );
 
-        $datos['foto'] = $this->subirFoto(
-            $request,
-            $empleado->foto
-        );
+        $fotoAnterior = $empleado->foto;
+        $fotoNueva = null;
 
-        DB::transaction(function () use (
-            $empleado,
-            $datos
-        ) {
+        /*
+        |--------------------------------------------------------------------------
+        | DATOS ANTERIORES PARA AUDITORÍA
+        |--------------------------------------------------------------------------
+        |
+        | Solo se guardan datos básicos. No se registran documentos sensibles,
+        | fotografías, CURP, RFC, NSS, teléfonos ni datos bancarios.
+        |
+        */
 
-            $empleado->update($datos);
+        $valorAnterior = [
 
-            LogActividad::create([
+            'id' => $empleado->id,
 
-                'usuario' => Auth::user()->rol,
+            'numero_control' =>
+                $empleado->numero_control,
 
-                'accion' =>
-                    'Actualizó empleado ' .
-                    $empleado->numero_control,
+            'nombre' =>
+                $empleado->nombre,
 
-            ]);
+            'apellido_paterno' =>
+                $empleado->apellido_paterno,
 
-        });
+            'apellido_materno' =>
+                $empleado->apellido_materno,
 
-        return redirect()
-            ->route('rh.empleados')
-            ->with(
-                'success',
-                'Empleado actualizado correctamente.'
-            );
+            'puesto' =>
+                $empleado->puesto,
+
+            'estado' =>
+                $empleado->estado,
+
+        ];
+
+        try {
+
+            if ($request->hasFile('foto')) {
+
+                $fotoNueva = uniqid('empleado_', true)
+                    . '.'
+                    . $request->file('foto')->extension();
+
+                $request->file('foto')->move(
+                    public_path('fotos_empleados'),
+                    $fotoNueva
+                );
+
+                $datos['foto'] = $fotoNueva;
+
+            } else {
+
+                $datos['foto'] = $fotoAnterior;
+
+            }
+
+            DB::transaction(function () use (
+                $empleado,
+                &$datos,
+                $valorAnterior
+            ) {
+
+                /*
+                |--------------------------------------------------------------------------
+                | ACTIVAR EMPLEADO AUTOMÁTICAMENTE
+                |--------------------------------------------------------------------------
+                */
+
+                if ($empleado->estado === 'pendiente') {
+
+                    $datos['estado'] = 'activo';
+
+                }
+
+                $empleado->update($datos);
+
+                /*
+                |--------------------------------------------------------------------------
+                | RECARGAR DATOS ACTUALIZADOS
+                |--------------------------------------------------------------------------
+                */
+
+                $empleado->refresh();
+
+                $valorNuevo = [
+
+                    'id' => $empleado->id,
+
+                    'numero_control' =>
+                        $empleado->numero_control,
+
+                    'nombre' =>
+                        $empleado->nombre,
+
+                    'apellido_paterno' =>
+                        $empleado->apellido_paterno,
+
+                    'apellido_materno' =>
+                        $empleado->apellido_materno,
+
+                    'puesto' =>
+                        $empleado->puesto,
+
+                    'estado' =>
+                        $empleado->estado,
+
+                ];
+
+                /*
+                |--------------------------------------------------------------------------
+                | REGISTRAR AUDITORÍA
+                |--------------------------------------------------------------------------
+                */
+
+                ActividadService::registrar(
+
+                    'Actualizó al empleado '
+                    . $empleado->numero_control
+                    . ' - '
+                    . $empleado->nombre
+                    . ' '
+                    . $empleado->apellido_paterno,
+
+                    $valorAnterior,
+
+                    $valorNuevo
+
+                );
+
+            });
+
+            /*
+            |--------------------------------------------------------------------------
+            | ELIMINAR FOTOGRAFÍA ANTERIOR
+            |--------------------------------------------------------------------------
+            |
+            | Solamente se elimina después de confirmar que la actualización
+            | terminó correctamente.
+            |
+            */
+
+            if (
+                $fotoNueva
+                && $fotoAnterior
+                && $fotoAnterior !== $fotoNueva
+            ) {
+
+                $rutaFotoAnterior = public_path(
+                    'fotos_empleados/' . $fotoAnterior
+                );
+
+                if (file_exists($rutaFotoAnterior)) {
+
+                    unlink($rutaFotoAnterior);
+
+                }
+
+            }
+
+            return redirect()
+                ->route('rh.empleados')
+                ->with(
+                    'success',
+                    'Empleado actualizado correctamente.'
+                );
+
+        } catch (\Throwable $e) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | LIMPIAR FOTOGRAFÍA NUEVA SI FALLA LA ACTUALIZACIÓN
+            |--------------------------------------------------------------------------
+            */
+
+            if ($fotoNueva) {
+
+                $rutaFotoNueva = public_path(
+                    'fotos_empleados/' . $fotoNueva
+                );
+
+                if (file_exists($rutaFotoNueva)) {
+
+                    unlink($rutaFotoNueva);
+
+                }
+
+            }
+
+            report($e);
+
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'No fue posible actualizar al empleado.'
+                );
+
+        }
     }
 
     public function inactivos()
     {
-        $empleados = Empleado::where(
-            'estado','inactivo'
-        )->get();
+        $empleados = Empleado::with([
+            'bajas' => function ($query) {
+
+                $query->latest('fecha_baja');
+
+            },
+        ])
+        ->where(
+            'estado',
+            'inactivo'
+        )
+        ->orderBy('nombre')
+        ->paginate(10);
+
         return view(
             'rh.empleados.inactivos',
             compact('empleados')
@@ -212,47 +509,93 @@ class EmpleadoController extends Controller
 
     public function reactivar($id)
     {
-        $empleado = Empleado::findOrFail($id);
+        $bloqueoObtenido = false;
 
-        if ($empleado->estado === 'activo') {
+        try {
+
+            $resultadoBloqueo = DB::selectOne(
+                "SELECT GET_LOCK('gtri_empleados_control', 10) AS obtenido"
+            );
+
+            $bloqueoObtenido =
+                isset($resultadoBloqueo->obtenido)
+                && (int) $resultadoBloqueo->obtenido === 1;
+
+            if (! $bloqueoObtenido) {
+
+                return back()->with(
+                    'error',
+                    'El control de empleados está ocupado. Intente nuevamente.'
+                );
+
+            }
+
+            return DB::transaction(function () use ($id) {
+
+                $empleado = Empleado::lockForUpdate()
+                    ->findOrFail($id);
+
+                if ($empleado->estado === 'activo') {
+
+                    return back()->with(
+                        'error',
+                        'El empleado ya se encuentra activo.'
+                    );
+
+                }
+
+                if (! $this->haySlotsDisponibles()) {
+
+                    return back()->with(
+                        'error',
+                        'No existen slots disponibles para reactivar este empleado.'
+                    );
+
+                }
+
+                $empleado->update([
+                    'estado' => 'activo',
+                ]);
+
+                LogActividad::create([
+
+                    'usuario' => Auth::user()->rol,
+
+                    'accion' =>
+                        'Reactivó al empleado '
+                        . $empleado->numero_control,
+
+                ]);
+
+                return redirect()
+                    ->route('rh.empleados')
+                    ->with(
+                        'success',
+                        'Empleado reactivado correctamente.'
+                    );
+
+            });
+
+        } catch (\Throwable $e) {
+
+            report($e);
 
             return back()->with(
                 'error',
-                'El empleado ya se encuentra activo.'
+                'No fue posible reactivar al empleado.'
             );
+
+        } finally {
+
+            if ($bloqueoObtenido) {
+
+                DB::select(
+                    "SELECT RELEASE_LOCK('gtri_empleados_control')"
+                );
+
+            }
 
         }
-
-        if (! $this->haySlotsDisponibles()) {
-
-            return back()->with(
-                'error',
-                'No existen slots disponibles para reactivar este empleado.'
-            );
-
-        }
-
-        $this->cambiarEstado(
-            $empleado->id,
-            'activo'
-        );
-
-        LogActividad::create([
-
-            'usuario' => Auth::user()->rol,
-
-            'accion' =>
-                'Reactivó al empleado ' .
-                $empleado->numero_control,
-
-        ]);
-
-        return redirect()
-            ->route('rh.empleados')
-            ->with(
-                'success',
-                'Empleado reactivado correctamente.'
-            );
     }
 
     private function validarEmpleado(Request $request, ?int $empleadoId = null): array 
@@ -402,6 +745,7 @@ class EmpleadoController extends Controller
             'fecha_ingreso' => [
                 'required',
                 'date',
+                'before_or_equal:today',
             ],
 
             'direccion' => [
@@ -503,6 +847,9 @@ class EmpleadoController extends Controller
             'fecha_ingreso.required' =>
                 'La fecha de ingreso es obligatoria.',
 
+            'fecha_ingreso.before_or_equal' =>
+                'La fecha de ingreso no puede ser posterior al día de hoy.',
+
             'direccion.required' =>
                 'La dirección es obligatoria.',
 
@@ -524,28 +871,6 @@ class EmpleadoController extends Controller
         ]);
     }
 
-    private function subirFoto($request, $fotoActual = null)
-    {
-        if ($request->hasFile('foto')) {
-            $nombreFoto = time() . '.' .
-                $request->foto->extension();
-            $request->foto->move(
-                public_path('fotos_empleados'),
-                $nombreFoto
-            );
-            return $nombreFoto;
-        }
-        return $fotoActual;
-    }
-
-    private function cambiarEstado($id, $estado)
-    {
-        $empleado = Empleado::findOrFail($id);
-        $empleado->update([
-            'estado' => $estado
-        ]);
-    }
-
     public function fichaTecnica($id)
     {
         $empleado = Empleado::with('documentos')->findOrFail($id);
@@ -555,7 +880,7 @@ class EmpleadoController extends Controller
 
             compact('empleado')
 
-        );
+        )->setPaper('letter', 'portrait');
         LogActividad::create([
 
             'usuario' => Auth::user()->rol,
@@ -578,9 +903,10 @@ class EmpleadoController extends Controller
         $empleado = Empleado::findOrFail($id);
 
             $pdf = Pdf::loadView(
-            'rh.empleados.credencial',
-            compact('empleado')
-        );
+                'rh.empleados.credencial',
+                compact('empleado')
+            );
+            
         LogActividad::create([
 
             'usuario' => Auth::user()->rol,
@@ -592,7 +918,9 @@ class EmpleadoController extends Controller
         ]);
 
         return $pdf->stream(
-            'credencial.pdf'
+            'credencial-' .
+            $empleado->numero_control .
+            '.pdf'
         );
     }
 
@@ -632,9 +960,12 @@ class EmpleadoController extends Controller
 
     private function haySlotsDisponibles(): bool
     {
-        return Empleado::where(
+        return Empleado::whereIn(
             'estado',
-            'activo'
+            [
+                'pendiente',
+                'activo',
+            ]
         )->count() < 1000;
     }
 }

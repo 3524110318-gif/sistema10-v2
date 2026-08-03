@@ -42,6 +42,41 @@
 
     </div>
 
+    {{-- ERRORES DE VALIDACIÓN --}}
+@if ($errors->any())
+
+    <div class="alert alert-danger gtri-alert mb-4">
+
+        <div class="d-flex align-items-center gap-2 mb-2">
+
+            <i class="bi bi-exclamation-triangle-fill"></i>
+
+            <strong>
+
+                No fue posible guardar la prenómina
+
+            </strong>
+
+        </div>
+
+        <ul class="mb-0">
+
+            @foreach ($errors->all() as $error)
+
+                <li>
+
+                    {{ $error }}
+
+                </li>
+
+            @endforeach
+
+        </ul>
+
+    </div>
+
+@endif
+
 
     <div class="gtri-card">
 
@@ -66,6 +101,14 @@
 
 
 @push('scripts')
+
+    <script>
+
+        window.entregasDeducibles = @json(
+            $entregasDeducibles ?? []
+        );
+
+    </script>
 
     @vite(
         'resources/js/prenominas.js'

@@ -12,6 +12,7 @@ use App\Models\RH\Vigencia;
 use App\Models\RH\Capacitacion;
 use App\Models\RH\BajaEmpleado;
 use App\Models\Repse;
+use App\Models\RH\ContratoRH;
 
 
 class Empleado extends Model
@@ -95,13 +96,13 @@ class Empleado extends Model
         return $this->hasMany(Vacacion::class);
     }
 
-    public function vacaciones()
+    public function vacaciones(): int
     {
         if (!$this->fecha_ingreso) {
             return 0;
         }
 
-        $años = Carbon::parse(
+        $años = (int) Carbon::parse(
             $this->fecha_ingreso
         )->diffInYears(now());
 
@@ -109,14 +110,13 @@ class Empleado extends Model
             return 0;
         }
 
-        $tabla = [
-            1 => 12,
-            2 => 14,
-            3 => 16,
-            4 => 18,
-            5 => 20,
-        ];
-        return $tabla[$años] ?? 22;
+        if ($años <= 5) {
+            return 10 + ($años * 2);
+        }
+
+        return 22 + (
+            intdiv($años - 6, 5) * 2
+        );
     }
 
     public function vacacionesTomadas()
@@ -126,10 +126,13 @@ class Empleado extends Model
         ->sum('dias');
     }
 
-    public function vacacionesRestantes()
+    public function vacacionesRestantes(): int
     {
-        return $this->vacaciones()
-        - $this->vacacionesTomadas();
+        return max(
+            0,
+            $this->vacaciones()
+            - $this->vacacionesTomadas()
+        );
     }
 
     public function incidencias()
@@ -158,9 +161,9 @@ class Empleado extends Model
         );
     }
 
-    public function baja()
+    public function bajas()
     {
-        return $this->hasOne(
+        return $this->hasMany(
             BajaEmpleado::class
         );
     }
@@ -194,6 +197,14 @@ class Empleado extends Model
             ($this->apellido_paterno ?? '') .
             ' ' .
             ($this->apellido_materno ?? '')
+        );
+    }
+
+    public function contratosRH()
+    {
+        return $this->hasMany(
+            ContratoRH::class,
+            'empleado_id'
         );
     }
 }

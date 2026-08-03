@@ -11,6 +11,11 @@ use App\Models\RH\EntregaUniforme;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Services\ActividadService;
+
 
 class EntregaUniformeController extends Controller
 {
@@ -123,6 +128,11 @@ class EntregaUniformeController extends Controller
                     'string',
                     'max:500',
                 ],
+
+                'firma' => [
+                    'required',
+                    'string',
+                ],
             ],
             [
                 'producto_id.required' =>
@@ -163,6 +173,12 @@ class EntregaUniformeController extends Controller
 
                 'observaciones.max' =>
                     'Las observaciones no deben superar los 500 caracteres.',
+
+                'firma.required' =>
+                    'La firma del empleado es obligatoria.',
+
+                'firma.string' =>
+                    'La firma recibida no es válida.',
             ]
         );
 
@@ -219,129 +235,221 @@ class EntregaUniformeController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        DB::transaction(function () use (
-            $datos,
-            $empleado,
-            $producto
-        ) {
+        $firmaPath = null;
 
-            /*
-             * Bloqueamos el producto mientras se calcula y actualiza el stock.
-             * Esto evita que dos entregas simultáneas descuenten la misma existencia.
-             */
-            $productoBloqueado = Producto::where(
-                'id',
-                $producto->id
-            )
-                ->lockForUpdate()
-                ->firstOrFail();
+        try {
 
-            if (
-                $productoBloqueado->stock_actual <
-                $datos['cantidad']
+            DB::transaction(function () use (
+                $datos,
+                $empleado,
+                $producto,
+                &$firmaPath
             ) {
 
-                throw new \RuntimeException(
-                    'El stock disponible cambió antes de registrar la entrega.'
+                /*
+                * Bloqueamos el producto mientras se calcula y actualiza el stock.
+                * Esto evita que dos entregas simultáneas descuenten la misma existencia.
+                */
+                $productoBloqueado = Producto::where(
+                    'id',
+                    $producto->id
+                )
+                    ->lockForUpdate()
+                    ->firstOrFail();
+
+                if (
+                    $productoBloqueado->stock_actual <
+                    $datos['cantidad']
+                ) {
+
+                    throw new \RuntimeException(
+                        'El stock disponible cambió antes de registrar la entrega.'
+                    );
+
+                }
+
+                $stockAnterior =
+                    $productoBloqueado->stock_actual;
+
+                $stockNuevo =
+                    $stockAnterior -
+                    $datos['cantidad'];
+
+                /*
+                |--------------------------------------------------------------------------
+                | GUARDAR FIRMA DEL EMPLEADO
+                |--------------------------------------------------------------------------
+                */
+
+                $firmaPath = null;
+
+                if (!empty($datos['firma'])) {
+
+                    $firma = preg_replace(
+                        '#^data:image/\w+;base64,#i',
+                        '',
+                        $datos['firma']
+                    );
+
+                    $firma = str_replace(' ', '+', $firma);
+
+                    $imagen = base64_decode($firma);
+
+                    if ($imagen === false) {
+                        throw new \RuntimeException(
+                            'No fue posible procesar la firma del empleado.'
+                        );
+                    }
+
+                    $nombreFirma =
+                        'firma_' .
+                        Str::uuid() .
+                        '.png';
+
+                    $firmaPath =
+                        'firmas_uniformes/' .
+                        $nombreFirma;
+
+                    Storage::disk('public')->put(
+                        $firmaPath,
+                        $imagen
+                    );
+
+                }
+
+                $entrega = EntregaUniforme::create([
+                    'empleado_id' =>
+                        $empleado->id,
+
+                    'producto_id' =>
+                        $productoBloqueado->id,
+
+                    'cantidad' =>
+                        $datos['cantidad'],
+
+                    'articulo' =>
+                        $productoBloqueado->nombre,
+
+                    'tipo' =>
+                        $datos['tipo'],
+
+                    'fecha_entrega' =>
+                        $datos['fecha_entrega'],
+
+                    'observaciones' =>
+                        isset($datos['observaciones'])
+                            ? trim($datos['observaciones'])
+                            : null,
+                    'firma_path' => $firmaPath,
+                ]);
+
+                $pdfPath =
+                    $this->generarPdfResguardo(
+                        $entrega
+                    );
+
+                $entrega->update([
+                    'pdf_resguardo' =>
+                        $pdfPath,
+                ]);
+
+                $productoBloqueado->update([
+                    'stock_actual' =>
+                        $stockNuevo,
+                ]);
+
+                MovimientoInventario::create([
+                    'producto_id' =>
+                        $productoBloqueado->id,
+
+                    'tipo_movimiento' =>
+                        'salida',
+
+                    'cantidad' =>
+                        $datos['cantidad'],
+
+                    'stock_anterior' =>
+                        $stockAnterior,
+
+                    'stock_nuevo' =>
+                        $stockNuevo,
+
+                    'fecha_movimiento' =>
+                        now(),
+
+                    'user_id' =>
+                        Auth::id(),
+
+                    'referencia' =>
+                        'Entrega de uniforme al empleado ' .
+                        $empleado->numero_control,
+
+                    'motivo' =>
+                        'Entrega de uniforme',
+
+                    'observaciones' =>
+                        isset($datos['observaciones'])
+                            ? trim($datos['observaciones'])
+                            : null,
+
+                    'origen' =>
+                        'RH',
+                ]);
+
+                /*
+                |--------------------------------------------------------------------------
+                | REGISTRO DE ACTIVIDAD
+                |--------------------------------------------------------------------------
+                */
+
+                ActividadService::registrar(
+
+                    'Registró la entrega de '
+                    . $datos['cantidad']
+                    . ' unidad(es) de "'
+                    . $productoBloqueado->nombre
+                    . '" para el empleado '
+                    . $empleado->numero_control,
+
+                    null,
+
+                    [
+
+                        'empleado_id' =>
+                            $empleado->id,
+
+                        'numero_control' =>
+                            $empleado->numero_control,
+
+                        'producto_id' =>
+                            $productoBloqueado->id,
+
+                        'producto' =>
+                            $productoBloqueado->nombre,
+
+                        'cantidad' =>
+                            $datos['cantidad'],
+
+                        'tipo_movimiento' =>
+                            'entrega',
+
+                    ]
+
                 );
 
+            });
+        } catch (\Throwable $e) {
+
+            if (
+                isset($firmaPath) &&
+                $firmaPath &&
+                Storage::disk('public')->exists($firmaPath)
+            ) {
+                Storage::disk('public')->delete($firmaPath);
             }
 
-            $stockAnterior =
-                $productoBloqueado->stock_actual;
-
-            $stockNuevo =
-                $stockAnterior -
-                $datos['cantidad'];
-
-            EntregaUniforme::create([
-                'empleado_id' =>
-                    $empleado->id,
-
-                'producto_id' =>
-                    $productoBloqueado->id,
-
-                'cantidad' =>
-                    $datos['cantidad'],
-
-                'articulo' =>
-                    $productoBloqueado->nombre,
-
-                'tipo' =>
-                    $datos['tipo'],
-
-                'fecha_entrega' =>
-                    $datos['fecha_entrega'],
-
-                'observaciones' =>
-                    isset($datos['observaciones'])
-                        ? trim($datos['observaciones'])
-                        : null,
-            ]);
-
-            $productoBloqueado->update([
-                'stock_actual' =>
-                    $stockNuevo,
-            ]);
-
-            MovimientoInventario::create([
-                'producto_id' =>
-                    $productoBloqueado->id,
-
-                'tipo_movimiento' =>
-                    'salida',
-
-                'cantidad' =>
-                    $datos['cantidad'],
-
-                'stock_anterior' =>
-                    $stockAnterior,
-
-                'stock_nuevo' =>
-                    $stockNuevo,
-
-                'fecha_movimiento' =>
-                    now(),
-
-                'user_id' =>
-                    Auth::id(),
-
-                'referencia' =>
-                    'Entrega de uniforme al empleado ' .
-                    $empleado->numero_control,
-
-                'motivo' =>
-                    'Entrega de uniforme',
-
-                'observaciones' =>
-                    isset($datos['observaciones'])
-                        ? trim($datos['observaciones'])
-                        : null,
-
-                'origen' =>
-                    'RH',
-            ]);
-
-            /*
-            |--------------------------------------------------------------------------
-            | REGISTRO DE ACTIVIDAD
-            |--------------------------------------------------------------------------
-            */
-
-            LogActividad::create([
-                'usuario' =>
-                    Auth::user()->rol,
-
-                'accion' =>
-                    'Registró la entrega de ' .
-                    $datos['cantidad'] .
-                    ' unidad(es) de "' .
-                    $productoBloqueado->nombre .
-                    '" para el empleado ' .
-                    $empleado->numero_control,
-            ]);
-
-        });
+            throw $e;
+        }
 
         return redirect()
             ->route(
@@ -352,5 +460,62 @@ class EntregaUniformeController extends Controller
                 'success',
                 'Uniforme registrado y stock actualizado correctamente.'
             );
+    }
+
+    private function generarPdfResguardo(
+        EntregaUniforme $entrega
+    ): string {
+
+        $entrega->load([
+            'empleado',
+            'producto',
+        ]);
+
+        $usuario = Auth::user();
+
+        $usuarioRegistro =
+            $usuario?->name
+            ?? $usuario?->rol
+            ?? 'Usuario del sistema';
+
+        $nombrePdf =
+            'resguardo_uniforme_' .
+            str_pad(
+                $entrega->id,
+                6,
+                '0',
+                STR_PAD_LEFT
+            ) .
+            '.pdf';
+
+        $rutaPdf =
+            'resguardos_uniformes/' .
+            $nombrePdf;
+
+        $pdf = Pdf::loadView(
+            'rh.uniformes.pdf.resguardo',
+            compact(
+                'entrega',
+                'usuarioRegistro'
+            )
+        );
+
+        $pdf->setPaper(
+            'letter',
+            'portrait'
+        );
+
+        $guardado = Storage::disk('public')->put(
+            $rutaPdf,
+            $pdf->output()
+        );
+
+        if (!$guardado) {
+            throw new \RuntimeException(
+                'No fue posible guardar el PDF de resguardo.'
+            );
+        }
+
+        return $rutaPdf;
     }
 }

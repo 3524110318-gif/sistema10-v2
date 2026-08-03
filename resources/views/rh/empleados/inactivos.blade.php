@@ -259,6 +259,31 @@
                                 {{-- ACCIONES --}}
                                 <td class="text-center">
 
+                                    @php
+
+                                        $ultimaBaja = $empleado->bajas->first();
+
+                                    @endphp
+
+
+                                    @if ($ultimaBaja)
+
+                                        <a
+                                            href="{{ route(
+                                                'rh.bajas.show',
+                                                $ultimaBaja->id
+                                            ) }}"
+                                            class="btn gtri-btn-secondary btn-sm me-1"
+                                        >
+
+                                            <i class="bi bi-eye me-1"></i>
+
+                                            Ver baja
+
+                                        </a>
+
+                                    @endif
+
                                     <form
                                         action="{{ route(
                                             'rh.empleados.reactivar',
